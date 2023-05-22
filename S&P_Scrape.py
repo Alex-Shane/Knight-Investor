@@ -6,8 +6,7 @@ Created on Mon May 22 13:54:46 2023
 @author: Alex
 """
 
-import requests
-from bs4 import BeautifulSoup
+import pandas as pd
 from datetime import datetime, timedelta
 
 # Calculate the start and end dates for the past month
@@ -21,33 +20,26 @@ end_date_str = end_date.strftime("%m/%d/%Y")
 # Define the URL for the S&P 500 historical data
 url = f"https://www.slickcharts.com/sp500/history/{start_date_str}/{end_date_str}"
 
-# Send a GET request to the website and parse the HTML response
-response = requests.get(url)
-soup = BeautifulSoup(response.content, "html.parser")
+# Read the table from the website using pandas
+tables = pd.read_html(url)
 
-# Find the table that contains the data
-table = soup.find("table", {"class": "table-hover"})
+# Extract the desired table (assuming it's the first one)
+table = tables[0]
 
-# Initialize an empty dictionary to store the high and low prices for each stock
-stock_prices = {}
+table = table[:-1]
 
-# Iterate over each row in the table (excluding the header row)
-for row in table.find_all("tr")[1:]:
-    columns = row.find_all("td")
-    stock_name = columns[1].text.strip()
-    high = float(columns[2].text.strip().replace(",", ""))
-    low = float(columns[3].text.strip().replace(",", ""))
+# Extract the relevant columns for stock name, high, and low prices
+stock_data = table[['Symbol', 'High', 'Low']]
 
-    # Update the high and low prices for the stock in the dictionary
-    if stock_name in stock_prices:
-        stock_prices[stock_name]["high"] = max(stock_prices[stock_name]["high"], high)
-        stock_prices[stock_name]["low"] = min(stock_prices[stock_name]["low"], low)
-    else:
-        stock_prices[stock_name] = {"high": high, "low": low}
+# Group the data by stock name and calculate the maximum high and minimum low prices
+grouped_data = stock_data.groupby('Symbol').agg({'High': 'max', 'Low': 'min'})
 
 # Print the high and low prices for each stock in the month
-for stock_name, prices in stock_prices.items():
+for stock_name, row in grouped_data.iterrows():
+    high_price = row['High']
+    low_price = row['Low']
     print(f"Stock: {stock_name}")
-    print(f"High: {prices['high']}")
-    print(f"Low: {prices['low']}")
+    print(f"High: {high_price}")
+    print(f"Low: {low_price}")
     print()
+
