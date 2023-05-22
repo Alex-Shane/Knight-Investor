@@ -87,7 +87,7 @@ top_stocks = scrape()
 print("\n" + "The best peforming stocks over the past month by delta stock price: ")
 print("\n")
 for stock in top_stocks:
-    percent_gained = f'{stock.delta / stock.month_open:.2f}'
+    percent_gained = f'{stock.delta / stock.month_open * 100:.2f}'
     delta = f'{stock.delta:.2f}'
     print(f'ticker: {stock.ticker}, delta: {delta}, percent gain = {percent_gained}%')
     print("\n")
