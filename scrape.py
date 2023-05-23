@@ -8,6 +8,7 @@ Created on Mon May 22 14:22:58 2023
 
 import pandas as pd
 import yfinance as yf
+import yahoo_fin.stock_info as si
 
 class Stock: 
     def __init__(self, ticker, month_open, month_close):
@@ -83,7 +84,12 @@ def scrape():
             tickers.remove(ticker)
     return top_stocks
 
+def makePDF(top_stocks):
+    
+
 top_stocks = scrape()
+file = makePDF(top_stocks)
+
 print("\n" + "The best peforming stocks over the past month by delta stock price: ")
 print("\n")
 for stock in top_stocks:
@@ -91,3 +97,10 @@ for stock in top_stocks:
     delta = f'{stock.delta:.2f}'
     print(f'ticker: {stock.ticker}, delta: {delta}, percent gain = {percent_gained}%')
     print("\n")
+    ticker = yf.Ticker(stock.ticker)
+    news = ticker.get_news()
+    print(f"Follow these links to read more about {stock.ticker}:" + "\n")
+    for article in news:
+        title = article['title']
+        link = article['link']
+        print(f'{title}: {link}' + "\n")
