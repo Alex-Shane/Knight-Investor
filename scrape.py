@@ -9,6 +9,8 @@ Created on Mon May 22 14:22:58 2023
 import pandas as pd
 import yfinance as yf
 import yahoo_fin.stock_info as si
+import jinja2
+import pdfkit
 
 class Stock: 
     def __init__(self, ticker, month_open, month_close):
@@ -69,6 +71,7 @@ def scrape():
     top_stocks = [Stock(0,0,0) for x in range(3)]
     for ticker in tickers: 
         tick = yf.Ticker(ticker)
+        print(ticker)
         hist = tick.history(period='1mo')
         if not hist.empty:
             month_open = hist['Open'][0]
@@ -85,7 +88,39 @@ def scrape():
     return top_stocks
 
 def makePDF(top_stocks):
-    
+    context = {}
+    context['s1'] = yf.Ticker(top_stocks[0].ticker).info['longName']
+    context['s1.ticker'] = top_stocks[0].ticker
+    context['d1'] = f'{top_stocks[0].delta / top_stocks[0].month_open * 100:.2f}'
+    configNews(yf.Ticker(top_stocks[0].ticker).get_news(), context, 1)
+    context['s2'] = yf.Ticker(top_stocks[1].ticker).info['longName']
+    context['s2.ticker'] = top_stocks[1].ticker
+    context['d2'] = f'{top_stocks[1].delta / top_stocks[1].month_open * 100:.2f}'
+    configNews(yf.Ticker(top_stocks[1].ticker).get_news(), context, 4)
+    context['s3'] = yf.Ticker(top_stocks[2].ticker).info['longName']
+    context['s3.ticker'] = top_stocks[2].ticker
+    context['d3'] = f'{top_stocks[2].delta / top_stocks[2].month_open * 100:.2f}'
+    configNews(yf.Ticker(top_stocks[2].ticker).get_news(), context, 7)
+    template_loader = jinja2.FileSystemLoader('./')
+    template_env = jinja2.Environment(loader=template_loader)
+    template = template_env.get_template('report.html')
+    print(context)
+    output_text = template.render(context)
+    config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
+    pdfkit.from_string(output_text, 'stock_report.pdf', configuration=config)
+
+def configNews(news, context, num):
+    for x in range(0, 3):
+        title = news[x]['title']
+        link = news[x]['link']
+        title_string = f'news{num}.title'
+        link_string = f'news{num}.link'
+        print(title_string)
+        context[title_string] = title
+        context[link_string] = link
+        num = num + 1
+    return context
+
 
 top_stocks = scrape()
 file = makePDF(top_stocks)
