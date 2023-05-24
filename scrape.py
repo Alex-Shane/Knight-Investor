@@ -17,6 +17,7 @@ class Stock:
         self.ticker = ticker
         self.month_open = month_open
         self.month_close = month_close
+        self.rank = 0
         self.delta = month_close - month_open
         return
         
@@ -43,14 +44,21 @@ def isTopStockByDelta(currentTopStocks, stock):
         returns the stock to be removed, None if stock delta isn't greater than current deltas
 
     """
-    if stock.delta > currentTopStocks[0].delta:
-        return currentTopStocks[0]
-    elif stock.delta > currentTopStocks[1].delta:
-        return currentTopStocks[1]
-    elif stock.delta > currentTopStocks[2].delta:
-        return currentTopStocks[2]
-    else:
-        return None
+    for x in range (len(currentTopStocks)):
+        if stock.delta > currentTopStocks[x].delta:
+            return currentTopStocks[x]
+        else:
+            return None
+# =============================================================================
+#     if stock.delta > currentTopStocks[0].delta:
+#         return currentTopStocks[0]
+#     elif stock.delta > currentTopStocks[1].delta:
+#         return currentTopStocks[1]
+#     elif stock.delta > currentTopStocks[2].delta:
+#         return currentTopStocks[2]
+#     else:
+#         return None
+# =============================================================================
 
 def scrape():
     """
@@ -68,7 +76,7 @@ def scrape():
     tickers[65] = "BRK-B"
     tickers[81] = "BF-B"
     stocks = list()
-    top_stocks = [Stock(0,0,0) for x in range(3)]
+    top_stocks = [Stock(0,0,0) for x in range(20)]
     for ticker in tickers: 
         tick = yf.Ticker(ticker)
         print(ticker)
@@ -87,20 +95,20 @@ def scrape():
             tickers.remove(ticker)
     return top_stocks
 
-def makePDF(top_stocks):
+def makePDF(final_three):
     context = {}
-    context['s1'] = yf.Ticker(top_stocks[0].ticker).info['longName']
-    context['s1ticker'] = top_stocks[0].ticker
-    context['d1'] = f'{top_stocks[0].delta / top_stocks[0].month_open * 100:.2f}'
-    configNews(yf.Ticker(top_stocks[0].ticker).get_news(), context, 1)
-    context['s2'] = yf.Ticker(top_stocks[1].ticker).info['longName']
-    context['s2ticker'] = top_stocks[1].ticker
-    context['d2'] = f'{top_stocks[1].delta / top_stocks[1].month_open * 100:.2f}'
-    configNews(yf.Ticker(top_stocks[1].ticker).get_news(), context, 4)
-    context['s3'] = yf.Ticker(top_stocks[2].ticker).info['longName']
-    context['s3ticker'] = top_stocks[2].ticker
-    context['d3'] = f'{top_stocks[2].delta / top_stocks[2].month_open * 100:.2f}'
-    configNews(yf.Ticker(top_stocks[2].ticker).get_news(), context, 7)
+    context['s1'] = yf.Ticker(final_three[0].ticker).info['longName']
+    context['s1ticker'] = final_three[0].ticker
+    context['d1'] = f'{final_three[0].delta / final_three[0].month_open * 100:.2f}'
+    configNews(yf.Ticker(final_three[0].ticker).get_news(), context, 1)
+    context['s2'] = yf.Ticker(final_three[1].ticker).info['longName']
+    context['s2ticker'] = final_three[1].ticker
+    context['d2'] = f'{final_three[1].delta / final_three[1].month_open * 100:.2f}'
+    configNews(yf.Ticker(final_three[1].ticker).get_news(), context, 4)
+    context['s3'] = yf.Ticker(final_three[2].ticker).info['longName']
+    context['s3ticker'] = final_three[2].ticker
+    context['d3'] = f'{final_three[2].delta / final_three[2].month_open * 100:.2f}'
+    configNews(yf.Ticker(final_three[2].ticker).get_news(), context, 7)
     template_loader = jinja2.FileSystemLoader('./')
     template_env = jinja2.Environment(loader=template_loader)
     template = template_env.get_template('report.html')
@@ -118,21 +126,38 @@ def configNews(news, context, num):
         context[link_string] = link
         num = num + 1
 
+def rankStocks(topStocks, final_three):
+    for stock in topStocks:
+        ticker = yf.Ticker(stock.ticker)
+        info = ticker.info
+        eps = info['trailingEps']
+        if eps >= 20:
+            stock.rank = 1 + 0.1*eps 
+        check = compareByRank(final_three, stock)
+        if check != None:
+            final_three.remove(check)
+            final_three.append(stock)
+    return final_three
 
+def compareByRank(final_three, stock):
+    for x in range(3):
+        if stock.rank > final_three[x].rank:
+            return final_three[x]
+        else: 
+            return None
+            
 top_stocks = scrape()
-file = makePDF(top_stocks)
+final_three = [Stock(0,0,0) for x in range(3)]
+final_three = rankStocks(top_stocks, final_three)
+for stock in final_three:
+    print(stock.ticker)
+makePDF(final_three)
 
-print("\n" + "The best peforming stocks over the past month by delta stock price: ")
-print("\n")
-for stock in top_stocks:
-    percent_gained = f'{stock.delta / stock.month_open * 100:.2f}'
-    delta = f'{stock.delta:.2f}'
-    print(f'ticker: {stock.ticker}, delta: {delta}, percent gain = {percent_gained}%')
-    print("\n")
-    ticker = yf.Ticker(stock.ticker)
-    news = ticker.get_news()
-    print(f"Follow these links to read more about {stock.ticker}:" + "\n")
-    for article in news:
-        title = article['title']
-        link = article['link']
-        print(f'{title}: {link}' + "\n")
+# =============================================================================
+# for x in range (3):
+#     best_rank = max(top_stocks, key = lambda k: k.rank)
+#     final_three.append(best_rank)
+#     top_stocks.remove(best_rank)
+# =============================================================================
+
+
