@@ -111,18 +111,34 @@ def makePDF(final_three):
     context['s1ticker'] = final_three[0].ticker
     context['d1'] = f'{final_three[0].delta / final_three[0].month_open * 100:.2f}'
     prev_close1 = round(final_three[0].info['previousClose'], 2)
+    prev_close1 = ('{:,}'.format(prev_close1))
     context['price1'] = prev_close1
-    context['mcap1'] = final_three[0].info['marketCap']
+    mcap1 = ('{:,}'.format(final_three[0].info['marketCap']))
+    context['mcap1'] = mcap1
     context['i1'] = final_three[0].info['industry']
     handleDividend(final_three[0], context, 1)
     configNews(yf.Ticker(final_three[0].ticker).get_news(), context, 1)
     context['s2'] = final_three[1].info['longName']
     context['s2ticker'] = final_three[1].ticker
     context['d2'] = f'{final_three[1].delta / final_three[1].month_open * 100:.2f}'
+    prev_close2 = round(final_three[1].info['previousClose'], 2)
+    prev_close2 = ('{:,}'.format(prev_close2))
+    context['price2'] = prev_close2
+    mcap2 = ('{:,}'.format(final_three[1].info['marketCap']))
+    context['mcap2'] = mcap2
+    context['i2'] = final_three[1].info['industry']
+    handleDividend(final_three[1], context, 2)
     configNews(yf.Ticker(final_three[1].ticker).get_news(), context, 4)
     context['s3'] = final_three[2].info['longName']
     context['s3ticker'] = final_three[2].ticker
     context['d3'] = f'{final_three[2].delta / final_three[2].month_open * 100:.2f}'
+    prev_close3 = round(final_three[2].info['previousClose'], 2)
+    prev_close3 = ('{:,}'.format(prev_close3))
+    context['price3'] = prev_close3
+    mcap3 = ('{:,}'.format(final_three[2].info['marketCap']))
+    context['mcap3'] = mcap3
+    context['i3'] = final_three[2].info['industry']
+    handleDividend(final_three[2], context, 3)
     configNews(yf.Ticker(final_three[2].ticker).get_news(), context, 7)
     template_loader = jinja2.FileSystemLoader('./')
     template_env = jinja2.Environment(loader=template_loader)
