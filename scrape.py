@@ -11,6 +11,8 @@ import yfinance as yf
 import yahoo_fin.stock_info as si
 import jinja2
 import pdfkit
+import requests
+from bs4 import BeautifulSoup
 
 class Stock: 
     def __init__(self, ticker, month_open, month_close):
@@ -131,7 +133,7 @@ def rankStocks(topStocks, final_three):
         ticker = yf.Ticker(stock.ticker)
         info = ticker.info
         eps = info['trailingEps']
-        if eps >= 20:
+        if eps >= 10:
             stock.rank = 1 + 0.1*eps 
         check = compareByRank(final_three, stock)
         if check != None:
@@ -145,10 +147,39 @@ def compareByRank(final_three, stock):
             return final_three[x]
         else: 
             return None
+
+def scrape_industryPE(url):
+    # Send a GET request to the URL
+    response = requests.get(url)
+
+    # Parse the HTML content using BeautifulSoup
+    soup = BeautifulSoup(response.content, 'html.parser')
+
+    # Find the table on the page
+    table = soup.find('table')
+
+    # Extract the table headers
+    headers = [header.text.strip() for header in table.find_all('th')]
+
+    # Extract the table rows
+    rows = []
+    for row in table.find_all('tr'):
+        data = [cell.text.strip() for cell in row.find_all('td')]
+        if data:
+            rows.append(data)
+
+    # Create a Pandas DataFrame
+    df = pd.DataFrame(rows, columns=headers)
+
+    return df
+
+url = 'https://eqvista.com/price-to-earnings-pe-ratios-by-industry/'
+industry_PE = scrape_industryPE(url)
             
 top_stocks = scrape()
 final_three = [Stock(0,0,0) for x in range(3)]
 final_three = rankStocks(top_stocks, final_three)
+print()
 for stock in final_three:
     print(stock.ticker)
 makePDF(final_three)
