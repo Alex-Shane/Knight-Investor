@@ -110,6 +110,11 @@ def makePDF(final_three):
     context['s1'] = final_three[0].info['longName']
     context['s1ticker'] = final_three[0].ticker
     context['d1'] = f'{final_three[0].delta / final_three[0].month_open * 100:.2f}'
+    prev_close1 = round(final_three[0].info['previousClose'], 2)
+    context['price1'] = prev_close1
+    context['mcap1'] = final_three[0].info['marketCap']
+    context['i1'] = final_three[0].info['industry']
+    handleDividend(final_three[0], context, 1)
     configNews(yf.Ticker(final_three[0].ticker).get_news(), context, 1)
     context['s2'] = final_three[1].info['longName']
     context['s2ticker'] = final_three[1].ticker
@@ -125,6 +130,17 @@ def makePDF(final_three):
     output_text = template.render(context)
     config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
     pdfkit.from_string(output_text, 'stock_report.pdf', configuration=config)
+
+def handleDividend(stock, context, number):
+    string = f'a{number}'
+    string2 = f'des{number}'
+    if pd.isnull(stock.info['dividendRate']):
+        context[string] = "No"
+        context[string2] = "this stock doesn't currently provide a dividend"
+    else:
+        context[string] = "Yes"
+        dividend = stock.info['dividendRate']
+        context[string2] = f'the current dividend rate is {dividend}%' 
 
 def configNews(news, context, num):
     for x in range(0, 3):
@@ -272,8 +288,6 @@ top_stocks = scrape()
 top_stocks = rankStocks(top_stocks)
 final_three = [Stock(0,0,0) for x in range(3)]
 final_three = getFinalStocks(top_stocks, final_three)
-for stock in final_three:
-    print(stock.ticker)
 makePDF(final_three)
 
 # =============================================================================
