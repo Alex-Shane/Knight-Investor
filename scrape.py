@@ -64,6 +64,13 @@ class Stock:
                f"Increase Rating: {self.increase_rating}\n" \
                f"Info: {self.info}"
 def scrape():
+    """
+    Scrapes the table of S&P 500 tickers from a specific source and creates a list of those stocks.
+
+    Returns:
+        list: A list of S&P 500 tickers.
+        
+    """
     sp500url = 'https://en.wikipedia.org/wiki/List_of_S%26P_500_companies'
     table = pd.read_html(sp500url)
     tickers = table[0]['Symbol'].tolist()
@@ -80,6 +87,13 @@ def scrape():
     return stocks
 
 def makePDF(final_three):
+    """
+    Generates a PDF file containing relevant information and current news about the highest ranked stocks for current month.
+
+    Args:
+        final_three (list): A list of the highest ranked stocks for the month
+
+    """
     context = {}
     context['s1'] = final_three[0].info['longName']
     context['s1ticker'] = final_three[0].ticker
@@ -125,6 +139,15 @@ def makePDF(final_three):
     pdfkit.from_string(output_text, 'stock_report.pdf', configuration=config)
 
 def handleDividend(stock, context, number):
+    """
+    Checks if the current stock has a dividend rate or not, and updates the context dictionary as appropriate.
+
+    Args:
+       stock (Stock): The current stock object.
+       context (dict): The context dictionary to store all the variable information in report.html
+       number (int): The rank of the stock in the final list of best stocks.
+
+    """
     string = f'a{number}'
     string2 = f'des{number}'
     if not 'dividendRate' in stock.info: 
@@ -136,6 +159,15 @@ def handleDividend(stock, context, number):
         context[string2] = f'the current dividend rate is {dividend}%' 
 
 def handleRecommendation(stock, context, number):
+    """
+    Checks the recommendation for the current stock by Yahoo Finance analysts and updates it in the context dictionary.
+
+    Args:
+        stock (Stock): The current stock object.
+        context (dict): The context dictionary to store the recommendation information.
+        number (int): The rank of the stock in the final list of best stocks.
+
+    """
     string = f'rec{number}'
     rec = stock.info['recommendationKey']
     if rec == 'buy':
@@ -146,6 +178,15 @@ def handleRecommendation(stock, context, number):
         context[string] = "Sell this stock"
 
 def configNews(news, context, num):
+    """
+    Cuts down the given data table of news information to three articles and adds their titles and links to the context dictionary.
+
+    Args:
+        news (list): The data table of news information.
+        context (dict): The context dictionary to store the article titles and links.
+        number (int): The position of the article we are looking at.
+        
+    """
     for x in range(0, 3):
         title = news[x]['title']
         link = news[x]['link']
@@ -156,6 +197,16 @@ def configNews(news, context, num):
         num = num + 1
 
 def rankStocks(topStocks):
+    """
+    Ranks the given list of stocks based on a multitude of financial information and factors.
+
+    Args:
+        stocks (list): A list of stocks to be ranked.
+
+    Returns:
+        list: the same list of stocks but with updated rank attributes
+
+    """
     topStocks = rankPercentIncrease(topStocks)
     topStocks = rankTrailingEPS(topStocks)
     topStocks = rankForwardEPS(topStocks)
@@ -166,6 +217,16 @@ def rankStocks(topStocks):
     return topStocks
 
 def rankPercentIncrease(stocks): 
+    """
+    Ranks the given list of stocks based on the percent increase in stock price over the past month.
+
+    Args:
+       stocks (list): A list of stocks to be ranked.
+
+    Returns:
+       list: A new list of stocks with updated percentIncreaseRatings
+
+    """
     increase_values = dict()
     for stock in stocks:
         ticker = yf.Ticker(stock.ticker)
@@ -185,6 +246,16 @@ def rankPercentIncrease(stocks):
     return stocks
 
 def rankTrailingEPS(topStocks):
+    """
+    Ranks the given list of stocks based on the previous 12 months' EPS.
+
+    Args:
+       stocks (list): A list of stocks to be ranked.
+
+    Returns:
+       list: A new list of stocks with updated trailingEPSRatings
+
+    """
     eps_values = dict()
     for stock in topStocks:
         #ticker = yf.Ticker(stock.ticker)
@@ -199,6 +270,16 @@ def rankTrailingEPS(topStocks):
     return topStocks
 
 def rankForwardEPS(topStocks):
+    """
+    Ranks the given list of stocks based on future projected EPS.
+
+    Args:
+       stocks (list): A list of stocks to be ranked.
+
+    Returns:
+       list: A new list of stocks with updated forwardEPSRatings
+
+    """
     feps_values = dict()
     for stock in topStocks:
         if 'forwardEps' in stock.info:
@@ -211,6 +292,16 @@ def rankForwardEPS(topStocks):
     return topStocks
 
 def rankTrailingPE(topStocks):
+    """
+    Ranks the given list of stocks based on the previous 12 months' PE ratios.
+
+    Args:
+       stocks (list): A list of stocks to be ranked.
+
+    Returns:
+       list: A new list of stocks with updated trailingPERatings
+
+    """
     pe_values = dict()
     for stock in topStocks:
         if 'trailingPE' in stock.info:
@@ -223,6 +314,16 @@ def rankTrailingPE(topStocks):
     return topStocks
 
 def rankForwardPE(topStocks):
+    """
+    Ranks the given list of stocks based on future projected PE.
+
+    Args:
+       stocks (list): A list of stocks to be ranked.
+
+    Returns:
+       list: A new list of stocks with updated forwardPERatings
+
+    """
     fpe_values = dict()
     for stock in topStocks:
         if 'forwardPE' in stock.info:
@@ -235,6 +336,16 @@ def rankForwardPE(topStocks):
     return topStocks
 
 def rankEVRev(topStocks):
+    """
+    Ranks the given list of stocks based on the previous 12 months' EV/Revenue.
+
+    Args:
+       stocks (list): A list of stocks to be ranked.
+
+    Returns:
+       list: A new list of stocks with updated EV/Revenue Ratings
+
+    """
     evRev_values = dict()
     for stock in topStocks:
         if 'enterpriseToRevenue' in stock.info:
@@ -247,6 +358,16 @@ def rankEVRev(topStocks):
     return topStocks
 
 def rankEBITDA(topStocks):
+    """
+    Ranks the given list of stocks based on the previous 12 months' EV/EBITDA.
+
+    Args:
+       stocks (list): A list of stocks to be ranked.
+
+    Returns:
+       list: A new list of stocks with updated EV/EBITDA Ratings
+
+    """
     ebit_values = dict()
     for stock in topStocks:
         if 'enterpriseToEbitda' in stock.info:
@@ -260,6 +381,16 @@ def rankEBITDA(topStocks):
 
 
 def getFinalStocks(topStocks, final_three): 
+    """
+    Calculates the final rankings for each stock in the given list of stocks by updating the rank attribute based on a weighted calculation.
+
+    Args:
+        stocks (list): A list of stocks to be ranked.
+
+    Returns:
+        list: A new list of stocks sorted in descending order of their rankings.
+
+    """
     stock_ranks = dict()
     for stock in topStocks:
         stock.rank = 0.4*(stock.increase_rating) + 0.2*(stock.trailing_pe_rating) + 0.15*(stock.Ebit_rating) + 0.1*(stock.trailing_eps_rating) + 0.1*(stock.EVRev_rating) + 0.025*(stock.forward_eps_rating) + 0.025*(stock.forward_pe_rating)
