@@ -21,13 +21,21 @@ class Stock:
         self.month_close = month_close
         self.rank = 0
         self.delta = month_close - month_open
+        self.trailing_eps_rating = 0 
+        self.forward_eps_rating = 0
+        self.industry = ""
+        self.trailing_pe_rating = 0
+        self.forward_pe_rating = 0
+        self.EVRev_rating = 0
+        self.Ebit_rating = 0
+        self.info = ""
         return
         
     def __str__(self):
-        return f'ticker: {self.ticker}, open: {self.month_open}, close: {self.month_close}'
+        return f'ticker: {self.ticker}, open: {self.month_open}, close: {self.month_close}, ebit: {self.Ebit_rating}'
     
     def __repr__(self):
-        return f'ticker: {self.ticker}, open: {self.month_open}, close: {self.month_close}'
+        return f'ticker: {self.ticker}, open: {self.month_open}, close: {self.month_close}, ebit: {self.Ebit_rating}'
 
 
 def isTopStockByDelta(currentTopStocks, stock):
@@ -99,15 +107,15 @@ def scrape():
 
 def makePDF(final_three):
     context = {}
-    context['s1'] = yf.Ticker(final_three[0].ticker).info['longName']
+    context['s1'] = final_three[0].info['longName']
     context['s1ticker'] = final_three[0].ticker
     context['d1'] = f'{final_three[0].delta / final_three[0].month_open * 100:.2f}'
     configNews(yf.Ticker(final_three[0].ticker).get_news(), context, 1)
-    context['s2'] = yf.Ticker(final_three[1].ticker).info['longName']
+    context['s2'] = final_three[1].info['longName']
     context['s2ticker'] = final_three[1].ticker
     context['d2'] = f'{final_three[1].delta / final_three[1].month_open * 100:.2f}'
     configNews(yf.Ticker(final_three[1].ticker).get_news(), context, 4)
-    context['s3'] = yf.Ticker(final_three[2].ticker).info['longName']
+    context['s3'] = final_three[2].info['longName']
     context['s3ticker'] = final_three[2].ticker
     context['d3'] = f'{final_three[2].delta / final_three[2].month_open * 100:.2f}'
     configNews(yf.Ticker(final_three[2].ticker).get_news(), context, 7)
@@ -128,18 +136,102 @@ def configNews(news, context, num):
         context[link_string] = link
         num = num + 1
 
-def rankStocks(topStocks, final_three):
+def rankStocks(topStocks):
+    topStocks = rankTrailingEPS(topStocks)
+    topStocks = rankForwardEPS(topStocks)
+    topStocks = rankTrailingPE(topStocks)
+    topStocks = rankForwardPE(topStocks)
+    topStocks = rankEVRev(topStocks)
+    topStocks = rankEBITDA(topStocks)
+    return topStocks
+
+def rankTrailingEPS(topStocks):
+    eps_values = dict()
     for stock in topStocks:
         ticker = yf.Ticker(stock.ticker)
-        info = ticker.info
-        eps = info['trailingEps']
-        if eps >= 10:
-            stock.rank = 1 + 0.1*eps 
-        check = compareByRank(final_three, stock)
-        if check != None:
-            final_three.remove(check)
-            final_three.append(stock)
+        stock.info = ticker.info
+        eps_values[stock] = stock.info['trailingEps']
+    while(len(eps_values) != 0): 
+        highest_EPS_Stock = max(eps_values, key = eps_values.get)
+        highest_EPS_Stock.trailing_eps_rating = len(eps_values)
+        del eps_values[highest_EPS_Stock]
+    return topStocks
+
+def rankForwardEPS(topStocks):
+    feps_values = dict()
+    for stock in topStocks:
+        feps_values[stock] = stock.info['forwardEps']
+    while(len(feps_values) != 0): 
+        highest_fEPS_Stock = max(feps_values, key = feps_values.get)
+        highest_fEPS_Stock.forward_eps_rating = len(feps_values)
+        del feps_values[highest_fEPS_Stock]
+    return topStocks
+
+def rankTrailingPE(topStocks):
+    pe_values = dict()
+    for stock in topStocks:
+        pe_values[stock] = stock.info['trailingPE']
+    while(len(pe_values) != 0):
+        best_pe_stock = min(pe_values, key = pe_values.get)
+        best_pe_stock.trailing_pe_rating = len(pe_values)
+        del pe_values[best_pe_stock]
+    return topStocks
+
+def rankForwardPE(topStocks):
+    fpe_values = dict()
+    for stock in topStocks:
+        fpe_values[stock] = stock.info['forwardPE']
+    while (len(fpe_values) != 0):
+        best_fpe_stock = min(fpe_values, key = fpe_values.get)
+        best_fpe_stock.forward_pe_rating = len(fpe_values)
+        del fpe_values[best_fpe_stock]
+    return topStocks
+
+def rankEVRev(topStocks):
+    evRev_values = dict()
+    for stock in topStocks:
+        evRev_values[stock] = stock.info['enterpriseToRevenue']
+    while (len(evRev_values) != 0): 
+        best_evRev_stock = min(evRev_values, key = evRev_values.get)
+        best_evRev_stock.EVRev_rating = len(evRev_values)
+        del evRev_values[best_evRev_stock]
+    return topStocks
+
+def rankEBITDA(topStocks):
+    ebit_values = dict()
+    for stock in topStocks:
+        ebit_values[stock] = stock.info['enterpriseToEbitda']
+    while (len(ebit_values) != 0): 
+        best_ebit_stock = min(ebit_values, key = ebit_values.get)
+        best_ebit_stock.Ebit_rating = len(ebit_values)
+        del ebit_values[best_ebit_stock]
+    return topStocks
+
+
+def getFinalStocks(topStocks, final_three): 
+    stock_ranks = dict()
+    for stock in topStocks:
+        stock.rank = 0.38*(stock.trailing_pe_rating) + 0.25*(stock.Ebit_rating) + 0.15*(stock.trailing_eps_rating) + 0.1*(stock.EVRev_rating) + 0.06*(stock.forward_eps_rating) + 0.06*(stock.forward_pe_rating)
+        stock_ranks[stock] = stock.rank
+    for x in range (3):
+        best_stock = max(stock_ranks, key = stock_ranks.get)
+        final_three[x] = best_stock
+        del stock_ranks[best_stock]
     return final_three
+
+# =============================================================================
+#     for stock in topStocks:
+#         ticker = yf.Ticker(stock.ticker)
+#         info = ticker.info
+#         eps = info['trailingEps']
+#         if eps >= 10:
+#             stock.rank = 1 + 0.1*eps 
+#         check = compareByRank(final_three, stock)
+#         if check != None:
+#             final_three.remove(check)
+#             final_three.append(stock)
+#     return final_three
+# =============================================================================
 
 def compareByRank(final_three, stock):
     for x in range(3):
@@ -173,13 +265,13 @@ def scrape_industryPE(url):
 
     return df
 
-url = 'https://eqvista.com/price-to-earnings-pe-ratios-by-industry/'
-industry_PE = scrape_industryPE(url)
+#url = 'https://eqvista.com/price-to-earnings-pe-ratios-by-industry/'
+#industry_PE = scrape_industryPE(url)
             
 top_stocks = scrape()
+top_stocks = rankStocks(top_stocks)
 final_three = [Stock(0,0,0) for x in range(3)]
-final_three = rankStocks(top_stocks, final_three)
-print()
+final_three = getFinalStocks(top_stocks, final_three)
 for stock in final_three:
     print(stock.ticker)
 makePDF(final_three)
