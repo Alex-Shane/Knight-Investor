@@ -33,11 +33,36 @@ class Stock:
         return
         
     def __str__(self):
-        return f'ticker: {self.ticker}, open: {self.month_open}, close: {self.month_close}, ebit: {self.Ebit_rating}'
+        return f"Stock: {self.ticker}\n" \
+               f"Month Open: {self.month_open}\n" \
+               f"Month Close: {self.month_close}\n" \
+               f"Rank: {self.rank}\n" \
+               f"Delta: {self.delta}\n" \
+               f"Trailing EPS Rating: {self.trailing_eps_rating}\n" \
+               f"Forward EPS Rating: {self.forward_eps_rating}\n" \
+               f"Industry: {self.industry}\n" \
+               f"Trailing PE Rating: {self.trailing_pe_rating}\n" \
+               f"Forward PE Rating: {self.forward_pe_rating}\n" \
+               f"EVRev Rating: {self.EVRev_rating}\n" \
+               f"Ebit Rating: {self.Ebit_rating}\n" \
+               f"Increase Rating: {self.increase_rating}\n" \
+               f"Info: {self.info}"f'ticker: {self.ticker}, open: {self.month_open}, close: {self.month_close}, ebit: {self.Ebit_rating}'
     
     def __repr__(self):
-        return f'ticker: {self.ticker}, open: {self.month_open}, close: {self.month_close}, ebit: {self.Ebit_rating}'
-
+        return f"Stock: {self.ticker}\n" \
+               f"Month Open: {self.month_open}\n" \
+               f"Month Close: {self.month_close}\n" \
+               f"Rank: {self.rank}\n" \
+               f"Delta: {self.delta}\n" \
+               f"Trailing EPS Rating: {self.trailing_eps_rating}\n" \
+               f"Forward EPS Rating: {self.forward_eps_rating}\n" \
+               f"Industry: {self.industry}\n" \
+               f"Trailing PE Rating: {self.trailing_pe_rating}\n" \
+               f"Forward PE Rating: {self.forward_pe_rating}\n" \
+               f"EVRev Rating: {self.EVRev_rating}\n" \
+               f"Ebit Rating: {self.Ebit_rating}\n" \
+               f"Increase Rating: {self.increase_rating}\n" \
+               f"Info: {self.info}"
 def scrape():
     sp500url = 'https://en.wikipedia.org/wiki/List_of_S%26P_500_companies'
     table = pd.read_html(sp500url)
@@ -278,12 +303,4 @@ top_stocks = rankStocks(top_stocks)
 final_three = [Stock(0) for x in range(3)]
 final_three = getFinalStocks(top_stocks, final_three)
 makePDF(final_three)
-
-# =============================================================================
-# for x in range (3):
-#     best_rank = max(top_stocks, key = lambda k: k.rank)
-#     final_three.append(best_rank)
-#     top_stocks.remove(best_rank)
-# =============================================================================
-
 
