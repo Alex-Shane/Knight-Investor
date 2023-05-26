@@ -8,14 +8,10 @@ Created on Mon May 22 14:22:58 2023
 
 import pandas as pd
 import yfinance as yf
-import yahoo_fin.stock_info as si
 import jinja2
 import pdfkit
 import requests
-import openai
 from bs4 import BeautifulSoup
-
-openai.api_key = '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'
 
 class Stock: 
     def __init__(self, ticker):
@@ -66,21 +62,6 @@ class Stock:
                f"Ebit Rating: {self.Ebit_rating}\n" \
                f"Increase Rating: {self.increase_rating}\n" \
                f"Info: {self.info}"
-
-def chat_with_gpt(prompt):
-    response = openai.Completion.create(
-        engine='davinci',
-        prompt=prompt,
-        max_tokens=100,
-        n=1,
-        stop=None,
-        temperature=0.7
-    )
-
-    if response.choices:
-        return response.choices[0].text.strip()
-    else:
-        return ""
     
 def scrape():
     """
@@ -114,6 +95,7 @@ def makePDF(final_three):
 
     """
     context = {}
+    getSPIndexInfo(context)
     context['s1'] = final_three[0].info['longName']
     context['s1ticker'] = final_three[0].ticker
     context['d1'] = f'{final_three[0].delta / final_three[0].month_open * 100:.2f}'
@@ -160,6 +142,19 @@ def makePDF(final_three):
     config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
     pdfkit.from_string(output_text, 'stock_report.pdf', configuration=config)
 
+def getSPIndexInfo(context):
+    current_index = getSPIndexValue()
+    hist = yf.Ticker('^GSPC').history(period = '1mo')
+    previous_index = hist['Open'][0]
+    percent = round((current_index - previous_index) / previous_index * 100, 2)
+    context['percent'] = percent
+    change = ''
+    if percent >= 0:
+        change = 'increased'
+    else:
+        change = 'decreased'
+    context['change'] = change
+
 def handleDividend(stock, context, number):
     """
     Checks if the current stock has a dividend rate or not, and updates the context dictionary as appropriate.
@@ -199,13 +194,6 @@ def handleRecommendation(stock, context, number):
     else: 
         context[string] = "Sell this stock"
 
-def getSummary(stock):
-    bizSum = stock.info['longBusinessSummary']
-    gpt_instructions = "I'm going to provide you a business summary for a company. I want you to simplify this summary, taking only the most important parts for someone who knows nothing about the company and would be interested in investing in it. Max 3 sentences. Only output this new summary, no extraneous words in your output. Here is the summary to condense: "
-    prompt = gpt_instructions + bizSum
-    condensedSum = chat_with_gpt(prompt)
-    return condensedSum
-
 def configNews(news, context, num):
     """
     Cuts down the given data table of news information to three articles and adds their titles and links to the context dictionary.
@@ -224,6 +212,14 @@ def configNews(news, context, num):
         context[title_string] = title
         context[link_string] = link
         num = num + 1
+
+def getSPIndexValue():
+    url = 'https://www.marketwatch.com/investing/index/spx'
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, 'html.parser')
+    index_element = soup.find('span', {'class': 'value'})
+    index_value = str(index_element.text).replace(",", "")
+    return float(index_value)
 
 def rankStocks(stocks):
     """
@@ -464,5 +460,3 @@ rankedStocks = rankStocks(SPStocks)
 final_three = [Stock(0) for x in range(3)]
 final_three = getFinalStocks(rankedStocks, final_three)
 makePDF(final_three)
-hist = yf.Ticker(final_three[0].ticker).history(period = '1d')
-
