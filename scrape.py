@@ -12,7 +12,10 @@ import yahoo_fin.stock_info as si
 import jinja2
 import pdfkit
 import requests
+import openai
 from bs4 import BeautifulSoup
+
+openai.api_key = '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'
 
 class Stock: 
     def __init__(self, ticker):
@@ -63,6 +66,22 @@ class Stock:
                f"Ebit Rating: {self.Ebit_rating}\n" \
                f"Increase Rating: {self.increase_rating}\n" \
                f"Info: {self.info}"
+
+def chat_with_gpt(prompt):
+    response = openai.Completion.create(
+        engine='davinci',
+        prompt=prompt,
+        max_tokens=100,
+        n=1,
+        stop=None,
+        temperature=0.7
+    )
+
+    if response.choices:
+        return response.choices[0].text.strip()
+    else:
+        return ""
+    
 def scrape():
     """
     Scrapes the table of S&P 500 tickers from a specific source and creates a list of those stocks.
@@ -103,7 +122,8 @@ def makePDF(final_three):
     context['price1'] = cur1
     mcap1 = ('{:,}'.format(final_three[0].info['marketCap']))
     context['mcap1'] = mcap1
-    context['i1'] = final_three[0].info['industry']
+    context['i1'] = final_three[0].info['industry'] 
+    #context['sum1'] = getSummary(final_three[0])
     handleDividend(final_three[0], context, 1)
     handleRecommendation(final_three[0], context, 1)
     configNews(yf.Ticker(final_three[0].ticker).get_news(), context, 1)
@@ -116,6 +136,7 @@ def makePDF(final_three):
     mcap2 = ('{:,}'.format(final_three[1].info['marketCap']))
     context['mcap2'] = mcap2
     context['i2'] = final_three[1].info['industry']
+    #context['sum2'] = getSummary(final_three[1])
     handleDividend(final_three[1], context, 2)
     handleRecommendation(final_three[1], context, 2)
     configNews(yf.Ticker(final_three[1].ticker).get_news(), context, 4)
@@ -128,6 +149,7 @@ def makePDF(final_three):
     mcap3 = ('{:,}'.format(final_three[2].info['marketCap']))
     context['mcap3'] = mcap3
     context['i3'] = final_three[2].info['industry']
+    #context['sum3'] = getSummary(final_three[2])
     handleDividend(final_three[2], context, 3)
     handleRecommendation(final_three[2], context, 3)
     configNews(yf.Ticker(final_three[2].ticker).get_news(), context, 7)
@@ -177,6 +199,13 @@ def handleRecommendation(stock, context, number):
     else: 
         context[string] = "Sell this stock"
 
+def getSummary(stock):
+    bizSum = stock.info['longBusinessSummary']
+    gpt_instructions = "I'm going to provide you a business summary for a company. I want you to simplify this summary, taking only the most important parts for someone who knows nothing about the company and would be interested in investing in it. Max 3 sentences. Only output this new summary, no extraneous words in your output. Here is the summary to condense: "
+    prompt = gpt_instructions + bizSum
+    condensedSum = chat_with_gpt(prompt)
+    return condensedSum
+
 def configNews(news, context, num):
     """
     Cuts down the given data table of news information to three articles and adds their titles and links to the context dictionary.
@@ -196,7 +225,7 @@ def configNews(news, context, num):
         context[link_string] = link
         num = num + 1
 
-def rankStocks(topStocks):
+def rankStocks(stocks):
     """
     Ranks the given list of stocks based on a multitude of financial information and factors.
 
@@ -207,14 +236,14 @@ def rankStocks(topStocks):
         list: the same list of stocks but with updated rank attributes
 
     """
-    topStocks = rankPercentIncrease(topStocks)
-    topStocks = rankTrailingEPS(topStocks)
-    topStocks = rankForwardEPS(topStocks)
-    topStocks = rankTrailingPE(topStocks)
-    topStocks = rankForwardPE(topStocks)
-    topStocks = rankEVRev(topStocks)
-    topStocks = rankEBITDA(topStocks)
-    return topStocks
+    stocks = rankPercentIncrease(stocks)
+    stocks = rankTrailingEPS(stocks)
+    stocks = rankForwardEPS(stocks)
+    stocks = rankTrailingPE(stocks)
+    stocks = rankForwardPE(stocks)
+    stocks = rankEVRev(stocks)
+    stocks = rankEBITDA(stocks)
+    return stocks
 
 def rankPercentIncrease(stocks): 
     """
@@ -245,7 +274,7 @@ def rankPercentIncrease(stocks):
         del increase_values[highest_increase_stock]
     return stocks
 
-def rankTrailingEPS(topStocks):
+def rankTrailingEPS(stocks):
     """
     Ranks the given list of stocks based on the previous 12 months' EPS.
 
@@ -257,7 +286,7 @@ def rankTrailingEPS(topStocks):
 
     """
     eps_values = dict()
-    for stock in topStocks:
+    for stock in stocks:
         #ticker = yf.Ticker(stock.ticker)
         #stock.info = ticker.info
         if 'trailingEps' in stock.info:
@@ -267,9 +296,9 @@ def rankTrailingEPS(topStocks):
         highest_EPS_Stock = max(eps_values, key = eps_values.get)
         highest_EPS_Stock.trailing_eps_rating = len(eps_values)
         del eps_values[highest_EPS_Stock]
-    return topStocks
+    return stocks
 
-def rankForwardEPS(topStocks):
+def rankForwardEPS(stocks):
     """
     Ranks the given list of stocks based on future projected EPS.
 
@@ -281,7 +310,7 @@ def rankForwardEPS(topStocks):
 
     """
     feps_values = dict()
-    for stock in topStocks:
+    for stock in stocks:
         if 'forwardEps' in stock.info:
             if not isinstance(stock.info['forwardEps'], str):
                 feps_values[stock] = stock.info['forwardEps']
@@ -289,9 +318,9 @@ def rankForwardEPS(topStocks):
         highest_fEPS_Stock = max(feps_values, key = feps_values.get)
         highest_fEPS_Stock.forward_eps_rating = len(feps_values)
         del feps_values[highest_fEPS_Stock]
-    return topStocks
+    return stocks
 
-def rankTrailingPE(topStocks):
+def rankTrailingPE(stocks):
     """
     Ranks the given list of stocks based on the previous 12 months' PE ratios.
 
@@ -303,7 +332,7 @@ def rankTrailingPE(topStocks):
 
     """
     pe_values = dict()
-    for stock in topStocks:
+    for stock in stocks:
         if 'trailingPE' in stock.info:
             if not isinstance(stock.info['trailingPE'], str):
                 pe_values[stock] = stock.info['trailingPE']
@@ -311,9 +340,9 @@ def rankTrailingPE(topStocks):
         best_pe_stock = min(pe_values, key = pe_values.get)
         best_pe_stock.trailing_pe_rating = len(pe_values)
         del pe_values[best_pe_stock]
-    return topStocks
+    return stocks
 
-def rankForwardPE(topStocks):
+def rankForwardPE(stocks):
     """
     Ranks the given list of stocks based on future projected PE.
 
@@ -325,7 +354,7 @@ def rankForwardPE(topStocks):
 
     """
     fpe_values = dict()
-    for stock in topStocks:
+    for stock in stocks:
         if 'forwardPE' in stock.info:
             if not isinstance(stock.info['forwardPE'], str):
                 fpe_values[stock] = stock.info['forwardPE']
@@ -333,9 +362,9 @@ def rankForwardPE(topStocks):
         best_fpe_stock = min(fpe_values, key = fpe_values.get)
         best_fpe_stock.forward_pe_rating = len(fpe_values)
         del fpe_values[best_fpe_stock]
-    return topStocks
+    return stocks
 
-def rankEVRev(topStocks):
+def rankEVRev(stocks):
     """
     Ranks the given list of stocks based on the previous 12 months' EV/Revenue.
 
@@ -347,7 +376,7 @@ def rankEVRev(topStocks):
 
     """
     evRev_values = dict()
-    for stock in topStocks:
+    for stock in stocks:
         if 'enterpriseToRevenue' in stock.info:
             if not isinstance(stock.info['enterpriseToRevenue'], str):
                 evRev_values[stock] = stock.info['enterpriseToRevenue']
@@ -355,9 +384,9 @@ def rankEVRev(topStocks):
         best_evRev_stock = min(evRev_values, key = evRev_values.get)
         best_evRev_stock.EVRev_rating = len(evRev_values)
         del evRev_values[best_evRev_stock]
-    return topStocks
+    return stocks
 
-def rankEBITDA(topStocks):
+def rankEBITDA(stocks):
     """
     Ranks the given list of stocks based on the previous 12 months' EV/EBITDA.
 
@@ -369,7 +398,7 @@ def rankEBITDA(topStocks):
 
     """
     ebit_values = dict()
-    for stock in topStocks:
+    for stock in stocks:
         if 'enterpriseToEbitda' in stock.info:
             if not isinstance(stock.info['enterpriseToEbitda'], str):
                 ebit_values[stock] = stock.info['enterpriseToEbitda']
@@ -377,10 +406,10 @@ def rankEBITDA(topStocks):
         best_ebit_stock = min(ebit_values, key = ebit_values.get)
         best_ebit_stock.Ebit_rating = len(ebit_values)
         del ebit_values[best_ebit_stock]
-    return topStocks
+    return stocks
 
 
-def getFinalStocks(topStocks, final_three): 
+def getFinalStocks(stocks, final_three): 
     """
     Calculates the final rankings for each stock in the given list of stocks by updating the rank attribute based on a weighted calculation.
 
@@ -392,7 +421,7 @@ def getFinalStocks(topStocks, final_three):
 
     """
     stock_ranks = dict()
-    for stock in topStocks:
+    for stock in stocks:
         stock.rank = 0.4*(stock.increase_rating) + 0.2*(stock.trailing_pe_rating) + 0.15*(stock.Ebit_rating) + 0.1*(stock.trailing_eps_rating) + 0.1*(stock.EVRev_rating) + 0.025*(stock.forward_eps_rating) + 0.025*(stock.forward_pe_rating)
         stock_ranks[stock] = stock.rank
     for x in range (3):
@@ -429,9 +458,9 @@ def scrape_industryPE(url):
 #url = 'https://eqvista.com/price-to-earnings-pe-ratios-by-industry/'
 #industry_PE = scrape_industryPE(url)
             
-top_stocks = scrape()
-top_stocks = rankStocks(top_stocks)
+SPStocks = scrape()
+rankedStocks = rankStocks(SPStocks)
 final_three = [Stock(0) for x in range(3)]
-final_three = getFinalStocks(top_stocks, final_three)
+final_three = getFinalStocks(rankedStocks, final_three)
 makePDF(final_three)
 
