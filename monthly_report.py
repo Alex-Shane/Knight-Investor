@@ -12,80 +12,11 @@ import jinja2
 import pdfkit
 import requests
 from bs4 import BeautifulSoup
+from Stock import Stock
+from Scraper import Scraper
+from PDFHelper import PDFHelper
 
-class Stock: 
-    def __init__(self, ticker):
-        self.ticker = ticker
-        self.month_open = 0
-        self.month_close = 0
-        self.rank = 0
-        self.delta = 0
-        self.trailing_eps_rating = 0 
-        self.forward_eps_rating = 0
-        self.industry = ""
-        self.trailing_pe_rating = 0
-        self.forward_pe_rating = 0
-        self.EVRev_rating = 0
-        self.Ebit_rating = 0
-        self.increase_rating = 0
-        self.info = ""
-        return
-        
-    def __str__(self):
-        return f"Stock: {self.ticker}\n" \
-               f"Month Open: {self.month_open}\n" \
-               f"Month Close: {self.month_close}\n" \
-               f"Rank: {self.rank}\n" \
-               f"Delta: {self.delta}\n" \
-               f"Trailing EPS Rating: {self.trailing_eps_rating}\n" \
-               f"Forward EPS Rating: {self.forward_eps_rating}\n" \
-               f"Industry: {self.industry}\n" \
-               f"Trailing PE Rating: {self.trailing_pe_rating}\n" \
-               f"Forward PE Rating: {self.forward_pe_rating}\n" \
-               f"EVRev Rating: {self.EVRev_rating}\n" \
-               f"Ebit Rating: {self.Ebit_rating}\n" \
-               f"Increase Rating: {self.increase_rating}\n" \
-               f"Info: {self.info}"f'ticker: {self.ticker}, open: {self.month_open}, close: {self.month_close}, ebit: {self.Ebit_rating}'
     
-    def __repr__(self):
-        return f"Stock: {self.ticker}\n" \
-               f"Month Open: {self.month_open}\n" \
-               f"Month Close: {self.month_close}\n" \
-               f"Rank: {self.rank}\n" \
-               f"Delta: {self.delta}\n" \
-               f"Trailing EPS Rating: {self.trailing_eps_rating}\n" \
-               f"Forward EPS Rating: {self.forward_eps_rating}\n" \
-               f"Industry: {self.industry}\n" \
-               f"Trailing PE Rating: {self.trailing_pe_rating}\n" \
-               f"Forward PE Rating: {self.forward_pe_rating}\n" \
-               f"EVRev Rating: {self.EVRev_rating}\n" \
-               f"Ebit Rating: {self.Ebit_rating}\n" \
-               f"Increase Rating: {self.increase_rating}\n" \
-               f"Info: {self.info}"
-    
-def scrape():
-    """
-    Scrapes the table of S&P 500 tickers from a specific source and creates a list of those stocks.
-
-    Returns:
-        list: A list of S&P 500 tickers.
-        
-    """
-    sp500url = 'https://en.wikipedia.org/wiki/List_of_S%26P_500_companies'
-    table = pd.read_html(sp500url)
-    tickers = table[0]['Symbol'].tolist()
-    # manually update discrepancies from wikipedia tickers to yahoo tickers
-    tickers[65] = "BRK-B"
-    tickers[81] = "BF-B"
-    stocks = list()
-    for ticker in tickers:
-        print(ticker)
-        tick = yf.Ticker(ticker)
-        stock = Stock(ticker)
-        stock.info = tick.info
-        stocks.append(stock)
-    return stocks
-
 def makePDF(final_three):
     """
     Generates a PDF file containing relevant information and current news about the highest ranked stocks for current month.
@@ -95,46 +26,45 @@ def makePDF(final_three):
 
     """
     context = {}
-    getSPIndexInfo(context)
+    scraper = Scraper()
+    scraper.getSPIndexInfo(context)
     context['s1'] = final_three[0].info['longName']
     context['s1ticker'] = final_three[0].ticker
-    context['d1'] = f'{final_three[0].delta / final_three[0].month_open * 100:.2f}'
+    context['d1'] = f'{final_three[0].delta / final_three[0].open * 100:.2f}'
     cur1 = round(final_three[0].info['currentPrice'], 2)
     cur1 = ('{:,}'.format(cur1))
     context['price1'] = cur1
     mcap1 = ('{:,}'.format(final_three[0].info['marketCap']))
     context['mcap1'] = mcap1
     context['i1'] = final_three[0].info['industry'] 
-    #context['sum1'] = getSummary(final_three[0])
-    handleDividend(final_three[0], context, 1)
-    handleRecommendation(final_three[0], context, 1)
-    configNews(yf.Ticker(final_three[0].ticker).get_news(), context, 1)
+    helper = PDFHelper()
+    helper.handleDividend(final_three[0], context, 1)
+    helper.handleRecommendation(final_three[0], context, 1)
+    helper.configNews(yf.Ticker(final_three[0].ticker).get_news(), context, 1)
     context['s2'] = final_three[1].info['longName']
     context['s2ticker'] = final_three[1].ticker
-    context['d2'] = f'{final_three[1].delta / final_three[1].month_open * 100:.2f}'
+    context['d2'] = f'{final_three[1].delta / final_three[1].open * 100:.2f}'
     cur2 = round(final_three[1].info['currentPrice'], 2)
     cur2 = ('{:,}'.format(cur2))
     context['price2'] = cur2
     mcap2 = ('{:,}'.format(final_three[1].info['marketCap']))
     context['mcap2'] = mcap2
     context['i2'] = final_three[1].info['industry']
-    #context['sum2'] = getSummary(final_three[1])
-    handleDividend(final_three[1], context, 2)
-    handleRecommendation(final_three[1], context, 2)
-    configNews(yf.Ticker(final_three[1].ticker).get_news(), context, 4)
+    helper.handleDividend(final_three[1], context, 2)
+    helper.handleRecommendation(final_three[1], context, 2)
+    helper.configNews(yf.Ticker(final_three[1].ticker).get_news(), context, 4)
     context['s3'] = final_three[2].info['longName']
     context['s3ticker'] = final_three[2].ticker
-    context['d3'] = f'{final_three[2].delta / final_three[2].month_open * 100:.2f}'
+    context['d3'] = f'{final_three[2].delta / final_three[2].open * 100:.2f}'
     cur3 = round(final_three[2].info['currentPrice'], 2)
     cur3 = ('{:,}'.format(cur3))
     context['price3'] = cur3
     mcap3 = ('{:,}'.format(final_three[2].info['marketCap']))
     context['mcap3'] = mcap3
     context['i3'] = final_three[2].info['industry']
-    #context['sum3'] = getSummary(final_three[2])
-    handleDividend(final_three[2], context, 3)
-    handleRecommendation(final_three[2], context, 3)
-    configNews(yf.Ticker(final_three[2].ticker).get_news(), context, 7)
+    helper.handleDividend(final_three[2], context, 3)
+    helper.handleRecommendation(final_three[2], context, 3)
+    helper.configNews(yf.Ticker(final_three[2].ticker).get_news(), context, 7)
     template_loader = jinja2.FileSystemLoader('./')
     template_env = jinja2.Environment(loader=template_loader)
     template = template_env.get_template('report.html')
@@ -142,84 +72,6 @@ def makePDF(final_three):
     config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
     pdfkit.from_string(output_text, 'stock_report.pdf', configuration=config)
 
-def getSPIndexInfo(context):
-    current_index = getSPIndexValue()
-    hist = yf.Ticker('^GSPC').history(period = '1mo')
-    previous_index = hist['Open'][0]
-    percent = round((current_index - previous_index) / previous_index * 100, 2)
-    context['percent'] = percent
-    change = ''
-    if percent >= 0:
-        change = 'increased'
-    else:
-        change = 'decreased'
-    context['change'] = change
-
-def handleDividend(stock, context, number):
-    """
-    Checks if the current stock has a dividend rate or not, and updates the context dictionary as appropriate.
-
-    Args:
-       stock (Stock): The current stock object.
-       context (dict): The context dictionary to store all the variable information in report.html
-       number (int): The rank of the stock in the final list of best stocks.
-
-    """
-    string = f'a{number}'
-    string2 = f'des{number}'
-    if not 'dividendRate' in stock.info: 
-        context[string] = "No"
-        context[string2] = "this stock doesn't currently provide a dividend"
-    else:
-        context[string] = "Yes"
-        dividend = stock.info['dividendRate']
-        context[string2] = f'the current dividend rate is {dividend}%' 
-
-def handleRecommendation(stock, context, number):
-    """
-    Checks the recommendation for the current stock by Yahoo Finance analysts and updates it in the context dictionary.
-
-    Args:
-        stock (Stock): The current stock object.
-        context (dict): The context dictionary to store the recommendation information.
-        number (int): The rank of the stock in the final list of best stocks.
-
-    """
-    string = f'rec{number}'
-    rec = stock.info['recommendationKey']
-    if rec == 'buy':
-        context[string] = "Buy this stock if not already in portfolio"
-    elif rec == 'hold':
-        context[string] = "Hold this stock if in portfolio"
-    else: 
-        context[string] = "Sell this stock"
-
-def configNews(news, context, num):
-    """
-    Cuts down the given data table of news information to three articles and adds their titles and links to the context dictionary.
-
-    Args:
-        news (list): The data table of news information.
-        context (dict): The context dictionary to store the article titles and links.
-        number (int): The position of the article we are looking at.
-        
-    """
-    for x in range(0, 3):
-        title = news[x]['title']
-        link = news[x]['link']
-        title_string = f'news{num}title'
-        link_string = f'news{num}link'
-        context[title_string] = title
-        context[link_string] = link
-        num = num + 1
-
-def getSPIndexValue():
-    url = 'https://www.marketwatch.com/investing/index/spx'
-    response = requests.get(url)
-    soup = BeautifulSoup(response.text, 'html.parser')
-    index_element = soup.find('span', {'class': 'value'})
-    index_value = str(index_element.text).replace(",", "")
-    return float(index_value)
 
 def rankStocks(stocks):
     """
@@ -257,10 +109,10 @@ def rankPercentIncrease(stocks):
         ticker = yf.Ticker(stock.ticker)
         hist = ticker.history(period = '1mo')
         if not hist.empty:
-            stock.month_open = hist['Open'][0]
-            stock.month_close = hist['Close'][-1]
-            stock.delta = stock.month_close - stock.month_open
-            increase = stock.delta / stock.month_open * 100
+            stock.open = hist['Open'][0]
+            stock.close = hist['Close'][-1]
+            stock.delta = stock.close - stock.open
+            increase = stock.delta / stock.open * 100
             increase_values[stock] = increase
         else:
             stocks.remove(stock)
@@ -454,8 +306,8 @@ def scrape_industryPE(url):
 #url = 'https://eqvista.com/price-to-earnings-pe-ratios-by-industry/'
 #industry_PE = scrape_industryPE(url)
     
-            
-SPStocks = scrape()
+scraper = Scraper()
+SPStocks = scraper.scrape()
 rankedStocks = rankStocks(SPStocks)
 final_three = [Stock(0) for x in range(3)]
 final_three = getFinalStocks(rankedStocks, final_three)
