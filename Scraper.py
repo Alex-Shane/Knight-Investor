@@ -57,3 +57,69 @@ class Scraper:
         else:
             change = 'decreased'
         context['change'] = change
+    
+    def scrapeNYSE(self):
+        # URL of the website with the table
+        base_url = 'https://www.nyse.com/listings_directory/stock'
+
+        # Initialize an empty list to store the extracted data
+        data = []
+
+        # Make an initial request to get the first page
+        response = requests.get(base_url)
+        soup = BeautifulSoup(response.content, 'html.parser')
+
+        # Extract data from the current page
+        table = soup.find('table')
+        rows = table.find_all('tr')
+        for row in rows:
+            cells = row.find_all('td')
+            if len(cells) > 0:
+                # Extract the relevant data from the cells and append it to the list
+                cell_data = [cell.text.strip() for cell in cells]
+                data.append(cell_data)
+                print(cell_data)
+
+        # Find the total number of pages
+        pagination = soup.find('div', class_='pagination')
+        num_pages = len(pagination.find_all('a'))
+
+        # Iterate over the remaining pages
+        for page in range(2, num_pages + 1):
+            # Construct the URL for the next page
+            page_url = base_url + '?page=' + str(page)
+
+        # Send a request to the next page
+        response = requests.get(page_url)
+        soup = BeautifulSoup(response.content, 'html.parser')
+
+        # Extract data from the current page
+        table = soup.find('table')
+        rows = table.find_all('tr')
+        for row in rows:
+            cells = row.find_all('td')
+            if len(cells) > 0:
+                # Extract the relevant data from the cells and append it to the list
+                cell_data = [cell.text.strip() for cell in cells]
+                data.append(cell_data)
+                print(cell_data)
+        return data
+
+scraper = Scraper()
+data = scraper.scrapeNYSE()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
