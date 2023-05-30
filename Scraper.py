@@ -60,29 +60,38 @@ class Scraper:
         context['change'] = change
     
     def scrapeNYSE(self):
-        #Create empty lists for the company ticker
-        tickers = list()
-        letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-        for char in letters:
-            tickers = Scraper.scrape_stock_symbols(char, tickers)
-        return tickers
+        # Define the base URL without the page letter
+        base_url = "https://www.advfn.com/nyse/newyorkstockexchange.asp?companies={}.htm"
 
-    def scrape_stock_symbols(Letter, tickers):
-        Letter =  Letter.upper()
-        URL =  'https://www.advfn.com/nyse/newyorkstockexchange.asp?companies=' + Letter
-        page = requests.get(URL)
-        soup = BeautifulSoup(page.text, "html.parser")
-        odd_rows = soup.find_all('tr', attrs= {'class':'ts0'})
-        even_rows = soup.find_all('tr', attrs= {'class':'ts1'})
-        for i in odd_rows:
-            row = i.find_all('td')
-            tickers.append(row[1].text.strip())
-            print(row[1].text.strip())
-        for i in even_rows:
-            row = i.find_all('td')
-            tickers.append(row[1].text.strip())
-            print(row[1].text.strip())
-        return tickers
+        # Define the range of letters for the pages (e.g., A to Z)
+        start_letter = ord('A')
+        end_letter = ord('Z')
+
+        # Create an empty list to store the tickers
+        ticker_list = []
+
+        # Iterate over each page letter
+        for page_letter in range(start_letter, end_letter + 1):
+            # Construct the URL for the current page
+            url = base_url.format(chr(page_letter))
+    
+            # Send a GET request to the URL
+            response = requests.get(url, verify = False)
+    
+            # Create a BeautifulSoup object to parse the HTML content
+            soup = BeautifulSoup(response.content, "html.parser")
+    
+            # Find the table element that contains the ticker data
+            table = soup.find("table")
+    
+            # Iterate over each row in the table
+            for row in table.find_all("tr"):
+                # Extract the ticker symbol from the first column
+                ticker = row.find("td").text.strip()
+                # Append the ticker to the ticker list
+                ticker_list.append(ticker)
+                print(ticker)
+        return ticker_list
 
 scraper = Scraper()
 data = scraper.scrapeNYSE()
