@@ -12,6 +12,7 @@ import requests
 from bs4 import BeautifulSoup
 from Stock import Stock
 
+
 class Scraper:
     
     def scrape():
@@ -59,51 +60,29 @@ class Scraper:
         context['change'] = change
     
     def scrapeNYSE(self):
-        # URL of the website with the table
-        base_url = 'https://www.nyse.com/listings_directory/stock'
+        #Create empty lists for the company ticker
+        tickers = list()
+        letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        for char in letters:
+            tickers = Scraper.scrape_stock_symbols(char, tickers)
+        return tickers
 
-        # Initialize an empty list to store the extracted data
-        data = []
-
-        # Make an initial request to get the first page
-        response = requests.get(base_url)
-        soup = BeautifulSoup(response.content, 'html.parser')
-
-        # Extract data from the current page
-        table = soup.find('table')
-        rows = table.find_all('tr')
-        for row in rows:
-            cells = row.find_all('td')
-            if len(cells) > 0:
-                # Extract the relevant data from the cells and append it to the list
-                cell_data = [cell.text.strip() for cell in cells]
-                data.append(cell_data)
-                print(cell_data)
-
-        # Find the total number of pages
-        pagination = soup.find('div', class_='pagination')
-        num_pages = len(pagination.find_all('a'))
-
-        # Iterate over the remaining pages
-        for page in range(2, num_pages + 1):
-            # Construct the URL for the next page
-            page_url = base_url + '?page=' + str(page)
-
-        # Send a request to the next page
-        response = requests.get(page_url)
-        soup = BeautifulSoup(response.content, 'html.parser')
-
-        # Extract data from the current page
-        table = soup.find('table')
-        rows = table.find_all('tr')
-        for row in rows:
-            cells = row.find_all('td')
-            if len(cells) > 0:
-                # Extract the relevant data from the cells and append it to the list
-                cell_data = [cell.text.strip() for cell in cells]
-                data.append(cell_data)
-                print(cell_data)
-        return data
+    def scrape_stock_symbols(Letter, tickers):
+        Letter =  Letter.upper()
+        URL =  'https://www.advfn.com/nyse/newyorkstockexchange.asp?companies=' + Letter
+        page = requests.get(URL)
+        soup = BeautifulSoup(page.text, "html.parser")
+        odd_rows = soup.find_all('tr', attrs= {'class':'ts0'})
+        even_rows = soup.find_all('tr', attrs= {'class':'ts1'})
+        for i in odd_rows:
+            row = i.find_all('td')
+            tickers.append(row[1].text.strip())
+            print(row[1].text.strip())
+        for i in even_rows:
+            row = i.find_all('td')
+            tickers.append(row[1].text.strip())
+            print(row[1].text.strip())
+        return tickers
 
 scraper = Scraper()
 data = scraper.scrapeNYSE()
