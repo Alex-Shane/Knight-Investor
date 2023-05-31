@@ -9,11 +9,15 @@ Created on Fri May 26 21:15:27 2023
 import pandas as pd
 import yfinance as yf
 import requests
+from stocksymbol import StockSymbol
 from bs4 import BeautifulSoup
 from Stock import Stock
 
 
 class Scraper:
+    
+    #api_key = 'a408c156-320e-4b67-b1b9-866835ccce50'
+    ss = StockSymbol(api_key)
     
     def scrape():
         """
@@ -37,6 +41,9 @@ class Scraper:
             stock.info = tick.info
             stocks.append(stock)
         return stocks
+    
+    def scrape2():
+        
     
     def getSPIndexValue():
         url = 'https://www.marketwatch.com/investing/index/spx'
