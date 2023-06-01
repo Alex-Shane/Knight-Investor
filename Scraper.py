@@ -9,26 +9,26 @@ Created on Fri May 26 21:15:27 2023
 import pandas as pd
 import yfinance as yf
 import requests
-#from stocksymbol import StockSymbol
+# from stocksymbol import StockSymbol
 from bs4 import BeautifulSoup
 from Stock import Stock
 import datetime as DT
 
 
 class Scraper:
-    
-# =============================================================================
-#     api_key = 'a408c156-320e-4b67-b1b9-866835ccce50'
-#     ss = StockSymbol(api_key)
-# =============================================================================
-    
+
+    # =============================================================================
+    #     api_key = 'a408c156-320e-4b67-b1b9-866835ccce50'
+    #     ss = StockSymbol(api_key)
+    # =============================================================================
+
     def scrape():
         """
         Scrapes the table of S&P 500 tickers from a specific source and creates a list of those stocks.
 
         Returns:
             list: A list of S&P 500 tickers.
-            
+
         """
         sp500url = 'https://en.wikipedia.org/wiki/List_of_S%26P_500_companies'
         table = pd.read_html(sp500url)
@@ -44,7 +44,7 @@ class Scraper:
             stock.info = tick.info
             stocks.append(stock)
         return stocks
-    
+
 # =============================================================================
 #     def scrape2(self):
 #         tickers = self.ss.get_symbol_list('US', 'SPX', True)
@@ -62,7 +62,7 @@ class Scraper:
 #             stocks.append(stock)
 #         return stocks
 # =============================================================================
-    
+
     def getSPIndexValue():
         url = 'https://www.marketwatch.com/investing/index/spx'
         response = requests.get(url)
@@ -70,22 +70,24 @@ class Scraper:
         index_element = soup.find('span', {'class': 'value'})
         index_value = str(index_element.text).replace(",", "")
         return float(index_value)
-    
+
     def getSPIndexInfo(self, context, duration):
         current_index = Scraper.getSPIndexValue()
         if duration == 'day':
-            hist = yf.Ticker('^GSPC').history(period = '1d')
+            hist = yf.Ticker('^GSPC').history(period='1d')
         elif duration == 'month':
-            hist = yf.Ticker('^GSPC').history(period = '1mo')
+            hist = yf.Ticker('^GSPC').history(period='1mo')
         elif duration == 'week':
             today = DT.date.today()
             week_ago = today - DT.timedelta(days=7)
-            hist = yf.Ticker('^GSPC').history(start = week_ago, end = today, actions = False)
+            hist = yf.Ticker('^GSPC').history(
+                start=week_ago, end=today, actions=False)
         else:
             print("invalid duration")
             return
         previous_index = hist['Open'][0]
-        percent = round((current_index - previous_index) / previous_index * 100, 2)
+        percent = round((current_index - previous_index) /
+                        previous_index * 100, 2)
         change = ''
         if percent >= 0:
             change = 'increased'
@@ -94,58 +96,18 @@ class Scraper:
             percent = percent * -1
         context['percent'] = percent
         context['change'] = change
-    
+
     def scrapeNYSE(self):
-        # Define the base URL without the page letter
-        base_url = "https://www.advfn.com/nyse/newyorkstockexchange.asp?companies={}.htm"
+        # NYSE quotes post request api
+        url = 'https://www.nyse.com/api/quotes/filter'
 
-        # Define the range of letters for the pages (e.g., A to Z)
-        start_letter = ord('A')
-        end_letter = ord('Z')
+        # Filter the paginated post request to get all NYSE tickers in ASC order, max 10,000 results
+        # There are only 7454 on NYSE, so this should be fine
+        response = requests.post(
+            url, json={"instrumentType": "EQUITY", "pageNumber": 1, "sortColumn": "NORMALIZED_TICKER", "sortOrder": "ASC", "maxResultsPerPage": 10000, "filterToken": ""})
 
-        # Create an empty list to store the tickers
-        ticker_list = []
-
-        # Iterate over each page letter
-        for page_letter in range(start_letter, end_letter + 1):
-            # Construct the URL for the current page
-            url = base_url.format(chr(page_letter))
-    
-            # Send a GET request to the URL
-            response = requests.get(url, verify = False)
-    
-            # Create a BeautifulSoup object to parse the HTML content
-            soup = BeautifulSoup(response.content, "html.parser")
-    
-            # Find the table element that contains the ticker data
-            table = soup.find("table")
-    
-            # Iterate over each row in the table
-            for row in table.find_all("tr"):
-                # Extract the ticker symbol from the first column
-                ticker = row.find("td").text.strip()
-                # Append the ticker to the ticker list
-                ticker_list.append(ticker)
-                print(ticker)
-        return ticker_list
-    
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        # Create a list of NYSE tickers
+        tickers = []
+        for ticker in response.json():
+            tickers.append(ticker['symbolTicker'])
+        return tickers
