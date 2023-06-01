@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Fri May 26 17:16:54 2023
+Created on Thu Jun  1 17:20:30 2023
 
 @author: Alex
 """
@@ -11,11 +11,12 @@ import jinja2
 import pdfkit
 from Scraper import Scraper
 from PDFHelper import PDFHelper as Helper
+import datetime as DT
 
 
 def rankStocks(stocks):
     """
-    Ranks the given list of stocks based on the percent increase in stock price over the past day.
+    Ranks the given list of stocks based on the percent increase in stock price over the past week.
 
     Args:
        stocks (list): A list of stocks to be ranked.
@@ -27,7 +28,9 @@ def rankStocks(stocks):
     increase_values = dict()
     for stock in stocks:
         ticker = yf.Ticker(stock.ticker)
-        hist = ticker.history(period = '1d')
+        today = DT.date.today()
+        week_ago = today - DT.timedelta(days=7)
+        hist = ticker.history(start = week_ago, end = today, actions = False)
         if not hist.empty:
             stock.open = hist['Open'][0]
             stock.close = hist['Close'][-1]
@@ -61,15 +64,15 @@ def findLosers(stocks):
 def makePDF(winners, losers):
     context = {}
     scraper = Scraper()
-    scraper.getSPIndexInfo(context, 'day')
+    scraper.getSPIndexInfo(context, 'week')
     configureWinners(context, winners)
     configureLosers(context, losers)
     template_loader = jinja2.FileSystemLoader('./')
     template_env = jinja2.Environment(loader=template_loader)
-    template = template_env.get_template('daily_report.html')
+    template = template_env.get_template('weekly_report.html')
     output_text = template.render(context)
     config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
-    pdfkit.from_string(output_text, 'daily_stock_report.pdf', configuration=config)
+    pdfkit.from_string(output_text, 'weekly_stock_report.pdf', configuration=config)
     
 def configureWinners(context, winners):
     winner1 = winners[0]
@@ -137,5 +140,15 @@ ranked_stocks = rankStocks(stocks)
 winners = findWinners(ranked_stocks)
 losers = findLosers(ranked_stocks)
 makePDF(winners, losers)
+
+
+
+
+
+
+
+
+
+
 
 

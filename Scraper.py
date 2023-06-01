@@ -9,15 +9,18 @@ Created on Fri May 26 21:15:27 2023
 import pandas as pd
 import yfinance as yf
 import requests
-from stocksymbol import StockSymbol
+#from stocksymbol import StockSymbol
 from bs4 import BeautifulSoup
 from Stock import Stock
+import datetime as DT
 
 
 class Scraper:
     
-    #api_key = 'a408c156-320e-4b67-b1b9-866835ccce50'
-    ss = StockSymbol(api_key)
+# =============================================================================
+#     api_key = 'a408c156-320e-4b67-b1b9-866835ccce50'
+#     ss = StockSymbol(api_key)
+# =============================================================================
     
     def scrape():
         """
@@ -42,8 +45,23 @@ class Scraper:
             stocks.append(stock)
         return stocks
     
-    def scrape2():
-        
+# =============================================================================
+#     def scrape2(self):
+#         tickers = self.ss.get_symbol_list('US', 'SPX', True)
+#         tickers[7] = "BRK-B"
+#         tickers[271] = "BF-B"
+#         tickers[6] = "META"
+#         tickers[82] = "ELV"
+#         tickers[165] = "SPGI"
+#         stocks = list()
+#         for ticker in tickers:
+#             print(ticker)
+#             tick = yf.Ticker(ticker)
+#             stock = Stock(ticker)
+#             stock.info = tick.info
+#             stocks.append(stock)
+#         return stocks
+# =============================================================================
     
     def getSPIndexValue():
         url = 'https://www.marketwatch.com/investing/index/spx'
@@ -53,17 +71,28 @@ class Scraper:
         index_value = str(index_element.text).replace(",", "")
         return float(index_value)
     
-    def getSPIndexInfo(self, context):
+    def getSPIndexInfo(self, context, duration):
         current_index = Scraper.getSPIndexValue()
-        hist = yf.Ticker('^GSPC').history(period = '1d')
+        if duration == 'day':
+            hist = yf.Ticker('^GSPC').history(period = '1d')
+        elif duration == 'month':
+            hist = yf.Ticker('^GSPC').history(period = '1mo')
+        elif duration == 'week':
+            today = DT.date.today()
+            week_ago = today - DT.timedelta(days=7)
+            hist = yf.Ticker('^GSPC').history(start = week_ago, end = today, actions = False)
+        else:
+            print("invalid duration")
+            return
         previous_index = hist['Open'][0]
         percent = round((current_index - previous_index) / previous_index * 100, 2)
-        context['percent'] = percent
         change = ''
         if percent >= 0:
             change = 'increased'
         else:
             change = 'decreased'
+            percent = percent * -1
+        context['percent'] = percent
         context['change'] = change
     
     def scrapeNYSE(self):
@@ -99,9 +128,11 @@ class Scraper:
                 ticker_list.append(ticker)
                 print(ticker)
         return ticker_list
+    
+    
 
-scraper = Scraper()
-data = scraper.scrapeNYSE()
+
+
 
 
 

@@ -27,7 +27,7 @@ def makePDF(final_three):
     """
     context = {}
     scraper = Scraper()
-    scraper.getSPIndexInfo(context)
+    scraper.getSPIndexInfo(context, 'month')
     context['s1'] = final_three[0].info['longName']
     context['s1ticker'] = final_three[0].ticker
     context['d1'] = f'{final_three[0].delta / final_three[0].open * 100:.2f}'
