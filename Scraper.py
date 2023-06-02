@@ -109,5 +109,14 @@ class Scraper:
         # Create a list of NYSE tickers
         tickers = []
         for ticker in response.json():
+            symbol = ticker['symbolTicker']
+            #yahoo finance doesn't recognize periods in tickers
+            if '.' in symbol:
+                symbol = symbol.replace('.','-')
             tickers.append(ticker['symbolTicker'])
+            print(ticker['symbolTicker'])
         return tickers
+    
+    
+scraper = Scraper()
+tickers = scraper.scrapeNYSE()
