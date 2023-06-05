@@ -134,8 +134,15 @@ class Scraper:
     def scrapeNASDAQ():
         url = 'https://en.wikipedia.org/wiki/Nasdaq-100#Components'
         table = pd.read_html(url)
-        tickers = table[1]['Ticker'].tolist()
-        return tickers
+        tickers = table[4]['Ticker'].tolist()
+        stocks = list()
+        for ticker in tickers:
+            print(ticker)
+            tick = yf.Ticker(ticker)
+            stock = Stock(ticker)
+            stock.info = tick.info
+            stocks.append(stock)
+        return stocks
     
     def cleanTickers(tickers):
         del tickers[3367]
@@ -145,6 +152,7 @@ class Scraper:
         del tickers[6197]
         del tickers[6316]
         return tickers
+    
 
     
 
