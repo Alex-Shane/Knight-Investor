@@ -132,10 +132,14 @@ def configureLosers(context, losers):
     helper.handleRecommendation(loser3, context, 6)
 
 scraper = Scraper()
-stocks = Scraper.scrape()
+stocks = Scraper.scrapeNYSE()
 ranked_stocks = rankStocks(stocks)
 winners = findWinners(ranked_stocks)
 losers = findLosers(ranked_stocks)
 makePDF(winners, losers)
+
+
+
+
 
 

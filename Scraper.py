@@ -13,16 +13,13 @@ import requests
 from bs4 import BeautifulSoup
 from Stock import Stock
 import datetime as DT
+#import nasdaqdatalink as ndl
 
 
 class Scraper:
+    
 
-    # =============================================================================
-    #     api_key = 'a408c156-320e-4b67-b1b9-866835ccce50'
-    #     ss = StockSymbol(api_key)
-    # =============================================================================
-
-    def scrape():
+    def scrapeSP500():
         """
         Scrapes the table of S&P 500 tickers from a specific source and creates a list of those stocks.
 
@@ -97,7 +94,7 @@ class Scraper:
         context['percent'] = percent
         context['change'] = change
 
-    def scrapeNYSE(self):
+    def scrapeNYSE():
         # NYSE quotes post request api
         url = 'https://www.nyse.com/api/quotes/filter'
 
@@ -106,17 +103,49 @@ class Scraper:
         response = requests.post(
             url, json={"instrumentType": "EQUITY", "pageNumber": 1, "sortColumn": "NORMALIZED_TICKER", "sortOrder": "ASC", "maxResultsPerPage": 10000, "filterToken": ""})
 
-        # Create a list of NYSE tickers
-        tickers = []
+        # Create a list of NYSE stocks
+        stocks = list()
+        tickers = list()
         for ticker in response.json():
             symbol = ticker['symbolTicker']
             #yahoo finance doesn't recognize periods in tickers
             if '.' in symbol:
                 symbol = symbol.replace('.','-')
-            tickers.append(ticker['symbolTicker'])
-            print(ticker['symbolTicker'])
+            tickers.append(symbol)
+        
+        clean_tickers = Scraper.cleanTickers(tickers)
+            
+        for ticker in clean_tickers:
+            tick = yf.Ticker(ticker)
+            info = list()
+            try:
+                info = tick.info
+            except:
+                ticker = ticker.replace('-', '-P')
+                tick = yf.Ticker(ticker)
+                info = tick.info
+            finally:
+                stock = Stock(ticker)
+                stock.info = info
+                stocks.append(stock)
+                print(tick.ticker)
+        return stocks
+    
+    def scrapeNASDAQ():
+        url = 'https://en.wikipedia.org/wiki/Nasdaq-100#Components'
+        table = pd.read_html(url)
+        tickers = table[1]['Ticker'].tolist()
         return tickers
     
+    def cleanTickers(tickers):
+        del tickers[3367]
+        del tickers[3785]
+        del tickers[4122]
+        del tickers[4971]
+        del tickers[6197]
+        del tickers[6316]
+        return tickers
+
     
-scraper = Scraper()
-tickers = scraper.scrapeNYSE()
+
+
