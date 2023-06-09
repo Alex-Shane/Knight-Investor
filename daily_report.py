@@ -11,6 +11,7 @@ import jinja2
 import pdfkit
 from Scraper import Scraper
 from PDFHelper import PDFHelper as Helper
+from Stock import Stock
 
 
 def rankStocks(stocks):
@@ -27,14 +28,16 @@ def rankStocks(stocks):
     increase_values = dict()
     for stock in stocks:
         ticker = yf.Ticker(stock.ticker)
-        hist = ticker.history(period = '1d')
-        if not hist.empty:
+        try:
+            hist = ticker.history(period = '1d')
             stock.open = hist['Open'][0]
+            print(stock.open)
             stock.close = hist['Close'][-1]
+            print(stock.close)
             stock.delta = stock.close - stock.open
             increase = stock.delta / stock.open * 100
             increase_values[stock] = increase
-        else:
+        except:
             stocks.remove(stock)
     while(len(increase_values) != 0):
         highest_increase_stock = max(increase_values, key = increase_values.get)
@@ -46,6 +49,9 @@ def findWinners(stocks):
     winners = list()
     for x in range(3):
         winner = max(stocks, key = lambda k: k.rank)
+        while winner.info['averageVolume'] == 0:
+            stocks.remove(winner)
+            winner = max(stocks, key = lambda k: k.rank)
         winners.append(winner)
         stocks.remove(winner)
     return winners
@@ -54,6 +60,9 @@ def findLosers(stocks):
     losers = list()
     for x in range(3):
         loser = min(stocks, key = lambda k: k.rank)
+        while loser.info['averageVolume'] == 0:
+            stocks.remove(loser)
+            loser = min(stocks, key = lambda k: k.rank)
         losers.append(loser)
         stocks.remove(loser)
     return losers
@@ -104,6 +113,7 @@ def configureWinners(context, winners):
 def configureLosers(context, losers):
     loser1 = losers[0]
     context['s4'] = loser1.info['longName']
+    print(loser1)
     context['inc4'] = f'{loser1.delta / loser1.open * -100:.2f}'
     context['s4ticker'] = loser1.ticker
     context['price4'] = ('{:,}'.format(round(loser1.info['currentPrice'], 2)))
@@ -131,12 +141,16 @@ def configureLosers(context, losers):
     helper.handleDividend(loser3, context, 6)
     helper.handleRecommendation(loser3, context, 6)
 
-scraper = Scraper()
-stocks = Scraper.scrape()
+
+test = Scraper.scrapeNYSE()
+
+stocks = Scraper.scrapeNYSE()
 ranked_stocks = rankStocks(stocks)
 winners = findWinners(ranked_stocks)
 losers = findLosers(ranked_stocks)
 makePDF(winners, losers)
+
+history = yf.Ticker('APAM').history(period='1d')
 
 
 

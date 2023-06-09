@@ -42,34 +42,9 @@ class Scraper:
             stocks.append(stock)
         return stocks
 
-# =============================================================================
-#     def scrape2(self):
-#         tickers = self.ss.get_symbol_list('US', 'SPX', True)
-#         tickers[7] = "BRK-B"
-#         tickers[271] = "BF-B"
-#         tickers[6] = "META"
-#         tickers[82] = "ELV"
-#         tickers[165] = "SPGI"
-#         stocks = list()
-#         for ticker in tickers:
-#             print(ticker)
-#             tick = yf.Ticker(ticker)
-#             stock = Stock(ticker)
-#             stock.info = tick.info
-#             stocks.append(stock)
-#         return stocks
-# =============================================================================
-
-    def getSPIndexValue():
-        url = 'https://www.marketwatch.com/investing/index/spx'
-        response = requests.get(url)
-        soup = BeautifulSoup(response.text, 'html.parser')
-        index_element = soup.find('span', {'class': 'value'})
-        index_value = str(index_element.text).replace(",", "")
-        return float(index_value)
 
     def getSPIndexInfo(self, context, duration):
-        current_index = Scraper.getSPIndexValue()
+        current_index = yf.Ticker('^GSPC').info['ask']
         if duration == 'day':
             hist = yf.Ticker('^GSPC').history(period='1d')
         elif duration == 'month':
@@ -109,27 +84,28 @@ class Scraper:
         for ticker in response.json():
             symbol = ticker['symbolTicker']
             #yahoo finance doesn't recognize periods in tickers
-            if '.' in symbol:
-                symbol = symbol.replace('.','-')
+            if '.' in symbol or '-' in symbol:
+                #if stock isn't class A stock, ignore it
+                if not (symbol[-1] == '.' or symbol[-1] == '-' or '.A' in symbol or '-A' in symbol):
+                    continue
+                elif '.' in symbol:
+                    symbol = symbol.replace('.', '-')
             tickers.append(symbol)
+        return tickers
+# =============================================================================
+#         for ticker in tickers:
+#             try:
+#                 tick = yf.Ticker(ticker)
+#                 info = tick.info
+#                 stock = Stock(ticker)
+#                 stock.info = info
+#                 stocks.append(stock)
+#             #if issue getting stock info, either different class of stock which we ignore, or delisted and we want to skip it
+#             except:
+#                 print(tick.ticker)
+#                 continue
+# =============================================================================
         
-        clean_tickers = Scraper.cleanTickers(tickers)
-            
-        for ticker in clean_tickers:
-            tick = yf.Ticker(ticker)
-            info = list()
-            try:
-                info = tick.info
-            except:
-                ticker = ticker.replace('-', '-P')
-                tick = yf.Ticker(ticker)
-                info = tick.info
-            finally:
-                stock = Stock(ticker)
-                stock.info = info
-                stocks.append(stock)
-                print(tick.ticker)
-        return stocks
     
     def scrapeNASDAQ():
         url = 'https://en.wikipedia.org/wiki/Nasdaq-100#Components'
@@ -152,8 +128,9 @@ class Scraper:
         del tickers[6197]
         del tickers[6316]
         return tickers
-    
 
-    
+
+
+
 
 

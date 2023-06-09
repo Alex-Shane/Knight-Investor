@@ -26,8 +26,8 @@ class Stock:
         
     def __str__(self):
         return f"Stock: {self.ticker}\n" \
-               f"Month Open: {self.open}\n" \
-               f"Month Close: {self.close}\n" \
+               f"Open: {self.open}\n" \
+               f"Close: {self.close}\n" \
                f"Rank: {self.rank}\n" \
                f"Delta: {self.delta}\n" \
                f"Trailing EPS Rating: {self.trailing_eps_rating}\n" \
@@ -42,8 +42,8 @@ class Stock:
     
     def __repr__(self):
         return f"Stock: {self.ticker}\n" \
-               f"Month Open: {self.open}\n" \
-               f"Month Close: {self.close}\n" \
+               f"Open: {self.open}\n" \
+               f"Close: {self.close}\n" \
                f"Rank: {self.rank}\n" \
                f"Delta: {self.delta}\n" \
                f"Trailing EPS Rating: {self.trailing_eps_rating}\n" \
