@@ -105,7 +105,8 @@ def rankPercentIncrease(stocks):
 
     """
     increase_values = dict()
-    for stock in stocks:
+    index = 0
+    for stock in stocks[:]:
         ticker = stock.ticker_obj
         try: 
             hist = ticker.history(period = '1mo')
@@ -118,6 +119,8 @@ def rankPercentIncrease(stocks):
         #if stock doesn't have history, remove it
         except:
             stocks.remove(stock)
+            index = index - 1
+        index = index + 1
     while(len(increase_values) != 0):
         highest_increase_stock = max(increase_values, key = increase_values.get)
         highest_increase_stock.increase_rating = len(increase_values)
@@ -257,7 +260,7 @@ def rankEBITDA(stocks):
     return stocks
 
 
-def getFinalStocks(stocks, final_three): 
+def getFinalStocks(stocks): 
     """
     Calculates the final rankings for each stock in the given list of stocks by updating the rank attribute based on a weighted calculation.
 
@@ -272,9 +275,10 @@ def getFinalStocks(stocks, final_three):
     for stock in stocks:
         stock.rank = 0.4*(stock.increase_rating) + 0.2*(stock.trailing_pe_rating) + 0.15*(stock.Ebit_rating) + 0.1*(stock.trailing_eps_rating) + 0.1*(stock.EVRev_rating) + 0.025*(stock.forward_eps_rating) + 0.025*(stock.forward_pe_rating)
         stock_ranks[stock] = stock.rank
+    final_three = list()
     for x in range (3):
         best_stock = max(stock_ranks, key = stock_ranks.get)
-        final_three[x] = best_stock
+        final_three.append(best_stock)
         del stock_ranks[best_stock]
     return final_three
 
@@ -306,9 +310,11 @@ def scrape_industryPE(url):
 #url = 'https://eqvista.com/price-to-earnings-pe-ratios-by-industry/'
 #industry_PE = scrape_industryPE(url)
     
-scraper = Scraper()
-SPStocks = scraper.scrape()
-rankedStocks = rankStocks(SPStocks)
-final_three = [Stock(0) for x in range(3)]
-final_three = getFinalStocks(rankedStocks, final_three)
+stocks = Scraper.scrapeNYSE('monthly')
+rankedStocks = rankStocks(stocks)
+final_three = getFinalStocks(rankedStocks)
 makePDF(final_three)
+
+
+
+

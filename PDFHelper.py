@@ -57,7 +57,13 @@ class PDFHelper:
             number (int): The position of the article we are looking at.
             
         """
-        for x in range(0, 3):
+        size = len(news)
+        articles = 0
+        if size < 3:
+            articles = size
+        else:
+            articles = 3
+        for x in range(articles):
             title = news[x]['title']
             link = news[x]['link']
             title_string = f'news{num}title'
