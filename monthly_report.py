@@ -106,15 +106,17 @@ def rankPercentIncrease(stocks):
     """
     increase_values = dict()
     for stock in stocks:
-        ticker = yf.Ticker(stock.ticker)
-        hist = ticker.history(period = '1mo')
-        if not hist.empty:
-            stock.open = hist['Open'][0]
-            stock.close = hist['Close'][-1]
-            stock.delta = stock.close - stock.open
-            increase = stock.delta / stock.open * 100
-            increase_values[stock] = increase
-        else:
+        ticker = stock.ticker_obj
+        try: 
+            hist = ticker.history(period = '1mo')
+            if not hist.empty:
+                stock.open = hist['Open'][0]
+                stock.close = hist['Close'][-1]
+                stock.delta = stock.close - stock.open
+                increase = stock.delta / stock.open * 100
+                increase_values[stock] = increase
+        #if stock doesn't have history, remove it
+        except:
             stocks.remove(stock)
     while(len(increase_values) != 0):
         highest_increase_stock = max(increase_values, key = increase_values.get)
@@ -135,8 +137,6 @@ def rankTrailingEPS(stocks):
     """
     eps_values = dict()
     for stock in stocks:
-        #ticker = yf.Ticker(stock.ticker)
-        #stock.info = ticker.info
         if 'trailingEps' in stock.info:
             if not isinstance(stock.info['trailingEps'], str):
                 eps_values[stock] = stock.info['trailingEps']

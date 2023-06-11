@@ -8,7 +8,8 @@ Created on Fri May 26 21:14:15 2023
 
 class Stock: 
     def __init__(self, ticker):
-        self.ticker = ticker
+        self.ticker_obj = ticker
+        self.ticker = self.ticker_obj.ticker
         self.open = 0
         self.close = 0
         self.rank = 0

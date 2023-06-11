@@ -27,13 +27,14 @@ def rankStocks(stocks):
     """
     increase_values = dict()
     for stock in stocks:
-        ticker = yf.Ticker(stock.ticker)
+        ticker = stock.ticker_obj
         try:
             hist = ticker.history(period = '1d')
             stock.open = hist['Open'][0]
-            print(stock.open)
+            #if stock opens at zero, most likely delisted or something weird
+            if stock.open == 0:
+                continue
             stock.close = hist['Close'][-1]
-            print(stock.close)
             stock.delta = stock.close - stock.open
             increase = stock.delta / stock.open * 100
             increase_values[stock] = increase
@@ -49,6 +50,8 @@ def findWinners(stocks):
     winners = list()
     for x in range(3):
         winner = max(stocks, key = lambda k: k.rank)
+        #get needed info for stock in report
+        winner.info = winner.ticker_obj.info
         while winner.info['averageVolume'] == 0:
             stocks.remove(winner)
             winner = max(stocks, key = lambda k: k.rank)
@@ -60,6 +63,8 @@ def findLosers(stocks):
     losers = list()
     for x in range(3):
         loser = min(stocks, key = lambda k: k.rank)
+        #get needed info for stock in report
+        loser.info = loser.ticker_obj.info 
         while loser.info['averageVolume'] == 0:
             stocks.remove(loser)
             loser = min(stocks, key = lambda k: k.rank)
@@ -142,15 +147,13 @@ def configureLosers(context, losers):
     helper.handleRecommendation(loser3, context, 6)
 
 
-test = Scraper.scrapeNYSE()
 
-stocks = Scraper.scrapeNYSE()
+stocks = Scraper.scrapeNASDAQ('daily')
 ranked_stocks = rankStocks(stocks)
 winners = findWinners(ranked_stocks)
 losers = findLosers(ranked_stocks)
 makePDF(winners, losers)
 
-history = yf.Ticker('APAM').history(period='1d')
 
 
 

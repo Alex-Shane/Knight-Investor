@@ -19,7 +19,7 @@ import datetime as DT
 class Scraper:
     
 
-    def scrapeSP500():
+    def scrapeSP500(report_type):
         """
         Scrapes the table of S&P 500 tickers from a specific source and creates a list of those stocks.
 
@@ -36,9 +36,10 @@ class Scraper:
         stocks = list()
         for ticker in tickers:
             print(ticker)
-            tick = yf.Ticker(ticker)
+            ticker = yf.Ticker(ticker)
             stock = Stock(ticker)
-            stock.info = tick.info
+            if not report_type == 'daily':
+                stock.info = ticker.info
             stocks.append(stock)
         return stocks
 
@@ -69,7 +70,7 @@ class Scraper:
         context['percent'] = percent
         context['change'] = change
 
-    def scrapeNYSE():
+    def scrapeNYSE(report_type):
         # NYSE quotes post request api
         url = 'https://www.nyse.com/api/quotes/filter'
 
@@ -91,32 +92,33 @@ class Scraper:
                 elif '.' in symbol:
                     symbol = symbol.replace('.', '-')
             tickers.append(symbol)
-        return tickers
-# =============================================================================
-#         for ticker in tickers:
-#             try:
-#                 tick = yf.Ticker(ticker)
-#                 info = tick.info
-#                 stock = Stock(ticker)
-#                 stock.info = info
-#                 stocks.append(stock)
-#             #if issue getting stock info, either different class of stock which we ignore, or delisted and we want to skip it
-#             except:
-#                 print(tick.ticker)
-#                 continue
-# =============================================================================
+
+        for ticker in tickers:
+            try:
+                ticker = yf.Ticker(ticker)
+                stock = Stock(ticker)
+                if not report_type == 'daily':
+                    info = ticker.info
+                    stock.info = info
+                stocks.append(stock)
+            #if issue getting stock info, either different class of stock which we ignore, or delisted and we want to skip it
+            except:
+                print(ticker.ticker)
+                continue
+
         
     
-    def scrapeNASDAQ():
+    def scrapeNASDAQ(report_type):
         url = 'https://en.wikipedia.org/wiki/Nasdaq-100#Components'
         table = pd.read_html(url)
         tickers = table[4]['Ticker'].tolist()
         stocks = list()
         for ticker in tickers:
             print(ticker)
-            tick = yf.Ticker(ticker)
+            ticker = yf.Ticker(ticker)
             stock = Stock(ticker)
-            stock.info = tick.info
+            if not report_type == 'daily':
+                stock.info = ticker.info
             stocks.append(stock)
         return stocks
     
