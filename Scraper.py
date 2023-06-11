@@ -42,9 +42,52 @@ class Scraper:
                 stock.info = ticker.info
             stocks.append(stock)
         return stocks
+    
+    def getExchangeInfo(self, exchange, context, duration):
+        if exchange == 'NYSE':
+            Scraper.getNYSEInfo(context, duration)
+        elif exchange == 'SP500':
+            Scraper.getSPIndexInfo(context, duration)
+        else:
+            Scraper.getNASDAQInfo(context, duration)
+        
+    def getNASDAQInfo(self, context, duration):
+        context['exchange'] = "NASDAQ Composite"
+        current_index = yf.Ticker('^IXIC').info['ask']
+        if duration == 'day':
+            hist = yf.Ticker('^IXIC').history(period='1d')
+        elif duration == 'month':
+            hist = yf.Ticker('^IXIC').history(period='1mo')
+        elif duration == 'week':
+            today = DT.date.today()
+            week_ago = today - DT.timedelta(days=7)
+            hist = yf.Ticker('^IXIC').history(
+                start=week_ago, end=today, actions=False)
+        else:
+            print("invalid duration")
+            return
+        Scraper.finishInfo(context, hist, current_index)
+    
+    def getNYSEInfo(context, duration):
+        context['exchange'] = "NYSE Composite"
+        current_index = yf.Ticker('^NYA').info['ask']
+        if duration == 'day':
+            hist = yf.Ticker('^NYA').history(period='1d')
+        elif duration == 'month':
+            hist = yf.Ticker('^NYA').history(period='1mo')
+        elif duration == 'week':
+            today = DT.date.today()
+            week_ago = today - DT.timedelta(days=7)
+            hist = yf.Ticker('^NYA').history(
+                start=week_ago, end=today, actions=False)
+        else:
+            print("invalid duration")
+            return
+        Scraper.finishInfo(context, hist, current_index)
 
 
     def getSPIndexInfo(self, context, duration):
+        context['exchange'] = "S&P 500 Index"
         current_index = yf.Ticker('^GSPC').info['ask']
         if duration == 'day':
             hist = yf.Ticker('^GSPC').history(period='1d')
@@ -58,6 +101,9 @@ class Scraper:
         else:
             print("invalid duration")
             return
+        Scraper.finishInfo(context, hist, current_index)
+        
+    def finishInfo(context, hist, current_index):
         previous_index = hist['Open'][0]
         percent = round((current_index - previous_index) /
                         previous_index * 100, 2)
@@ -152,6 +198,9 @@ class Scraper:
                 symbols[index] = symbol
             index = index + 1
         return symbols
+    
+
+        
 
 
 

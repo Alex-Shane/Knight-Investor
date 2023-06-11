@@ -17,7 +17,7 @@ from Scraper import Scraper
 from PDFHelper import PDFHelper
 
     
-def makePDF(final_three):
+def makePDF(final_three, exchange):
     """
     Generates a PDF file containing relevant information and current news about the highest ranked stocks for current month.
 
@@ -27,7 +27,7 @@ def makePDF(final_three):
     """
     context = {}
     scraper = Scraper()
-    scraper.getSPIndexInfo(context, 'month')
+    scraper.getExchangeInfo(exchange, context, 'month')
     context['s1'] = final_three[0].info['longName']
     context['s1ticker'] = final_three[0].ticker
     context['d1'] = f'{final_three[0].delta / final_three[0].open * 100:.2f}'
@@ -313,7 +313,7 @@ def scrape_industryPE(url):
 stocks = Scraper.scrapeNYSE('monthly')
 rankedStocks = rankStocks(stocks)
 final_three = getFinalStocks(rankedStocks)
-makePDF(final_three)
+makePDF(final_three, 'NYSE')
 
 
 
