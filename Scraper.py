@@ -71,40 +71,58 @@ class Scraper:
         context['change'] = change
 
     def scrapeNYSE(report_type):
-        # NYSE quotes post request api
-        url = 'https://www.nyse.com/api/quotes/filter'
-
-        # Filter the paginated post request to get all NYSE tickers in ASC order, max 10,000 results
-        # There are only 7454 on NYSE, so this should be fine
-        response = requests.post(
-            url, json={"instrumentType": "EQUITY", "pageNumber": 1, "sortColumn": "NORMALIZED_TICKER", "sortOrder": "ASC", "maxResultsPerPage": 10000, "filterToken": ""})
-
-        # Create a list of NYSE stocks
+# =============================================================================
+#         # NYSE quotes post request api
+#         url = 'https://www.nyse.com/api/quotes/filter'
+# 
+#         # Filter the paginated post request to get all NYSE tickers in ASC order, max 10,000 results
+#         # There are only 7454 on NYSE, so this should be fine
+#         response = requests.post(
+#             url, json={"instrumentType": "EQUITY", "pageNumber": 1, "sortColumn": "NORMALIZED_TICKER", "sortOrder": "ASC", "maxResultsPerPage": 10000, "filterToken": ""})
+# 
+#         # Create a list of NYSE stocks
+#         stocks = list()
+#         tickers = list()
+#         for ticker in response.json():
+#             symbol = ticker['symbolTicker']
+#             #yahoo finance doesn't recognize periods in tickers
+#             if '.' in symbol or '-' in symbol:
+#                 #if stock isn't class A stock, ignore it
+#                 if not (symbol[-1] == '.' or symbol[-1] == '-' or '.A' in symbol or '-A' in symbol):
+#                     continue
+#                 elif '.' in symbol:
+#                     symbol = symbol.replace('.', '-')
+#             tickers.append(symbol)
+# 
+#         for ticker in tickers:
+#             try:
+#                 ticker = yf.Ticker(ticker)
+#                 stock = Stock(ticker)
+#                 if not report_type == 'daily':
+#                     info = ticker.info
+#                     stock.info = info
+#                 stocks.append(stock)
+#             #if issue getting stock info, either different class of stock which we ignore, or delisted and we want to skip it
+#             except:
+#                 print(ticker.ticker)
+#                 continue
+# =============================================================================
+        symbols = pd.read_csv('nyse_stocks.csv')['Symbol'].tolist()
+        symbols = Scraper.cleanSymbols(symbols)
         stocks = list()
-        tickers = list()
-        for ticker in response.json():
-            symbol = ticker['symbolTicker']
-            #yahoo finance doesn't recognize periods in tickers
-            if '.' in symbol or '-' in symbol:
-                #if stock isn't class A stock, ignore it
-                if not (symbol[-1] == '.' or symbol[-1] == '-' or '.A' in symbol or '-A' in symbol):
+        for symbol in symbols: 
+            print(symbol)
+            ticker = yf.Ticker(symbol)
+            stock = Stock(ticker)
+            if not report_type == 'daily':
+                try:
+                    stock.info = ticker.info
+                except:
                     continue
-                elif '.' in symbol:
-                    symbol = symbol.replace('.', '-')
-            tickers.append(symbol)
-
-        for ticker in tickers:
-            try:
-                ticker = yf.Ticker(ticker)
-                stock = Stock(ticker)
-                if not report_type == 'daily':
-                    info = ticker.info
-                    stock.info = info
-                stocks.append(stock)
-            #if issue getting stock info, either different class of stock which we ignore, or delisted and we want to skip it
-            except:
-                print(ticker.ticker)
-                continue
+            stocks.append(stock)
+        return stocks
+        
+        
 
         
     
@@ -122,14 +140,18 @@ class Scraper:
             stocks.append(stock)
         return stocks
     
-    def cleanTickers(tickers):
-        del tickers[3367]
-        del tickers[3785]
-        del tickers[4122]
-        del tickers[4971]
-        del tickers[6197]
-        del tickers[6316]
-        return tickers
+    def cleanSymbols(symbols):
+        index = 0
+        for symbol in symbols[:]:
+            #don't care about different classes of stock
+            if '^' in symbol:
+                symbols.remove(symbol)
+                index = index - 1
+            elif '/' in symbol:
+                symbol = symbol.replace('/', '-')
+                symbols[index] = symbol
+            index = index + 1
+        return symbols
 
 
 

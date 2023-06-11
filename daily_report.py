@@ -6,12 +6,10 @@ Created on Fri May 26 17:16:54 2023
 @author: Alex
 """
 
-import yfinance as yf
 import jinja2
 import pdfkit
 from Scraper import Scraper
 from PDFHelper import PDFHelper as Helper
-from Stock import Stock
 
 
 def rankStocks(stocks):
@@ -26,7 +24,7 @@ def rankStocks(stocks):
 
     """
     increase_values = dict()
-    for stock in stocks:
+    for stock in stocks[:]:
         ticker = stock.ticker_obj
         try:
             hist = ticker.history(period = '1d')
@@ -118,7 +116,6 @@ def configureWinners(context, winners):
 def configureLosers(context, losers):
     loser1 = losers[0]
     context['s4'] = loser1.info['longName']
-    print(loser1)
     context['inc4'] = f'{loser1.delta / loser1.open * -100:.2f}'
     context['s4ticker'] = loser1.ticker
     context['price4'] = ('{:,}'.format(round(loser1.info['currentPrice'], 2)))
@@ -146,13 +143,19 @@ def configureLosers(context, losers):
     helper.handleDividend(loser3, context, 6)
     helper.handleRecommendation(loser3, context, 6)
 
-
-
-stocks = Scraper.scrapeNASDAQ('daily')
+# takes roughly 8 minutes
+stocks = Scraper.scrapeNYSE('daily')
 ranked_stocks = rankStocks(stocks)
 winners = findWinners(ranked_stocks)
 losers = findLosers(ranked_stocks)
 makePDF(winners, losers)
+
+
+
+
+
+
+
 
 
 
