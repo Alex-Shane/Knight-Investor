@@ -78,10 +78,12 @@ class PDFHelper:
     def makeTitle(self, exchange, context):
         if exchange == 'NYSE':
             context['market'] = 'New York Stock Exchange'
-        elif exchange == 'SP 500':
+        elif exchange == 'SP500':
             context['market'] = 'S&P 500'
-        else:
+        elif exchange == 'NASDAQ':
             context['market'] = 'NASDAQ 100'
+        else:
+            context['market'] = 'Dow Jones'
             
     def getFileName(self, exchange, duration):
         today = dt.today()

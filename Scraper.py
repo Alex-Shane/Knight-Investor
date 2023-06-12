@@ -42,12 +42,30 @@ class Scraper:
     def getExchangeInfo(self, exchange, context, duration):
         if exchange == 'NYSE':
             Scraper.getNYSEInfo(context, duration)
-        elif exchange == 'SP 500':
+        elif exchange == 'SP500':
             Scraper.getSPIndexInfo(context, duration)
+        elif exchange == 'Dow':
+            Scraper.getDowInfo(context, duration)
         else:
             Scraper.getNASDAQInfo(context, duration)
-        
-    def getNASDAQInfo(self, context, duration):
+    
+    def getDowInfo(context, duration):
+        context['exchange'] = "Dow Jones Industrial Average"
+        if duration == 'day':
+            hist = yf.Ticker('^DJI').history(period='1d')
+        elif duration == 'month':
+            hist = yf.Ticker('^DJI').history(period='1mo')
+        elif duration == 'week':
+            today = DT.date.today()
+            week_ago = today - DT.timedelta(days=7)
+            hist = yf.Ticker('^DJI').history(
+                start=week_ago, end=today, actions=False)
+        else:
+            print("invalid duration")
+            return
+        Scraper.finishInfo(context, hist)
+         
+    def getNASDAQInfo(context, duration):
         context['exchange'] = "NASDAQ Composite"
         if duration == 'day':
             hist = yf.Ticker('^IXIC').history(period='1d')
@@ -80,7 +98,7 @@ class Scraper:
         Scraper.finishInfo(context, hist)
 
 
-    def getSPIndexInfo(self, context, duration):
+    def getSPIndexInfo(context, duration):
         context['exchange'] = "S&P 500 Index"
         if duration == 'day':
             hist = yf.Ticker('^GSPC').history(period='1d')
@@ -111,42 +129,6 @@ class Scraper:
         context['change'] = change
 
     def scrapeNYSE(report_type):
-# =============================================================================
-#         # NYSE quotes post request api
-#         url = 'https://www.nyse.com/api/quotes/filter'
-# 
-#         # Filter the paginated post request to get all NYSE tickers in ASC order, max 10,000 results
-#         # There are only 7454 on NYSE, so this should be fine
-#         response = requests.post(
-#             url, json={"instrumentType": "EQUITY", "pageNumber": 1, "sortColumn": "NORMALIZED_TICKER", "sortOrder": "ASC", "maxResultsPerPage": 10000, "filterToken": ""})
-# 
-#         # Create a list of NYSE stocks
-#         stocks = list()
-#         tickers = list()
-#         for ticker in response.json():
-#             symbol = ticker['symbolTicker']
-#             #yahoo finance doesn't recognize periods in tickers
-#             if '.' in symbol or '-' in symbol:
-#                 #if stock isn't class A stock, ignore it
-#                 if not (symbol[-1] == '.' or symbol[-1] == '-' or '.A' in symbol or '-A' in symbol):
-#                     continue
-#                 elif '.' in symbol:
-#                     symbol = symbol.replace('.', '-')
-#             tickers.append(symbol)
-# 
-#         for ticker in tickers:
-#             try:
-#                 ticker = yf.Ticker(ticker)
-#                 stock = Stock(ticker)
-#                 if not report_type == 'daily':
-#                     info = ticker.info
-#                     stock.info = info
-#                 stocks.append(stock)
-#             #if issue getting stock info, either different class of stock which we ignore, or delisted and we want to skip it
-#             except:
-#                 print(ticker.ticker)
-#                 continue
-# =============================================================================
         symbols = pd.read_csv('nyse_stocks.csv')['Symbol'].tolist()
         symbols = Scraper.cleanSymbols(symbols)
         stocks = list()
@@ -161,9 +143,6 @@ class Scraper:
                     continue
             stocks.append(stock)
         return stocks
-        
-        
-
         
     
     def scrapeNASDAQ(report_type):
@@ -180,6 +159,22 @@ class Scraper:
             stocks.append(stock)
         return stocks
     
+    def scrapeDOW(report_type):
+        url = 'https://en.wikipedia.org/wiki/Dow_Jones_Industrial_Average#Components'
+        table = pd.read_html(url)
+        tickers = table[1]['Symbol']
+        stocks = list()
+        for ticker in tickers:
+            print(ticker)
+            ticker = yf.Ticker(ticker)
+            stock = Stock(ticker)
+            if not report_type == 'daily':
+                stock.info = ticker.info
+            stocks.append(stock)
+        return stocks
+
+        
+    
     def cleanSymbols(symbols):
         index = 0
         for symbol in symbols[:]:
@@ -193,11 +188,5 @@ class Scraper:
             index = index + 1
         return symbols
     
-
-        
-info = yf.Ticker('^NYA').info
-
-
-
 
 
