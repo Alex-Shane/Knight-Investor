@@ -130,7 +130,6 @@ class Scraper:
 
     def scrapeNYSE(report_type):
         symbols = pd.read_csv('nyse_stocks.csv')['Symbol'].tolist()
-        symbols = Scraper.cleanSymbols(symbols)
         stocks = list()
         for symbol in symbols: 
             print(symbol)
@@ -173,20 +172,5 @@ class Scraper:
             stocks.append(stock)
         return stocks
 
-        
-    
-    def cleanSymbols(symbols):
-        index = 0
-        for symbol in symbols[:]:
-            #don't care about different classes of stock
-            if '^' in symbol:
-                symbols.remove(symbol)
-                index = index - 1
-            elif '/' in symbol:
-                symbol = symbol.replace('/', '-')
-                symbols[index] = symbol
-            index = index + 1
-        return symbols
-    
 
 
