@@ -6,6 +6,9 @@ Created on Fri May 26 21:16:36 2023
 @author: Alex
 """
 
+from datetime import date as dt
+from datetime import timedelta 
+
 class PDFHelper:
         
     def handleDividend(self, stock, context, number):
@@ -71,3 +74,30 @@ class PDFHelper:
             context[title_string] = title
             context[link_string] = link
             num = num + 1
+    
+    def makeTitle(self, exchange, context):
+        if exchange == 'NYSE':
+            context['market'] = 'New York Stock Exchange'
+        elif exchange == 'SP 500':
+            context['market'] = 'S&P 500'
+        else:
+            context['market'] = 'NASDAQ 100'
+            
+    def getFileName(self, exchange, duration):
+        today = dt.today()
+        if duration == 'day':
+            return (today.strftime("%b-%d-%Y") + "_" + exchange + "_stock_report.pdf")
+        elif duration == 'week': 
+            week_ago = today - timedelta(days=7)
+            return ("week_of_" + week_ago.strftime("%b-%d-%Y") + "_" + exchange + "_stock_report.pdf")
+        else:
+            month_ago = today - timedelta(days=30)
+            if today.month == month_ago.month:
+                month_year = today.strftime("%B_%Y_")
+            else:
+                month_year = month_ago.strftime("%B_%Y-") + today.strftime("%B_%Y_")
+            return (month_year + exchange + "_stock_report.pdf")
+                
+            
+            
+        

@@ -61,8 +61,10 @@ def findLosers(stocks):
         stocks.remove(loser)
     return losers
 
-def makePDF(winners, losers):
+def makePDF(winners, losers, exchange):
     context = {}
+    helper = Helper()
+    helper.makeTitle(exchange, context) 
     scraper = Scraper()
     scraper.getSPIndexInfo(context, 'week')
     configureWinners(context, winners)
@@ -72,7 +74,8 @@ def makePDF(winners, losers):
     template = template_env.get_template('weekly_report.html')
     output_text = template.render(context)
     config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
-    pdfkit.from_string(output_text, 'weekly_stock_report.pdf', configuration=config)
+    file_name = helper.getFileName(exchange, 'month')
+    pdfkit.from_string(output_text, file_name, configuration=config)
     
 def configureWinners(context, winners):
     winner1 = winners[0]
@@ -139,7 +142,7 @@ stocks = Scraper.scrape()
 ranked_stocks = rankStocks(stocks)
 winners = findWinners(ranked_stocks)
 losers = findLosers(ranked_stocks)
-makePDF(winners, losers)
+makePDF(winners, losers, 'NYSE')
 
 
 

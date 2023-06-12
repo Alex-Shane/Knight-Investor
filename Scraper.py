@@ -8,12 +8,8 @@ Created on Fri May 26 21:15:27 2023
 
 import pandas as pd
 import yfinance as yf
-import requests
-# from stocksymbol import StockSymbol
-from bs4 import BeautifulSoup
 from Stock import Stock
 import datetime as DT
-#import nasdaqdatalink as ndl
 
 
 class Scraper:
@@ -46,14 +42,13 @@ class Scraper:
     def getExchangeInfo(self, exchange, context, duration):
         if exchange == 'NYSE':
             Scraper.getNYSEInfo(context, duration)
-        elif exchange == 'SP500':
+        elif exchange == 'SP 500':
             Scraper.getSPIndexInfo(context, duration)
         else:
             Scraper.getNASDAQInfo(context, duration)
         
     def getNASDAQInfo(self, context, duration):
         context['exchange'] = "NASDAQ Composite"
-        current_index = yf.Ticker('^IXIC').info['ask']
         if duration == 'day':
             hist = yf.Ticker('^IXIC').history(period='1d')
         elif duration == 'month':
@@ -66,11 +61,10 @@ class Scraper:
         else:
             print("invalid duration")
             return
-        Scraper.finishInfo(context, hist, current_index)
+        Scraper.finishInfo(context, hist)
     
     def getNYSEInfo(context, duration):
         context['exchange'] = "NYSE Composite"
-        current_index = yf.Ticker('^NYA').info['ask']
         if duration == 'day':
             hist = yf.Ticker('^NYA').history(period='1d')
         elif duration == 'month':
@@ -83,12 +77,11 @@ class Scraper:
         else:
             print("invalid duration")
             return
-        Scraper.finishInfo(context, hist, current_index)
+        Scraper.finishInfo(context, hist)
 
 
     def getSPIndexInfo(self, context, duration):
         context['exchange'] = "S&P 500 Index"
-        current_index = yf.Ticker('^GSPC').info['ask']
         if duration == 'day':
             hist = yf.Ticker('^GSPC').history(period='1d')
         elif duration == 'month':
@@ -101,9 +94,10 @@ class Scraper:
         else:
             print("invalid duration")
             return
-        Scraper.finishInfo(context, hist, current_index)
+        Scraper.finishInfo(context, hist)
         
-    def finishInfo(context, hist, current_index):
+    def finishInfo(context, hist):
+        current_index = hist['Close'][-1]
         previous_index = hist['Open'][0]
         percent = round((current_index - previous_index) /
                         previous_index * 100, 2)
@@ -201,7 +195,7 @@ class Scraper:
     
 
         
-
+info = yf.Ticker('^NYA').info
 
 
 

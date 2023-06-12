@@ -12,7 +12,6 @@ import jinja2
 import pdfkit
 import requests
 from bs4 import BeautifulSoup
-from Stock import Stock
 from Scraper import Scraper
 from PDFHelper import PDFHelper
 
@@ -26,6 +25,8 @@ def makePDF(final_three, exchange):
 
     """
     context = {}
+    helper = PDFHelper()
+    helper.makeTitle(exchange, context)
     scraper = Scraper()
     scraper.getExchangeInfo(exchange, context, 'month')
     context['s1'] = final_three[0].info['longName']
@@ -37,7 +38,6 @@ def makePDF(final_three, exchange):
     mcap1 = ('{:,}'.format(final_three[0].info['marketCap']))
     context['mcap1'] = mcap1
     context['i1'] = final_three[0].info['industry'] 
-    helper = PDFHelper()
     helper.handleDividend(final_three[0], context, 1)
     helper.handleRecommendation(final_three[0], context, 1)
     helper.configNews(yf.Ticker(final_three[0].ticker).get_news(), context, 1)
@@ -70,7 +70,8 @@ def makePDF(final_three, exchange):
     template = template_env.get_template('report.html')
     output_text = template.render(context)
     config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
-    pdfkit.from_string(output_text, 'stock_report.pdf', configuration=config)
+    file_name = helper.getFileName(exchange, 'month')
+    pdfkit.from_string(output_text, file_name, configuration=config)
 
 
 def rankStocks(stocks):
