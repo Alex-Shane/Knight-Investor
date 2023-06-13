@@ -143,7 +143,7 @@ class Scraper:
         Scraper.finishInfo(context, hist)
 
 
-    def getSPIndexInfo(context, duration):
+    def getSPIndexInfo(self, context, duration):
         """
         Update information about the S&P 500 over the given period
 
@@ -200,7 +200,7 @@ class Scraper:
         """
         symbols = pd.read_csv('nyse_stocks.csv')['Symbol'].tolist()
         if industry != None:
-            symbols = Scraper.accountForIndustry(industry, 'NYSe', symbols)
+            symbols = Scraper.accountForIndustry(industry, 'NYSE', symbols)
         
         stocks = list()
         for symbol in symbols: 
@@ -293,6 +293,7 @@ class Scraper:
         if industry != None:
             tickers = Scraper.accountForIndustry(industry, 'DOW', tickers)
         return tickers
+    
 
 
 

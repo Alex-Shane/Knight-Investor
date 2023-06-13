@@ -202,7 +202,7 @@ def configureLosers(context, losers):
     helper.handleRecommendation(loser3, context, 6)
 
 # takes roughly 8 minutes for NYSE
-stocks = Scraper.scrapeNYSE('daily')
+stocks = Scraper.scrapeNYSE('daily', 'Semiconductors')
 ranked_stocks = rankStocks(stocks)
 winners = findWinners(ranked_stocks)
 losers = findLosers(ranked_stocks)

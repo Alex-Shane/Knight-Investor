@@ -120,6 +120,7 @@ class PDFHelper:
                 month_year = month_ago.strftime("%B_%Y-") + today.strftime("%B_%Y_")
             return (month_year + exchange + "_stock_report.pdf")
     
+    
             
             
         
