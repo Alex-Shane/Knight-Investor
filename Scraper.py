@@ -10,12 +10,12 @@ import pandas as pd
 import yfinance as yf
 from Stock import Stock
 import datetime as DT
-
+import CSVHelper
 
 class Scraper:
     
 
-    def scrapeSP500(report_type):
+    def scrapeSP500(report_type, industry = None):
         """
         Scrapes the table of S&P 500 tickers from a specific source and creates a list of those stocks.
         
@@ -26,7 +26,7 @@ class Scraper:
             list: A list of S&P 500 stocks
 
         """
-        tickers = Scraper.getSP500Tickers()
+        tickers = Scraper.getSP500Tickers(industry)
         stocks = list()
         for ticker in tickers:
             print(ticker)
@@ -37,7 +37,7 @@ class Scraper:
             stocks.append(stock)
         return stocks
     
-    def getSP500Tickers():
+    def getSP500Tickers(industry = None):
         """
         Scrape S&P 500 tickers from specified url and return them in a list.
 
@@ -50,7 +50,10 @@ class Scraper:
         # manually update discrepancies from wikipedia tickers to yahoo tickers
         tickers[65] = "BRK-B"
         tickers[81] = "BF-B"
-        return tickers
+        if industry != None:
+            return Scraper.accountForIndustry(industry, 'SP500', tickers)
+        else:
+            return tickers
     
     def getExchangeInfo(self, exchange, context, duration):
         """
@@ -184,7 +187,7 @@ class Scraper:
         context['percent'] = percent
         context['change'] = change
 
-    def scrapeNYSE(report_type):
+    def scrapeNYSE(report_type, industry = None):
         """
         Scrape a CSV file of all current stock tickers in NYSE and return a list of Stock objects.
 
@@ -196,6 +199,9 @@ class Scraper:
             list: A list of Stock objects representing the tickers scraped from the NYSE CSV file.
         """
         symbols = pd.read_csv('nyse_stocks.csv')['Symbol'].tolist()
+        if industry != None:
+            symbols = Scraper.accountForIndustry(industry, 'NYSe', symbols)
+        
         stocks = list()
         for symbol in symbols: 
             print(symbol)
@@ -208,9 +214,19 @@ class Scraper:
                     continue
             stocks.append(stock)
         return stocks
+    
+    def accountForIndustry(industry, exchange, tickers):
+        if exchange == 'NYSE':
+            return CSVHelper.sortByIndustry('nyse_stocks.csv', industry)
+        elif exchange == 'SP500':
+            return CSVHelper.sortByIndustry('SP500_stocks.csv', industry)
+        elif exchange == 'NASDAQ':
+            return CSVHelper.sortByIndustry('NASDAQ_100_stocks.csv', industry)
+        else:
+            return CSVHelper.sortByIndustry('Dow_Jones_stocks.csv', industry)
         
     
-    def scrapeNASDAQ(report_type):
+    def scrapeNASDAQ(report_type, industry = None):
         """
         Scrape NASDAQ 100 stocks from Wikipedia and gather the information into Stock objects.
         
@@ -221,7 +237,7 @@ class Scraper:
         Returns:
             list: A list of Stock objects representing the NASDAQ 100 stocks.
         """
-        tickers = Scraper.getNASDAQTickers()
+        tickers = Scraper.getNASDAQTickers(industry)
         stocks = list()
         for ticker in tickers:
             print(ticker)
@@ -232,7 +248,7 @@ class Scraper:
             stocks.append(stock)
         return stocks
     
-    def getNASDAQTickers():
+    def getNASDAQTickers(industry = None):
         """
         Scrape NASDAQ 100 tickers from Wikipedia and return them in a list.
 
@@ -242,16 +258,18 @@ class Scraper:
         url = 'https://en.wikipedia.org/wiki/Nasdaq-100#Components'
         table = pd.read_html(url)
         tickers = table[4]['Ticker'].tolist()
+        if industry != None:
+            tickers = Scraper.accountForIndustry(industry, 'NASDAQ', tickers)
         return tickers
     
-    def scrapeDOW(report_type):
+    def scrapeDOW(report_type, industry = None):
         """
         Scrape Dow Jones Industrial Average (Dow) stocks from Wikipedia and gather the information into Stock objects.
 
         Returns:
            list: A list of Stock objects representing the Dow Jones Industrial Average stocks.
         """
-        tickers = Scraper.getDOWTickers()
+        tickers = Scraper.getDOWTickers(industry)
         stocks = list()
         for ticker in tickers:
             print(ticker)
@@ -262,7 +280,7 @@ class Scraper:
             stocks.append(stock)
         return stocks
     
-    def getDOWTickers():
+    def getDOWTickers(industry):
         """
         Scrape Dow tickers from Wikipedia and return them in a list.
 
@@ -272,6 +290,8 @@ class Scraper:
         url = 'https://en.wikipedia.org/wiki/Dow_Jones_Industrial_Average#Components'
         table = pd.read_html(url)
         tickers = table[1]['Symbol']
+        if industry != None:
+            tickers = Scraper.accountForIndustry(industry, 'DOW', tickers)
         return tickers
 
 

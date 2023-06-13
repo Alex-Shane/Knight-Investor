@@ -10,7 +10,7 @@ import pandas as pd
 import yfinance as yf
 from Scraper import Scraper 
 
-def updateIndustries(file_name):
+def updateIndustriesInCSV(file_name):
     """
     Update the 'Industry' column of a CSV file to match the industries stored in stocks on Yahoo Finance.
 
@@ -30,6 +30,11 @@ def updateIndustries(file_name):
             continue
         index = index + 1
     df.to_csv(file_name, index = False)
+
+def sortByIndustry(file_name, industry):
+    df = pd.read_csv(file_name)
+    df = df[df.Industry == industry]
+    return df['Symbol'].tolist()
 
 def cleanCSV(file_name):
     """
@@ -78,6 +83,7 @@ def makeCSV(exchange):
             industries.append('Miscellaneous')
     df['Industry'] = industries
     df.to_csv(file_name, index = False)
+
 
 
 
