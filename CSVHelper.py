@@ -8,7 +8,7 @@ Created on Mon Jun 12 11:55:07 2023
 
 import pandas as pd
 import yfinance as yf
-from Scraper import Scraper 
+#from Scraper import Scraper 
 
 def updateIndustriesInCSV(file_name):
     """
@@ -57,32 +57,34 @@ def cleanCSV(file_name):
         index = index + 1
     df.to_csv(file_name, index = False)
     
-def makeCSV(exchange):
-    """
-    Create a CSV file for storing stocks from a specific exchange.
-
-    Args:
-        exchange (str): The name of the exchange for which the CSV file is being created.
-    """
-    df = pd.DataFrame()
-    if exchange == 'SP500':
-        tickers = Scraper.getSP500Tickers()
-        file_name = 'SP500_stocks.csv'
-    elif exchange == 'Dow':
-        tickers = Scraper.getDOWTickers()
-        file_name = 'Dow_Jones_stocks.csv'
-    else:
-        tickers = Scraper.getNASDAQTickers()
-        file_name = 'NASDAQ_100_stocks.csv'
-    df['Symbol'] = tickers
-    industries = list()
-    for ticker in tickers:
-        try:
-            industries.append(yf.Ticker(ticker).info['industry'])
-        except:
-            industries.append('Miscellaneous')
-    df['Industry'] = industries
-    df.to_csv(file_name, index = False)
+# =============================================================================
+# def makeCSV(exchange):
+#     """
+#     Create a CSV file for storing stocks from a specific exchange.
+# 
+#     Args:
+#         exchange (str): The name of the exchange for which the CSV file is being created.
+#     """
+#     df = pd.DataFrame()
+#     if exchange == 'SP500':
+#         tickers = Scraper.getSP500Tickers()
+#         file_name = 'SP500_stocks.csv'
+#     elif exchange == 'Dow':
+#         tickers = Scraper.getDOWTickers()
+#         file_name = 'Dow_Jones_stocks.csv'
+#     else:
+#         tickers = Scraper.getNASDAQTickers()
+#         file_name = 'NASDAQ_100_stocks.csv'
+#     df['Symbol'] = tickers
+#     industries = list()
+#     for ticker in tickers:
+#         try:
+#             industries.append(yf.Ticker(ticker).info['industry'])
+#         except:
+#             industries.append('Miscellaneous')
+#     df['Industry'] = industries
+#     df.to_csv(file_name, index = False)
+# =============================================================================
 
 
 

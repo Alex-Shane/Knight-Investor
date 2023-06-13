@@ -27,6 +27,8 @@ def makePDF(final_three, exchange):
     """
     context = {}
     helper = PDFHelper()
+    if len(final_three) < 3:
+        helper.modify_HTML_Template(len(final_three),'report.html')
     helper.makeTitle(exchange, context)
     scraper = Scraper()
     scraper.getExchangeInfo(exchange, context, 'month')
@@ -54,6 +56,7 @@ def makePDF(final_three, exchange):
     helper.handleDividend(final_three[1], context, 2)
     helper.handleRecommendation(final_three[1], context, 2)
     helper.configNews(yf.Ticker(final_three[1].ticker).get_news(), context, 4)
+
     context['s3'] = final_three[2].info['longName']
     context['s3ticker'] = final_three[2].ticker
     context['d3'] = f'{final_three[2].delta / final_three[2].open * 100:.2f}'
@@ -277,12 +280,16 @@ def getFinalStocks(stocks):
     for stock in stocks:
         stock.rank = 0.4*(stock.increase_rating) + 0.2*(stock.trailing_pe_rating) + 0.15*(stock.Ebit_rating) + 0.1*(stock.trailing_eps_rating) + 0.1*(stock.EVRev_rating) + 0.025*(stock.forward_eps_rating) + 0.025*(stock.forward_pe_rating)
         stock_ranks[stock] = stock.rank
-    final_three = list()
-    for x in range (3):
+    best_stocks = list()
+    if len(stock_ranks) < 3:
+        size = len(stock_ranks)
+    else:
+        size = 3
+    for x in range (size):
         best_stock = max(stock_ranks, key = stock_ranks.get)
-        final_three.append(best_stock)
+        best_stocks.append(best_stock)
         del stock_ranks[best_stock]
-    return final_three
+    return best_stocks
 
 def scrape_industryPE(url):
     # Send a GET request to the URL
@@ -312,10 +319,10 @@ def scrape_industryPE(url):
 #url = 'https://eqvista.com/price-to-earnings-pe-ratios-by-industry/'
 #industry_PE = scrape_industryPE(url)
     
-stocks = Scraper.scrapeDOW('monthly', 'Conglomerates')
+stocks = Scraper.scrapeNASDAQ('monthly', 'Semiconductors')
 rankedStocks = rankStocks(stocks)
-final_three = getFinalStocks(rankedStocks)
-makePDF(final_three, 'Dow')
+best_stocks = getFinalStocks(rankedStocks)
+makePDF(best_stocks, 'NASDAQ')
 
 
 
