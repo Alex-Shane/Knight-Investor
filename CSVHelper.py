@@ -18,16 +18,16 @@ def updateIndustriesInCSV(file_name):
        csv_file (str): The path or file object of the CSV file to be updated.
                        The CSV file should have a column header named 'Symbol' representing the stock tickers.
    """
-    df = pd.read_csv(file_name, index_col = 0)
+    df = pd.read_csv(file_name)
     tickers = df['Symbol'].tolist()
     index = 0
     for ticker in tickers:
-        print(ticker)
         try:
             industry = yf.Ticker(ticker).info['industry']
             df.loc[index, 'Industry'] = industry
         except:
-            continue
+            print(ticker)
+            pass
         index = index + 1
     df.to_csv(file_name, index = False)
 
@@ -45,7 +45,7 @@ def cleanCSV(file_name):
         csv_file (str): The path or file object of the CSV file to be cleaned.
                     The CSV file should have a column header named 'Symbol' representing the stock tickers.
     """
-    df = pd.read_csv(file_name, index_col = 0)
+    df = pd.read_csv(file_name)
     df = df[~df.Symbol.str.contains('\^')]
     tickers = df['Symbol'].tolist()
     df = df.reset_index(drop = True)
@@ -85,7 +85,5 @@ def cleanCSV(file_name):
 #     df['Industry'] = industries
 #     df.to_csv(file_name, index = False)
 # =============================================================================
-
-
 
 

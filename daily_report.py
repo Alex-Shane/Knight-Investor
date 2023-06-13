@@ -108,7 +108,7 @@ def makePDF(winners, losers, exchange):
     helper = Helper()
     helper.makeTitle(exchange, context) 
     scraper = Scraper()
-    scraper.getSPIndexInfo(context, 'day')
+    scraper.getExchangeInfo(exchange, context, 'day')
     configureWinners(context, winners)
     configureLosers(context, losers)
     template_loader = jinja2.FileSystemLoader('./')
@@ -202,12 +202,11 @@ def configureLosers(context, losers):
     helper.handleRecommendation(loser3, context, 6)
 
 # takes roughly 8 minutes for NYSE
-stocks = Scraper.scrapeNYSE('daily', 'Semiconductors')
+stocks = Scraper.scrapeNYSE('daily', 'Software—Application')
 ranked_stocks = rankStocks(stocks)
 winners = findWinners(ranked_stocks)
 losers = findLosers(ranked_stocks)
 makePDF(winners, losers, 'NYSE')
-
 
 
 

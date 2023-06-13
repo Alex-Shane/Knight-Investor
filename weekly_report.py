@@ -199,7 +199,7 @@ losers = findLosers(ranked_stocks)
 makePDF(winners, losers, 'NYSE')
 
 
-
+industry = yf.Ticker('ARL').info['industry']
 
 
 
