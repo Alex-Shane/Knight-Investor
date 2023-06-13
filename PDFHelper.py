@@ -76,6 +76,16 @@ class PDFHelper:
             num = num + 1
     
     def makeTitle(self, exchange, context):
+        """
+        Create a title based on the information from the context dictionary and the given exchange.
+
+        Args:
+           context (dict): A dictionary containing the context information for the report.
+           exchange (str): The name of the exchange from which the stocks are taken.
+
+        Returns:
+           nothing, updates generated title into context dictionary
+        """
         if exchange == 'NYSE':
             context['market'] = 'New York Stock Exchange'
         elif exchange == 'SP500':
@@ -86,6 +96,16 @@ class PDFHelper:
             context['market'] = 'Dow Jones'
             
     def getFileName(self, exchange, duration):
+        """
+        Create a unique filename based on the exchange and duration of the report.
+
+        Args:
+            exchange (str): The name of the exchange from which the stocks of the report are taken 
+            duration (str): The duration of the report, such as 'daily', 'weekly', or 'monthly'.
+
+        Returns:
+            str: The generated filename string.
+    """
         today = dt.today()
         if duration == 'day':
             return (today.strftime("%b-%d-%Y") + "_" + exchange + "_stock_report.pdf")

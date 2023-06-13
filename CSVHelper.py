@@ -11,6 +11,13 @@ import yfinance as yf
 from Scraper import Scraper 
 
 def updateIndustries(file_name):
+    """
+    Update the 'Industry' column of a CSV file to match the industries stored in stocks on Yahoo Finance.
+
+    Args:
+       csv_file (str): The path or file object of the CSV file to be updated.
+                       The CSV file should have a column header named 'Symbol' representing the stock tickers.
+   """
     df = pd.read_csv(file_name, index_col = 0)
     tickers = df['Symbol'].tolist()
     index = 0
@@ -25,6 +32,14 @@ def updateIndustries(file_name):
     df.to_csv(file_name, index = False)
 
 def cleanCSV(file_name):
+    """
+    Clean a CSV file by deleting all stocks with '^' character in their ticker and updating discrepancies in tickers
+    to match the tickers on Yahoo Finance.
+
+    Args:
+        csv_file (str): The path or file object of the CSV file to be cleaned.
+                    The CSV file should have a column header named 'Symbol' representing the stock tickers.
+    """
     df = pd.read_csv(file_name, index_col = 0)
     df = df[~df.Symbol.str.contains('\^')]
     tickers = df['Symbol'].tolist()
@@ -38,6 +53,12 @@ def cleanCSV(file_name):
     df.to_csv(file_name, index = False)
     
 def makeCSV(exchange):
+    """
+    Create a CSV file for storing stocks from a specific exchange.
+
+    Args:
+        exchange (str): The name of the exchange for which the CSV file is being created.
+    """
     df = pd.DataFrame()
     if exchange == 'SP500':
         tickers = Scraper.getSP500Tickers()

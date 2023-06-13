@@ -45,6 +45,18 @@ def rankStocks(stocks):
     return stocks
 
 def findWinners(stocks):
+    """
+    Find the three highest-ranked stocks from the given list of stocks
+
+    Args:
+        stocks (list): A list of stocks, where each stock has many attributes
+                       Each stock should have the following attributes:
+                       - 'ticker' (str): The symbol of the stock.
+                       - 'rank' (int): The ranking of the stock.
+
+    Returns:
+        list: A list containing the three highest-ranked stocks from the given list.
+    """
     winners = list()
     for x in range(3):
         winner = max(stocks, key = lambda k: k.rank)
@@ -58,6 +70,18 @@ def findWinners(stocks):
     return winners
 
 def findLosers(stocks):
+    """
+    Find the three lowest-ranked stocks from the given list of stocks
+
+    Args:
+        stocks (list): A list of stocks, where each stock has many attributes
+                       Each stock should have the following attributes:
+                       - 'ticker' (str): The symbol of the stock.
+                       - 'rank' (int): The ranking of the stock.
+
+    Returns:
+        list: A list containing the three lowest-ranked stocks from the given list.
+    """
     losers = list()
     for x in range(3):
         loser = min(stocks, key = lambda k: k.rank)
@@ -71,6 +95,15 @@ def findLosers(stocks):
     return losers
 
 def makePDF(winners, losers, exchange):
+    """
+    Generates a PDF file containing relevant information and current news about the highest ranked stocks for current month.
+
+    Args:
+        winners (list): A list of the highest ranked stocks for the day
+        losers (list): A list of the lowest ranked stocks for the day
+        exchange (str): name of the stock exchange being reported on
+
+    """
     context = {}
     helper = Helper()
     helper.makeTitle(exchange, context) 
@@ -87,6 +120,17 @@ def makePDF(winners, losers, exchange):
     pdfkit.from_string(output_text, file_name, configuration=config)
     
 def configureWinners(context, winners):
+    """
+    Configure the context dictionary with information from the winning stocks for the final report.
+
+    Args:
+        context (dict): A dictionary containing the context information for the final report.
+
+        winning_stocks (list): A list of stocks representing the winning stocks.
+
+    Returns:
+        nothing, just updates context dictionary
+    """
     winner1 = winners[0]
     context['s1'] = winner1.info['longName']
     context['inc1'] = f'{winner1.delta / winner1.open * 100:.2f}'
@@ -117,6 +161,17 @@ def configureWinners(context, winners):
     helper.handleRecommendation(winner3, context, 3)
 
 def configureLosers(context, losers):
+    """
+    Configure the context dictionary with information from the losing stocks for the final report.
+
+    Args:
+        context (dict): A dictionary containing the context information for the final report.
+
+        winning_stocks (list): A list of stocks representing the losing stocks.
+
+    Returns:
+        nothing, just updates context dictionary
+    """
     loser1 = losers[0]
     context['s4'] = loser1.info['longName']
     context['inc4'] = f'{loser1.delta / loser1.open * -100:.2f}'

@@ -22,6 +22,7 @@ def makePDF(final_three, exchange):
 
     Args:
         final_three (list): A list of the highest ranked stocks for the month
+        exchange (str): name of the stock exchange being reported on
 
     """
     context = {}
