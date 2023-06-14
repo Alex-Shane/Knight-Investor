@@ -33,8 +33,9 @@ def updateIndustriesInCSV(file_name):
 
 def sortByIndustry(file_name, industry):
     df = pd.read_csv(file_name)
-    df = df[df.Industry == industry]
-    return df['Symbol'].tolist()
+    #df = df[df.Industry == industry]
+    filtered_df = df[df['Industry'].str.contains(industry, case=False, na=False)]
+    return filtered_df['Symbol'].tolist()
 
 def cleanCSV(file_name):
     """
@@ -85,5 +86,4 @@ def cleanCSV(file_name):
 #     df['Industry'] = industries
 #     df.to_csv(file_name, index = False)
 # =============================================================================
-
 

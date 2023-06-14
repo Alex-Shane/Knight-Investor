@@ -120,6 +120,13 @@ class PDFHelper:
                 month_year = month_ago.strftime("%B_%Y-") + today.strftime("%B_%Y_")
             return (month_year + exchange + "_stock_report.pdf")
     
+    def getIndustry(self, stock):
+        industry = stock.info['industry']
+        if '—' in industry:
+            industry = industry.replace('—', ': ')
+        return industry
+    
+
     
             
             

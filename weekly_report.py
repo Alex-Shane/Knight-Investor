@@ -106,7 +106,7 @@ def makePDF(winners, losers, exchange):
     template = template_env.get_template('weekly_report.html')
     output_text = template.render(context)
     config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
-    file_name = helper.getFileName(exchange, 'month')
+    file_name = helper.getFileName(exchange, 'week')
     pdfkit.from_string(output_text, file_name, configuration=config)
     
 def configureWinners(context, winners):

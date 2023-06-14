@@ -319,7 +319,7 @@ def scrape_industryPE(url):
 #url = 'https://eqvista.com/price-to-earnings-pe-ratios-by-industry/'
 #industry_PE = scrape_industryPE(url)
     
-stocks = Scraper.scrapeNYSE('month', 'Semiconductors')
+stocks = Scraper.scrapeNYSE('month', 'Drug Manufacturers')
 rankedStocks = rankStocks(stocks)
 best_stocks = getFinalStocks(rankedStocks)
 makePDF(best_stocks, 'NYSE')
