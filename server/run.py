@@ -1,10 +1,15 @@
-from flask import Flask  # Import flask
+from flask import Flask, render_template  # Import flask
 
-app = Flask(__name__, static_url_path='')  # Setup the flask app by creating an instance of Flask
+app = Flask(__name__)  # Setup the flask app by creating an instance of Flask
 
 @app.route('/')  # When someone goes to / on the server, execute the following function
 def home():
-    return app.send_static_file('index.html')  # Return index.html from the static folder
+    return render_template('index.html')  # Return index.html from the static folder
+
+@app.route('/monthly_report')
+def monthly_report():
+    return render_template('monthly_report.html')
 
 if __name__ == '__main__':  # If the script that was run is this script (we have not been imported)
+    app.debug = True
     app.run()  # Start the server
