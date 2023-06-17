@@ -76,6 +76,7 @@ def makePDF(final_three, exchange):
     config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
     file_name = helper.getFileName(exchange, 'month')
     pdfkit.from_string(output_text, file_name, configuration=config)
+    return context
 
 
 def rankStocks(stocks):
@@ -318,11 +319,21 @@ def scrape_industryPE(url):
 
 #url = 'https://eqvista.com/price-to-earnings-pe-ratios-by-industry/'
 #industry_PE = scrape_industryPE(url)
+
+def run(exchange, industry = None):
+    if exchange == 'NYSE':
+        stocks = Scraper.scrapeNYSE('month', industry)
+    elif exchange == 'NASDAQ':
+        stocks = Scraper.scrapeNASDAQ('month', industry)
+    elif exchange == 'DOW':
+        stocks = Scraper.scrapeDOW('month', industry)
+    else:
+        stocks = Scraper.scrapeSP500('month', industry)
+    rankedStocks = rankStocks(stocks)
+    best_stocks = getFinalStocks(rankedStocks)
+    return makePDF(best_stocks, 'NYSE')
     
-stocks = Scraper.scrapeNYSE('month', 'Drug Manufacturers')
-rankedStocks = rankStocks(stocks)
-best_stocks = getFinalStocks(rankedStocks)
-makePDF(best_stocks, 'NYSE')
+
 
 
 

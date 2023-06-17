@@ -108,6 +108,7 @@ def makePDF(winners, losers, exchange):
     config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
     file_name = helper.getFileName(exchange, 'week')
     pdfkit.from_string(output_text, file_name, configuration=config)
+    return context
     
 def configureWinners(context, winners):
     """
@@ -191,15 +192,22 @@ def configureLosers(context, losers):
     helper.handleDividend(loser3, context, 6)
     helper.handleRecommendation(loser3, context, 6)
 
-scraper = Scraper()
-stocks = Scraper.scrape()
-ranked_stocks = rankStocks(stocks)
-winners = findWinners(ranked_stocks)
-losers = findLosers(ranked_stocks)
-makePDF(winners, losers, 'NYSE')
+def run(exchange, industry = None):
+    if exchange == 'NYSE':
+        stocks = Scraper.scrapeNYSE('week', industry)
+    elif exchange == 'NASDAQ':
+        stocks = Scraper.scrapeNASDAQ('week', industry)
+    elif exchange == 'DOW':
+        stocks = Scraper.scrapeDOW('week', industry)
+    else:
+        stocks = Scraper.scrapeSP500('week', industry)
+    stocks = Scraper.scrape()
+    ranked_stocks = rankStocks(stocks)
+    winners = findWinners(ranked_stocks)
+    losers = findLosers(ranked_stocks)
+    return makePDF(winners, losers, exchange)
 
 
-industry = yf.Ticker('ARL').info['industry']
 
 
 

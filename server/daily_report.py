@@ -118,6 +118,7 @@ def makePDF(winners, losers, exchange):
     config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
     file_name = helper.getFileName(exchange, 'day')
     pdfkit.from_string(output_text, file_name, configuration=config)
+    return context
     
 def configureWinners(context, winners):
     """
@@ -201,12 +202,20 @@ def configureLosers(context, losers):
     helper.handleDividend(loser3, context, 6)
     helper.handleRecommendation(loser3, context, 6)
 
-# takes roughly 8 minutes for NYSE
-stocks = Scraper.scrapeNYSE('daily', 'Drug Manufacturers')
-ranked_stocks = rankStocks(stocks)
-winners = findWinners(ranked_stocks)
-losers = findLosers(ranked_stocks)
-makePDF(winners, losers, 'NYSE')
+def run(exchange, industry = None):
+    if exchange == 'NYSE':
+        stocks = Scraper.scrapeNYSE('day', industry)
+    elif exchange == 'NASDAQ':
+        stocks = Scraper.scrapeNASDAQ('day', industry)
+    elif exchange == 'DOW':
+        stocks = Scraper.scrapeDOW('day', industry)
+    else:
+        stocks = Scraper.scrapeSP500('day', industry)
+    stocks = Scraper.scrape()
+    ranked_stocks = rankStocks(stocks)
+    winners = findWinners(ranked_stocks)
+    losers = findLosers(ranked_stocks)
+    return makePDF(winners, losers, exchange)
 
 
 
