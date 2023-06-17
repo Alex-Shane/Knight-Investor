@@ -1,0 +1,45 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %} {% endblock %} - Knight-Investor</title>
+    <style>
+        nav a {
+            color: black;
+            font-size: 1em;
+            margin-left: 50px;
+            text-decoration: none;
+        }
+        body {
+               background-color: rgb(211,211, 211);
+            }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="{{ url_for("home")}}">
+            Home
+        </a>
+
+        <a href="{{ url_for("monthly_report")}}">
+            Monthly Report
+        </a>
+
+        <a href="{{ url_for("weekly_report")}}">
+            Weekly Report
+        </a>
+
+        <a href="{{ url_for("daily_report")}}">
+            Daily Report
+        </a>
+
+        <a href="{{ url_for("about")}}">
+            About
+        </a>
+
+    </nav>
+    <hr>
+    <div class="content">
+        {% block content %} {% endblock %}
+    </div>
+</body>
+</html>

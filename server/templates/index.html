@@ -1,25 +1,13 @@
-<html lang="en">
-    <head>
-        <title>Knight Investor</title>
-        <style>
-            body {
-               background-color: rgb(211,211, 211);
-            }
-         </style>
-    </head>
-    <body>
-        <nav>
-            <a href= {{ url_for("home")}} >
-                Home
-            </a>
+{% extends 'base.html' %}
 
-            <a href= {{ url_for("monthly_report")}} >
-                Monthly Report
-            </a>
-        </nav>
+{% block title %} 
+    Home
+{% endblock %}
 
-        <h1 style="text-align:center">
-            <center>Home Page</center>
-        </h1>
-    </body>
-</html>
+{% block content %}
+    <h1>
+        <center>
+            Welcome to Knight Investor! 
+        </center>
+    </h1>
+{% endblock %}
