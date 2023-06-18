@@ -1,7 +1,7 @@
 from flask import Flask, render_template  # Import flask
-from daily_report import daily_report as dr
-from weekly_report import weekly_report as wr
-from monthly_report import monthly_report as mr
+import daily_report as dr
+import weekly_report as wr
+import monthly_report as mr
 
 app = Flask(__name__)  # Setup the flask app by creating an instance of Flask
 

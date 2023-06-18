@@ -10,4 +10,21 @@
             Monthly Report  
         </center>
     </h1>
+    <div>
+        <form name="monthly_report_options" id="monthly_report_options">
+            Stock Exchange: <select name="exchange" id="exchange">
+              <option value="NYSE" selected> New York Stock Exchange</option>
+              <option value="NASDAQ"> NASDAQ 100 </option>
+              <option value="SP500"> S&P 500 </option>
+              <option value="DOW"> Dow Jones Industrial Average </option>
+            </select>
+            <br><br>
+            Industry (optional): <select name="topic" id="topic">
+              <option value="" selected="selected">Please select subject first</option>
+            </select>
+            <br><br>
+            <input type="submit" value="Generate Report">
+          </form>
+    </div>
+    
 {% endblock %}
