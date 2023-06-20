@@ -17,8 +17,7 @@ function setIndustryOptions() {
     industry.length = 1;
     //display correct values
     exchangeVal = exchange.value
-    alert(exchangeObject.exchangeVal)
-    for (var i = 0; i < exchangeObject.exchangeVal.length; i++) {
-      industry.options[industry.options.length] = new Option(exchangeObject.exchangeVal[i], exchangeObject.exchangeVal[i]);
+    for (var i = 0; i < exchangeObject[exchangeVal].length; i++) {
+      industry.options[industry.options.length] = new Option(exchangeObject[exchangeVal][i], exchangeObject[exchangeVal][i]);
     }
   }
