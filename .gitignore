@@ -1,2 +1,4 @@
 client/build/
 client/node_modules/
+__pycache__
+*.pyc 
