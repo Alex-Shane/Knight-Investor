@@ -7,27 +7,29 @@
 {% block content %}
     <h1>
         <center>
-            Monthly Report  
+            Report Generator
         </center>
     </h1>
     <div>
         <form name="monthly_report_options" id="monthly_report_options">
           <script src="../static/report.js"></script> 
             Period: <select name="period" id="period">
-              <option value="month" selected> Month </option>
+              <option value="" selected> Please select a period </option>
+              <option value="month"> Month </option>
               <option value="week"> Week </option>
               <option value="day"> Prev 24 Hours </option>
             </select>
             <br><br>
             Stock Exchange: <select onchange = "setIndustryOptions()" name="exchange" id="exchange">
-              <option value="NYSE" selected> New York Stock Exchange</option>
+              <option value="" selected> Please select an exchange </option>
+              <option value="NYSE"> New York Stock Exchange</option>
               <option value="NASDAQ"> NASDAQ 100 </option>
               <option value="SP500"> S&P 500 </option>
               <option value="DOW"> Dow Jones Industrial Average </option>
             </select>
             <br><br>
             Industry (optional): <select name="industry" id="industry">
-              <option value="" selected="selected">Please select subject first</option>
+              <option value="" selected="selected"> None </option>
             </select>
             <br><br>
             <input type="submit" value="Generate Report">

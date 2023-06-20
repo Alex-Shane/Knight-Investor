@@ -9,17 +9,9 @@ app = Flask(__name__)  # Setup the flask app by creating an instance of Flask
 def home():
     return render_template('index.html')  # Return index.html from the static folder
 
-@app.route('/monthly_report')
-def monthly_report():
-    return render_template('monthly_report.html')
-
-@app.route('/weekly_report')
-def weekly_report():
-    return render_template('weekly_report.html')
-
-@app.route('/daily_report')
-def daily_report():
-    return render_template('daily_report.html')
+@app.route('/create_report')
+def report_page():
+    return render_template('report.html')
 
 @app.route('/about')
 def about():
