@@ -60,9 +60,20 @@ def cleanCSV(file_name):
     
 def getIndustriesInCSV(file_name):
     df = pd.read_csv(file_name)['Industry'].tolist()
-    industries = []
-    [industries.append(x) for x in df if x not in industries]
-    return industries
+    industries = dict()
+    for industry in df:
+        if industry in industries:
+            industries[industry] = industries[industry] + 1
+        else:
+            industries[industry] = 1
+    eligible_industries = []
+    keys = list(industries.keys())
+    eligible_industries = []
+    [eligible_industries.append(x) for x in keys if industries[x] > 2]
+    #[industries.append(x) for x in df if x not in industries]
+    return eligible_industries
+
+
 
     
 # =============================================================================
