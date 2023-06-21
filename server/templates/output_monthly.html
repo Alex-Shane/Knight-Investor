@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %} 
+    Final Report
+{% endblock %}
+
+{% block content %}
+<h1 style="text-align: center;">{{market}} Monthly Report</h1>
+<p>*Please see end of the report if interested in what statistics were evaluated when ranking the stocks. All data taken from Yahoo Finance</p>
+<p>For reference, the <strong>{{exchange}}&nbsp;{{change}} </strong>by <strong>{{percent}}%</strong> over the past month</p>
+<h4><strong>Best Stock:&nbsp;</strong>{{s1}} with a {{d1}}% increase from last month</h4>
+<p>Quick facts about <strong>{{s1ticker}}:</strong></p>
+<p>Current Stock Price = ${{price1}}</p>
+<p>Market Cap = ${{mcap1}}</p>
+<p>Industry = {{i1}}</p>
+<p>Provides Dividend? {{a1}}, {{des1}}</p>
+<p>Yahoo Analyst Recommendation: {{rec1}}</p>
+<p>&nbsp;</p>
+<p>For further reading on <strong>{{s1ticker}}</strong>, please see below:</p>
+<p><a href="{{link1}}" target="_blank"><span style="color: #0000ff;">{{link1}}</span></a></p>
+<p>&nbsp;</p>
+<h4><strong>2nd Best Stock: </strong>{{s2}} with a {{d2}}% increase from last month</h4>
+<p>Quick facts about <strong>{{s2ticker}}:</strong></p>
+<p>Current Stock Price = ${{price2}}</p>
+<p>Market Cap = ${{mcap2}}</p>
+<p>Industry = {{i2}}</p>
+<p>Provides Dividend? {{a2}}, {{des2}}</p>
+<p>Yahoo Analyst Recommendation: {{rec2}}</p>
+<p>&nbsp;</p>
+<p>For further reading on <strong>{{s2ticker}}</strong>, please see below:</p>
+<p><a href="{{link2}}" target="_blank"><span style="color: #0000ff;">{{link2}}</span></a></p>
+<p>&nbsp;</p>
+<h4><strong>3rd Best Stock: </strong>{{s3}} with a {{d3}}% increase from last month</h4>
+<p>Quick facts about <strong>{{s3ticker}}:</strong></p>
+<p>Current Stock Price = ${{price3}}</p>
+<p>Market Cap = ${{mcap3}}</p>
+<p>Industry = {{i3}}</p>
+<p>Provides Dividend? {{a3}}, {{des3}}</p>
+<p>Yahoo Analyst Recommendation: {{rec3}}</p>
+<p>&nbsp;</p>
+<p>For further reading on <strong>{{s3ticker}}</strong>, please see below:</p>
+<p><a href="{{link3}}" target="_blank"><span style="color: #0000ff;">{{link3}}</span></a></p>
+<p>&nbsp;</p>
+<p><span style="color: #000000;">Statistics considered in the ranking model (by order of importance):</span></p>
+<p><span style="color: #000000;">1) %increase in stock price over the previous month</span></p>
+<p><span style="color: #000000;">2) Previous 12 months' P/E ratio</span></p>
+<p><span style="color: #000000;">3) Previous 12 months' EV/EBITDA ratio</span></p>
+<p><span style="color: #000000;">4) Previous 12 months' EPS</span></p>
+<p><span style="color: #000000;">5) Previous 12 months' EV/Revenue</span></p>
+<p><span style="color: #000000;">6) Projected P/E ratio</span></p>
+<p><span style="color: #000000;">7) Projected EPS</span></p>
+
+    
+{% endblock %}

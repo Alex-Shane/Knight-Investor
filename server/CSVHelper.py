@@ -88,7 +88,7 @@ def getIndustriesInCSV(file_name):
 #     if exchange == 'SP500':
 #         tickers = Scraper.getSP500Tickers()
 #         file_name = 'SP500_stocks.csv'
-#     elif exchange == 'Dow':
+#     elif exchange == 'DOW':
 #         tickers = Scraper.getDOWTickers()
 #         file_name = 'Dow_Jones_stocks.csv'
 #     else:

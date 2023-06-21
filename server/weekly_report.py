@@ -201,7 +201,6 @@ def run(exchange, industry = None):
         stocks = Scraper.scrapeDOW('week', industry)
     else:
         stocks = Scraper.scrapeSP500('week', industry)
-    stocks = Scraper.scrape()
     ranked_stocks = rankStocks(stocks)
     winners = findWinners(ranked_stocks)
     losers = findLosers(ranked_stocks)

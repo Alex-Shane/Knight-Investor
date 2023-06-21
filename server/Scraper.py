@@ -32,7 +32,7 @@ class Scraper:
             print(ticker)
             ticker = yf.Ticker(ticker)
             stock = Stock(ticker)
-            if not report_type == 'daily':
+            if not report_type == 'day':
                 stock.info = ticker.info
             stocks.append(stock)
         return stocks
@@ -68,7 +68,7 @@ class Scraper:
             Scraper.getNYSEInfo(context, duration)
         elif exchange == 'SP500':
             Scraper.getSPIndexInfo(context, duration)
-        elif exchange == 'Dow':
+        elif exchange == 'DOW':
             Scraper.getDowInfo(context, duration)
         else:
             Scraper.getNASDAQInfo(context, duration)
@@ -207,7 +207,7 @@ class Scraper:
             print(symbol)
             ticker = yf.Ticker(symbol)
             stock = Stock(ticker)
-            if not report_type == 'daily':
+            if not report_type == 'day':
                 try:
                     stock.info = ticker.info
                 except:
@@ -217,13 +217,13 @@ class Scraper:
     
     def accountForIndustry(industry, exchange, tickers):
         if exchange == 'NYSE':
-            return CSVHelper.sortByIndustry('nyse_stocks.csv', industry)
+            return CSVHelper.sortByIndustry('./static/nyse_stocks.csv', industry)
         elif exchange == 'SP500':
-            return CSVHelper.sortByIndustry('SP500_stocks.csv', industry)
+            return CSVHelper.sortByIndustry('./static/SP500_stocks.csv', industry)
         elif exchange == 'NASDAQ':
-            return CSVHelper.sortByIndustry('NASDAQ_100_stocks.csv', industry)
+            return CSVHelper.sortByIndustry('./static/NASDAQ_100_stocks.csv', industry)
         else:
-            return CSVHelper.sortByIndustry('Dow_Jones_stocks.csv', industry)
+            return CSVHelper.sortByIndustry('./static/Dow_Jones_stocks.csv', industry)
         
     
     def scrapeNASDAQ(report_type, industry = None):
@@ -243,7 +243,7 @@ class Scraper:
             print(ticker)
             ticker = yf.Ticker(ticker)
             stock = Stock(ticker)
-            if not report_type == 'daily':
+            if not report_type == 'day':
                 stock.info = ticker.info
             stocks.append(stock)
         return stocks
@@ -275,7 +275,7 @@ class Scraper:
             print(ticker)
             ticker = yf.Ticker(ticker)
             stock = Stock(ticker)
-            if not report_type == 'daily':
+            if not report_type == 'day':
                 stock.info = ticker.info
             stocks.append(stock)
         return stocks

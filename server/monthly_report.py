@@ -331,7 +331,7 @@ def run(exchange, industry = None):
         stocks = Scraper.scrapeSP500('month', industry)
     rankedStocks = rankStocks(stocks)
     best_stocks = getFinalStocks(rankedStocks)
-    return makePDF(best_stocks, 'NYSE')
+    return makePDF(best_stocks, exchange)
     
 
 

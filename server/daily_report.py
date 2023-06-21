@@ -111,13 +111,13 @@ def makePDF(winners, losers, exchange):
     scraper.getExchangeInfo(exchange, context, 'day')
     configureWinners(context, winners)
     configureLosers(context, losers)
-    template_loader = jinja2.FileSystemLoader('./')
-    template_env = jinja2.Environment(loader=template_loader)
-    template = template_env.get_template('daily_report.html')
-    output_text = template.render(context)
-    config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
-    file_name = helper.getFileName(exchange, 'day')
-    pdfkit.from_string(output_text, file_name, configuration=config)
+    #template_loader = jinja2.FileSystemLoader('./')
+    #template_env = jinja2.Environment(loader=template_loader)
+    #template = template_env.get_template('daily_report.html')
+    #output_text = template.render(context)
+    #config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
+    #file_name = helper.getFileName(exchange, 'day')
+    #pdfkit.from_string(output_text, file_name, configuration=config)
     return context
     
 def configureWinners(context, winners):
@@ -211,7 +211,6 @@ def run(exchange, industry = None):
         stocks = Scraper.scrapeDOW('day', industry)
     else:
         stocks = Scraper.scrapeSP500('day', industry)
-    stocks = Scraper.scrape()
     ranked_stocks = rankStocks(stocks)
     winners = findWinners(ranked_stocks)
     losers = findLosers(ranked_stocks)

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title %} 
-    Monthly Report
+    Report Generator
 {% endblock %}
 
 {% block content %}
@@ -11,7 +11,7 @@
         </center>
     </h1>
     <div>
-        <form name="monthly_report_options" id="monthly_report_options">
+        <form action="{{ url_for("report")}}" method="POST" name="monthly_report_options" id="monthly_report_options">
           <script src="../static/report.js"></script> 
             Period: <select name="period" id="period">
               <option value="" selected> Please select a period </option>
@@ -29,7 +29,7 @@
             </select>
             <br><br>
             Industry (optional): <select name="industry" id="industry">
-              <option value="" selected="selected"> None </option>
+              <option value="None" selected="selected"> None </option>
             </select>
             <br><br>
             <input type="submit" value="Generate Report">
