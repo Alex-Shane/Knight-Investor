@@ -58,6 +58,13 @@ def cleanCSV(file_name):
         index = index + 1
     df.to_csv(file_name, index = False)
     
+def getIndustriesInCSV(file_name):
+    df = pd.read_csv(file_name)['Industry'].tolist()
+    industries = []
+    [industries.append(x) for x in df if x not in industries]
+    return industries
+
+    
 # =============================================================================
 # def makeCSV(exchange):
 #     """
