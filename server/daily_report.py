@@ -111,14 +111,14 @@ def makePDF(winners, losers, exchange):
     scraper.getExchangeInfo(exchange, context, 'day')
     configureWinners(context, winners)
     configureLosers(context, losers)
-    #template_loader = jinja2.FileSystemLoader('./')
-    #template_env = jinja2.Environment(loader=template_loader)
-    #template = template_env.get_template('daily_report.html')
-    #output_text = template.render(context)
-    #config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
-    #file_name = helper.getFileName(exchange, 'day')
-    #pdfkit.from_string(output_text, file_name, configuration=config)
-    return context
+    template_loader = jinja2.FileSystemLoader('./')
+    template_env = jinja2.Environment(loader=template_loader)
+    template = template_env.get_template('./templates/daily_report.html')
+    output_text = template.render(context)
+    config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
+    file_name = helper.getFileName(exchange, 'day')
+    pdfkit.from_string(output_text, file_name, configuration=config)
+    return (context, file_name)
     
 def configureWinners(context, winners):
     """

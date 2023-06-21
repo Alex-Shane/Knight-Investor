@@ -42,7 +42,6 @@ def makePDF(final_three, exchange):
     helper.handleDividend(final_three[0], context, 1)
     helper.handleRecommendation(final_three[0], context, 1)
     context['link1'] = f"https://finance.yahoo.com/quote/{final_three[0].ticker}/news?p={final_three[0].ticker}"
-    #helper.configNews(yf.Ticker(final_three[0].ticker).get_news(), context, 1)
     context['s2'] = final_three[1].info['longName']
     context['s2ticker'] = final_three[1].ticker
     context['d2'] = f'{final_three[1].delta / final_three[1].open * 100:.2f}'
@@ -54,7 +53,6 @@ def makePDF(final_three, exchange):
     context['i2'] = final_three[1].info['industry']
     helper.handleDividend(final_three[1], context, 2)
     helper.handleRecommendation(final_three[1], context, 2)
-    #helper.configNews(yf.Ticker(final_three[1].ticker).get_news(), context, 4)
     context['link2'] = f"https://finance.yahoo.com/quote/{final_three[1].ticker}/news?p={final_three[1].ticker}"
     context['s3'] = final_three[2].info['longName']
     context['s3ticker'] = final_three[2].ticker
@@ -67,16 +65,15 @@ def makePDF(final_three, exchange):
     context['i3'] = final_three[2].info['industry']
     helper.handleDividend(final_three[2], context, 3)
     helper.handleRecommendation(final_three[2], context, 3)
-    #helper.configNews(yf.Ticker(final_three[2].ticker).get_news(), context, 7)
     context['link3'] = f"https://finance.yahoo.com/quote/{final_three[2].ticker}/news?p={final_three[2].ticker}"
     template_loader = jinja2.FileSystemLoader('./')
     template_env = jinja2.Environment(loader=template_loader)
-    template = template_env.get_template('report.html')
+    template = template_env.get_template('./templates/monthly_report.html')
     output_text = template.render(context)
     config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
     file_name = helper.getFileName(exchange, 'month')
     pdfkit.from_string(output_text, file_name, configuration=config)
-    return context
+    return (context, file_name)
 
 
 def rankStocks(stocks):

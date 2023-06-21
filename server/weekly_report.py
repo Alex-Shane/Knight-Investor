@@ -103,12 +103,12 @@ def makePDF(winners, losers, exchange):
     configureLosers(context, losers)
     template_loader = jinja2.FileSystemLoader('./')
     template_env = jinja2.Environment(loader=template_loader)
-    template = template_env.get_template('weekly_report.html')
+    template = template_env.get_template('./templates/weekly_report.html')
     output_text = template.render(context)
     config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
     file_name = helper.getFileName(exchange, 'week')
     pdfkit.from_string(output_text, file_name, configuration=config)
-    return context
+    return (context, file_name)
     
 def configureWinners(context, winners):
     """
