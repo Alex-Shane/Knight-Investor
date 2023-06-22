@@ -1,0 +1,39 @@
+form {
+    color: #C5C6C7;
+    font-size: 24px;
+    font: georgia; 
+    text-align: center;
+    padding-top: 70px;
+}
+
+h1 {
+    color: #66FCF1;
+    font-size: 32px;
+    font: georgia; 
+}
+
+h3 {
+    color: #66FCF1;
+    font-size: 24px;
+    font: georgia; 
+}
+
+nav a {
+    color: whitesmoke;
+    font-size: 1em;
+    margin-left: 75px;
+    text-decoration: none;
+    font: georgia
+}
+body {
+       background-color: #0B0C10;
+}
+p {
+    color: #C5C6C7;
+    font-size: 14px;
+    font: georgia; 
+}
+
+p a {
+    color: #0000ff;
+}

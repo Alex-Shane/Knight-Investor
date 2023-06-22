@@ -5,7 +5,11 @@
 {% endblock %}
 
 {% block content %}
-<h1 style="text-align: center;">{{market}} Monthly Report</h1>
+<h1>
+    <center>
+        {{market}} Monthly Report
+    </center>
+</h1>
 <p>*Please see end of the report if interested in what statistics were evaluated when ranking the stocks. All data taken from Yahoo Finance</p>
 <p>For reference, the <strong>{{exchange}}&nbsp;{{change}} </strong>by <strong>{{percent}}%</strong> over the past month</p>
 <h4><strong>Best Stock:&nbsp;</strong>{{s1}} with a {{d1}}% increase from last month</h4>
@@ -17,7 +21,7 @@
 <p>Yahoo Analyst Recommendation: {{rec1}}</p>
 <p>&nbsp;</p>
 <p>For further reading on <strong>{{s1ticker}}</strong>, please see below:</p>
-<p><a href="{{link1}}" target="_blank"><span style="color: #0000ff;">{{link1}}</span></a></p>
+<p><a href="{{link1}}" target="_blank"><span>{{link1}}</span></a></p>
 <p>&nbsp;</p>
 <h4><strong>2nd Best Stock: </strong>{{s2}} with a {{d2}}% increase from last month</h4>
 <p>Quick facts about <strong>{{s2ticker}}:</strong></p>
@@ -28,7 +32,7 @@
 <p>Yahoo Analyst Recommendation: {{rec2}}</p>
 <p>&nbsp;</p>
 <p>For further reading on <strong>{{s2ticker}}</strong>, please see below:</p>
-<p><a href="{{link2}}" target="_blank"><span style="color: #0000ff;">{{link2}}</span></a></p>
+<p><a href="{{link2}}" target="_blank"><span>{{link2}}</span></a></p>
 <p>&nbsp;</p>
 <h4><strong>3rd Best Stock: </strong>{{s3}} with a {{d3}}% increase from last month</h4>
 <p>Quick facts about <strong>{{s3ticker}}:</strong></p>
@@ -39,16 +43,16 @@
 <p>Yahoo Analyst Recommendation: {{rec3}}</p>
 <p>&nbsp;</p>
 <p>For further reading on <strong>{{s3ticker}}</strong>, please see below:</p>
-<p><a href="{{link3}}" target="_blank"><span style="color: #0000ff;">{{link3}}</span></a></p>
+<p><a href="{{link3}}" target="_blank"><span>{{link3}}</span></a></p>
 <p>&nbsp;</p>
-<p><span style="color: #000000;">Statistics considered in the ranking model (by order of importance):</span></p>
-<p><span style="color: #000000;">1) %increase in stock price over the previous month</span></p>
-<p><span style="color: #000000;">2) Previous 12 months' P/E ratio</span></p>
-<p><span style="color: #000000;">3) Previous 12 months' EV/EBITDA ratio</span></p>
-<p><span style="color: #000000;">4) Previous 12 months' EPS</span></p>
-<p><span style="color: #000000;">5) Previous 12 months' EV/Revenue</span></p>
-<p><span style="color: #000000;">6) Projected P/E ratio</span></p>
-<p><span style="color: #000000;">7) Projected EPS</span></p>
+<p><span>Statistics considered in the ranking model (by order of importance):</span></p>
+<p><span>1) %increase in stock price over the previous month</span></p>
+<p><span>2) Previous 12 months' P/E ratio</span></p>
+<p><span>3) Previous 12 months' EV/EBITDA ratio</span></p>
+<p><span>4) Previous 12 months' EPS</span></p>
+<p><span>5) Previous 12 months' EV/Revenue</span></p>
+<p><span>6) Projected P/E ratio</span></p>
+<p><span>7) Projected EPS</span></p>
 
     
 {% endblock %}
