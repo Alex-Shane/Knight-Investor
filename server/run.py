@@ -11,16 +11,10 @@ downloaded = False
 
 @app.route('/')  # When someone goes to / on the server, execute the following function
 def home():
-    global downloaded
-    if downloaded == True:
-        delete_and_handle_pdf()
     return render_template('index.html')  # Return index.html from the static folder
 
 @app.route('/create_report')
 def report_page():
-    global downloaded
-    if downloaded == True:
-        delete_and_handle_pdf()
     return render_template('report_page.html')
 
 @app.route('/final_report', methods=['POST'])
@@ -43,29 +37,25 @@ def report():
         result = dr.run(exchange, industry)
         context = result[0]
         file_name = result[1]
-        print(file_name)
         return render_template('output_daily.html', **context)
 
 @app.route('/final_report/download', methods=['POST'])
 def download():
     global file_name
-    temp = File(file_name)
     return send_file(file_name, as_attachment = True)
 
 @app.route('/about')
 def about():
-    global downloaded 
-    if downloaded == True:
-        delete_and_handle_pdf()
     return render_template('about.html')
 
-def delete_and_handle_pdf():
-    global file_name
-    os.remove(file_name)
-    global downloaded
-    downloaded = False
-    file_name = ""
+def delete_all_reports():
+    files = os.listdir(os.getcwd())
+    files = [f for f in files if os.path.isfile(os.getcwd()+'/'+f)] #Filtering only the files.
+    for file in files:
+        if file.endswith('.pdf'):
+            os.remove(file)
 
 if __name__ == '__main__':  # If the script that was run is this script (we have not been imported)
     app.debug = True
+    delete_all_reports()
     app.run()  # Start the server
