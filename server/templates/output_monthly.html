@@ -54,5 +54,8 @@
 <p><span>6) Projected P/E ratio</span></p>
 <p><span>7) Projected EPS</span></p>
 
-    
+<form action="{{ url_for("download")}}" method="POST">
+    <input type="submit" value="Download Report">
+</form>
+
 {% endblock %}

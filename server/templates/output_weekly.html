@@ -58,6 +58,8 @@
 <p>&nbsp; &nbsp; &nbsp; &nbsp;Yahoo Analyst Recommendation: {{rec6}}</p>
 <p>&nbsp;</p>
 
-
+<form action="{{ url_for("download")}}" method="POST">
+    <input type="submit" value="Download Report">
+</form>
     
 {% endblock %}

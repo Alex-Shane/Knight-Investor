@@ -75,7 +75,6 @@ def getIndustriesInCSV(file_name):
 
 
 
-    
 # =============================================================================
 # def makeCSV(exchange):
 #     """

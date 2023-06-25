@@ -18,6 +18,12 @@ h3 {
     font: georgia; 
 }
 
+h4 {
+    color: #66FCF1;
+    font-size: 21px;
+    font: georgia; 
+}
+
 nav a {
     color: whitesmoke;
     font-size: 1em;
@@ -35,5 +41,5 @@ p {
 }
 
 p a {
-    color: #0000ff;
+    color: whitesmoke;
 }

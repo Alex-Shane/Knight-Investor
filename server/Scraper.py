@@ -143,7 +143,7 @@ class Scraper:
         Scraper.finishInfo(context, hist)
 
 
-    def getSPIndexInfo(self, context, duration):
+    def getSPIndexInfo(context, duration):
         """
         Update information about the S&P 500 over the given period
 

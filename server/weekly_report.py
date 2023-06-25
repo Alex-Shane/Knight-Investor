@@ -98,7 +98,7 @@ def makePDF(winners, losers, exchange):
     helper = Helper()
     helper.makeTitle(exchange, context) 
     scraper = Scraper()
-    scraper.getSPIndexInfo(context, 'week')
+    scraper.getExchangeInfo(exchange, context, 'week')
     configureWinners(context, winners)
     configureLosers(context, losers)
     template_loader = jinja2.FileSystemLoader('./')
