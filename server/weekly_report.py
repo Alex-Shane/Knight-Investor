@@ -61,6 +61,11 @@ def findWinners(stocks):
     winners = list()
     for x in range(3):
         winner = max(stocks, key = lambda k: k.rank)
+        #get needed info for stock in report
+        winner.info = winner.ticker_obj.info
+        while winner.info['averageVolume'] == 0 or winner.open == 0:
+            stocks.remove(winner)
+            winner = max(stocks, key = lambda k: k.rank)
         winners.append(winner)
         stocks.remove(winner)
     return winners
@@ -81,6 +86,11 @@ def findLosers(stocks):
     losers = list()
     for x in range(3):
         loser = min(stocks, key = lambda k: k.rank)
+        #get needed info for stock in report
+        loser.info = loser.ticker_obj.info 
+        while loser.info['averageVolume'] == 0 or loser.open == 0:
+            stocks.remove(loser)
+            loser = min(stocks, key = lambda k: k.rank)
         losers.append(loser)
         stocks.remove(loser)
     return losers
@@ -205,6 +215,8 @@ def run(exchange, industry = None):
     winners = findWinners(ranked_stocks)
     losers = findLosers(ranked_stocks)
     return makePDF(winners, losers, exchange)
+
+
 
 
 

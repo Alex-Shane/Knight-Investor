@@ -198,7 +198,7 @@ class Scraper:
         Returns:
             list: A list of Stock objects representing the tickers scraped from the NYSE CSV file.
         """
-        symbols = pd.read_csv('nyse_stocks.csv')['Symbol'].tolist()
+        symbols = pd.read_csv('./static/nyse_stocks.csv')['Symbol'].tolist()
         if industry != None:
             symbols = Scraper.accountForIndustry(industry, 'NYSE', symbols)
         
