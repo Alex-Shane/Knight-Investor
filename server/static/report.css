@@ -29,7 +29,7 @@ nav a {
     font-size: 1em;
     margin-left: 75px;
     text-decoration: none;
-    font: georgia
+    font: georgia;
 }
 body {
        background-color: #0B0C10;
@@ -43,3 +43,26 @@ p {
 p a {
     color: whitesmoke;
 }
+
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  img {
+    max-width: 100%;
+    float: left;
+  }
+  .image {
+    flex-basis: 100%;
+    height: 500px;
+    width: 40%;
+  }
+  .text {
+    font-size: 20px;
+  }
+
+  .home_report {
+    text-align: left;
+    padding-top: 30px;
+  }
