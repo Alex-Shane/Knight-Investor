@@ -10,7 +10,19 @@
             Report Generator
         </center>
     </h1>
-    <div>
+    <div class = container>
+      <div>
+        <img src="../static/Images/stocks2.jpeg" class = "stock_photo1" alt = "Stock screen" width = "250" height = "500">
+      </div>
+      <div>
+        <h4 class = "wait">Estimated Time to Generate Reports:</h4>
+        <p class = "wait">
+            Daily/Weekly Report: 10 seconds to a minute or two 
+            <br><br>
+            Monthly Report: 30 seconds to a couple of minutes 
+            <br><br>
+            Please be patient!
+        </p>
         <form action="{{ url_for("report")}}" method="POST" name="report_options" id="report_options">
           <script src="../static/report.js"></script> 
             Period: <select name="period" id="period">
@@ -34,6 +46,11 @@
             <br><br>
             <input type="submit" value="Generate Report">
           </form>
+      </div>
+      <div>
+        <img src="../static/Images/stocks2.jpeg" class = "stock_photo2" alt = "Stock screen" width = "250" height = "500">
+      </div>
     </div>
+    
     
 {% endblock %}

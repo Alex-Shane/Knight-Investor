@@ -66,3 +66,17 @@ p a {
     text-align: left;
     padding-top: 30px;
   }
+
+  .stock_photo1 {
+    float: left;
+    padding-right: 75px;
+  }
+
+  .stock_photo2 {
+    float: right;
+    padding-left: 75px;
+  }
+
+  .wait {
+    text-align: center;
+  }
