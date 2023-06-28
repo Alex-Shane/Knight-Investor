@@ -1,5 +1,3 @@
-
-
 window.onload = function() {
     var period = document.getElementById("period")
     var exchange = document.getElementById("exchange")
@@ -29,7 +27,6 @@ function setIndustryOptions() {
     industry.length = 1;
     //display correct values
     exchangeVal = exchange.value
-    alert(exchangeVal)
     for (var i = 0; i < exchangeObject[exchangeVal].length; i++) {
       industry.options[industry.options.length] = new Option(exchangeObject[exchangeVal][i], exchangeObject[exchangeVal][i]);
     }

@@ -7,7 +7,38 @@
 {% block content %}
     <h1>
         <center>
-            About
+            What is Knight Investor?
         </center>
     </h1>
+    <div class = "about_us">
+        <p>
+            Knight Investor is brought to you by undegraduate students
+            with a vested interest in the financial industry. We belive
+            all investors must start somewhere and that starting small is better
+            than not starting at all! At its core, our website is a stepping stone for novice investors
+            and a valuable tool for those interested in learning about the current state of the stock
+            market and potentially finding undervalued comapanies. Our product provides
+            statistical data on multiple stock exchanges and industries and runs 
+            numerous internal algorithms to generate our extensive reports. We hope you enjoy the product.
+            Click below to start now!
+        </p>
+    
+        <form action="{{ url_for("report_page")}}">
+            <input type="submit" value="Go To Reports!">
+        </form>
+    </div>
+
+    <h1>
+        <center>
+            Who Are We?
+        </center>
+    </h1>
+    <div class = "container">
+        <p>
+            Knight Investor was created by <strong>Alex Shane</strong> (Johns Hopkins) and <strong>Harrison Altschul</strong> (Boston College)
+        </p>
+    </div>
+    
+
+
 {% endblock %}

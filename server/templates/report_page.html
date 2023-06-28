@@ -7,7 +7,7 @@
 {% block content %}
     <h1>
         <center>
-            Report Generator
+            Welcome to Our Four Step Report!
         </center>
     </h1>
     <div class = container>
@@ -15,13 +15,14 @@
         <img src="../static/Images/stocks2.jpeg" class = "stock_photo1" alt = "Stock screen" width = "250" height = "500">
       </div>
       <div>
-        <h4 class = "wait">Estimated Time to Generate Reports:</h4>
-        <p class = "wait">
-            Daily/Weekly Report: 10 seconds to a minute or two 
-            <br><br>
-            Monthly Report: 30 seconds to a couple of minutes 
-            <br><br>
-            Please be patient!
+        <p class = "wait"> 
+          Step 1: Select report type (daily, weekly, or monthly report)
+          <br><br>
+          Step 2: Chose stock exchange
+          <br><br>
+          Step 3 (optional): Filter report by industry 
+          <br><br>
+          Step 4: Generate report and be patient while report is created
         </p>
         <form action="{{ url_for("report")}}" method="POST" name="report_options" id="report_options">
           <script src="../static/report.js"></script> 
@@ -46,6 +47,15 @@
             <br><br>
             <input type="submit" value="Generate Report">
           </form>
+          <p class = "wait">
+            Estimated Wait Times: 
+            <br><br>
+            Daily/Weekly Report: 10 seconds to a minute or two 
+            <br><br>
+            Monthly Report: 30 seconds to a couple of minutes 
+            <br><br>
+            Please be patient and we hope you enjoy!
+        </p>
       </div>
       <div>
         <img src="../static/Images/stocks2.jpeg" class = "stock_photo2" alt = "Stock screen" width = "250" height = "500">
