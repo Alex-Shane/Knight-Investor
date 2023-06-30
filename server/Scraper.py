@@ -220,13 +220,15 @@ class Scraper:
             return CSVHelper.sortByIndustry('./static/nyse_stocks.csv', industry)
         elif exchange == 'SP500':
             return CSVHelper.sortByIndustry('./static/SP500_stocks.csv', industry)
-        elif exchange == 'NASDAQ':
+        elif exchange == 'NASDAQ100':
             return CSVHelper.sortByIndustry('./static/NASDAQ_100_stocks.csv', industry)
+        elif exchange == 'NASDAQ':
+            return CSVHelper.sortByIndustry('./static/NASDAQ_stocks.csv', industry)
         else:
             return CSVHelper.sortByIndustry('./static/Dow_Jones_stocks.csv', industry)
         
     
-    def scrapeNASDAQ(report_type, industry = None):
+    def scrapeNASDAQ100(report_type, industry = None):
         """
         Scrape NASDAQ 100 stocks from Wikipedia and gather the information into Stock objects.
         
@@ -248,7 +250,7 @@ class Scraper:
             stocks.append(stock)
         return stocks
     
-    def getNASDAQTickers(industry = None):
+    def getNASDAQ100Tickers(industry = None):
         """
         Scrape NASDAQ 100 tickers from Wikipedia and return them in a list.
 
@@ -259,7 +261,7 @@ class Scraper:
         table = pd.read_html(url)
         tickers = table[4]['Ticker'].tolist()
         if industry != None:
-            tickers = Scraper.accountForIndustry(industry, 'NASDAQ', tickers)
+            tickers = Scraper.accountForIndustry(industry, 'NASDAQ100', tickers)
         return tickers
     
     def scrapeDOW(report_type, industry = None):
@@ -293,6 +295,25 @@ class Scraper:
         if industry != None:
             tickers = Scraper.accountForIndustry(industry, 'DOW', tickers)
         return tickers
+
+    def scrapeNASDAQ(duration, industry):
+        symbols = pd.read_csv('./static/NASDAQ_stocks.csv')['Symbol'].tolist()
+        if industry != None:
+            symbols = Scraper.accountForIndustry(industry, 'NASDAQ', symbols)
+        
+        stocks = list()
+        for symbol in symbols: 
+            print(symbol)
+            ticker = yf.Ticker(symbol)
+            stock = Stock(ticker)
+            if not duration == 'day':
+                try:
+                    stock.info = ticker.info
+                except:
+                    continue
+            stocks.append(stock)
+        return stocks
+        
     
 
 

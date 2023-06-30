@@ -320,10 +320,12 @@ def scrape_industryPE(url):
 def run(exchange, industry = None):
     if exchange == 'NYSE':
         stocks = Scraper.scrapeNYSE('month', industry)
-    elif exchange == 'NASDAQ':
-        stocks = Scraper.scrapeNASDAQ('month', industry)
+    elif exchange == 'NASDAQ100':
+        stocks = Scraper.scrapeNASDAQ100('month', industry)
     elif exchange == 'DOW':
         stocks = Scraper.scrapeDOW('month', industry)
+    elif exchange == 'NASDAQ':
+        stocks = Scraper.scrapeNASDAQ('month', industry)
     else:
         stocks = Scraper.scrapeSP500('month', industry)
     rankedStocks = rankStocks(stocks)

@@ -73,6 +73,15 @@ def getIndustriesInCSV(file_name):
     #[industries.append(x) for x in df if x not in industries]
     return eligible_industries
 
+def cleanNASDAQ():
+    df = pd.read_csv('./static/NASDAQ_stocks.csv')
+    filtered_df = df[df['Symbol'].str.len() < 5]
+    filtered_df = filtered_df[filtered_df['Country'].str.contains('United States', na = False)]
+    filtered_df.to_csv('./static/NASDAQ_stocks.csv', index = False)
+
+cleanNASDAQ()
+    
+    
 
 
 # =============================================================================
@@ -91,7 +100,7 @@ def getIndustriesInCSV(file_name):
 #         tickers = Scraper.getDOWTickers()
 #         file_name = 'Dow_Jones_stocks.csv'
 #     else:
-#         tickers = Scraper.getNASDAQTickers()
+#         tickers = Scraper.getNASDAQ100Tickers()
 #         file_name = 'NASDAQ_100_stocks.csv'
 #     df['Symbol'] = tickers
 #     industries = list()

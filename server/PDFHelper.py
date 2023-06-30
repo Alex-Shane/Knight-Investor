@@ -90,8 +90,10 @@ class PDFHelper:
             context['market'] = 'New York Stock Exchange'
         elif exchange == 'SP500':
             context['market'] = 'S&P 500'
-        elif exchange == 'NASDAQ':
+        elif exchange == 'NASDAQ100':
             context['market'] = 'NASDAQ 100'
+        elif exchange == 'NASDAQ':
+            context['market'] = 'NASDAQ Composite (US)'
         else:
             context['market'] = 'Dow Jones'
             

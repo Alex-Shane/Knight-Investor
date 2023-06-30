@@ -205,10 +205,12 @@ def configureLosers(context, losers):
 def run(exchange, industry = None):
     if exchange == 'NYSE':
         stocks = Scraper.scrapeNYSE('day', industry)
-    elif exchange == 'NASDAQ':
-        stocks = Scraper.scrapeNASDAQ('day', industry)
+    elif exchange == 'NASDAQ100':
+        stocks = Scraper.scrapeNASDAQ100('day', industry)
     elif exchange == 'DOW':
         stocks = Scraper.scrapeDOW('day', industry)
+    elif exchange == 'NASDAQ':
+        stocks = Scraper.scrapeNASDAQ('day', industry)
     else:
         stocks = Scraper.scrapeSP500('day', industry)
     ranked_stocks = rankStocks(stocks)
