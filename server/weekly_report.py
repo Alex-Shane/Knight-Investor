@@ -211,6 +211,8 @@ def run(exchange, industry = None):
         stocks = Scraper.scrapeDOW('week', industry)
     elif exchange == 'NASDAQ':
         stocks = Scraper.scrapeNASDAQ('week', industry)
+    elif exchange == 'HKSE':
+        stocks = Scraper.scrapeHKSE('week', industry)
     else:
         stocks = Scraper.scrapeSP500('week', industry)
     ranked_stocks = rankStocks(stocks)

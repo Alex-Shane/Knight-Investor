@@ -94,6 +94,8 @@ class PDFHelper:
             context['market'] = 'NASDAQ 100'
         elif exchange == 'NASDAQ':
             context['market'] = 'NASDAQ Composite (US)'
+        elif exchange == 'HKSE':
+            context['market'] = 'Hong Kong Stock Exchange'
         else:
             context['market'] = 'Dow Jones'
             

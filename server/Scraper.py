@@ -70,6 +70,8 @@ class Scraper:
             Scraper.getSPIndexInfo(context, duration)
         elif exchange == 'DOW':
             Scraper.getDowInfo(context, duration)
+        elif exchange == 'HKSE':
+            Scraper.getHKSEInfo(context, duration)
         else:
             Scraper.getNASDAQInfo(context, duration)
     
@@ -165,6 +167,29 @@ class Scraper:
             print("invalid duration")
             return
         Scraper.finishInfo(context, hist)
+    
+    def getHKSEInfo(context, duration):
+        """
+        Update information about the Hong Kong Stock Exchange over the given duration
+
+        Args:
+            context (dict): A dictionary containing the context information for the report.
+            duration (str): the period over which the report looks at (day, week, month)
+        """
+        context['exchange'] = "Hong Kong Stock Exchange"
+        if duration == 'day':
+            hist = yf.Ticker('^HSI').history(period='1d')
+        elif duration == 'month':
+            hist = yf.Ticker('^HSI').history(period='1mo')
+        elif duration == 'week':
+            today = DT.date.today()
+            week_ago = today - DT.timedelta(days=7)
+            hist = yf.Ticker('^HSI').history(
+                start=week_ago, end=today, actions=False)
+        else:
+            print("invalid duration")
+            return
+        Scraper.finishInfo(context, hist)
         
     def finishInfo(context, hist):
         """
@@ -224,6 +249,8 @@ class Scraper:
             return CSVHelper.sortByIndustry('./static/NASDAQ_100_stocks.csv', industry)
         elif exchange == 'NASDAQ':
             return CSVHelper.sortByIndustry('./static/NASDAQ_stocks.csv', industry)
+        elif exchange == 'HKSE':
+            return CSVHelper.sortByIndustry('./static/HKSE_stocks.csv', industry)
         else:
             return CSVHelper.sortByIndustry('./static/Dow_Jones_stocks.csv', industry)
         
@@ -314,6 +341,24 @@ class Scraper:
             stocks.append(stock)
         return stocks
     
+    def scrapeHKSE(duration, industry):
+        symbols = pd.read_csv('./static/HKSE_stocks.csv')['Symbol'].tolist()
+        if industry != None:
+            symbols = Scraper.accountForIndustry(industry, 'HKSE', symbols)
+        
+        stocks = list()
+        for symbol in symbols: 
+            print(symbol)
+            ticker = yf.Ticker(symbol)
+            stock = Stock(ticker)
+            if not duration == 'day':
+                try:
+                    stock.info = ticker.info
+                except:
+                    continue
+            stocks.append(stock)
+        return stocks
+    
     def setupHongKongTickers():
         df = pd.DataFrame()
         industries = list()
@@ -339,6 +384,7 @@ class Scraper:
         return df
         #     df.to_csv(file_name, index = False)
 
-df = Scraper.setupHongKongTickers()
+#df = Scraper.setupHongKongTickers()
+#df.to_csv('./static/HKSE_stocks.csv', index = False)
     
 
