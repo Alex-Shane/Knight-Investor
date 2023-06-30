@@ -313,8 +313,32 @@ class Scraper:
                     continue
             stocks.append(stock)
         return stocks
-        
     
+    def setupHongKongTickers():
+        df = pd.DataFrame()
+        industries = list()
+        tickers = list()
+        for x in range (1, 10000):
+            try:
+                if (x < 10):
+                    ticker = "000" + str(x) +".HK"
+                elif (x < 100):
+                    ticker = "00" + str(x) + ".HK"
+                elif (x < 1000):
+                    ticker = "0" + str(x) + ".HK"
+                else:
+                    ticker = str(x) + ".HK"
+                stock = yf.Ticker(ticker)
+                industries.append(stock.info['industry'])
+                tickers.append(ticker)
+            except:
+                print(ticker)
+                pass
+        df['Industry'] = industries
+        df['Symbol'] = tickers
+        return df
+        #     df.to_csv(file_name, index = False)
 
-
+df = Scraper.setupHongKongTickers()
+    
 
