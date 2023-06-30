@@ -69,18 +69,18 @@ def getIndustriesInCSV(file_name):
     eligible_industries = []
     keys = list(industries.keys())
     eligible_industries = []
-    [eligible_industries.append(x) for x in keys if industries[x] > 2]
+    [eligible_industries.append(x) for x in keys if industries[x] > 5]
     #[industries.append(x) for x in df if x not in industries]
     return eligible_industries
 
 def cleanNASDAQ():
     df = pd.read_csv('./static/NASDAQ_stocks.csv')
+    filtered_df = df[df['Symbol'].str.contains('', na = False)]
     filtered_df = df[df['Symbol'].str.len() < 5]
     filtered_df = filtered_df[filtered_df['Country'].str.contains('United States', na = False)]
     filtered_df.to_csv('./static/NASDAQ_stocks.csv', index = False)
 
-industries = getIndustriesInCSV('./static/NASDAQ_stocks.csv')
-print(industries)
+
     
     
 
