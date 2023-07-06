@@ -241,7 +241,7 @@ python-lsp-server @ file:///private/var/folders/sy/f16zz6x50xz3113nwtb9bvq00000g
 python-slugify @ file:///tmp/build/80754af9/python-slugify_1620405669636/work
 python-snappy @ file:///private/var/folders/sy/f16zz6x50xz3113nwtb9bvq00000gp/T/abs_ce5mef9jcb/croot/python-snappy_1670943918530/work
 pytoolconfig @ file:///private/var/folders/sy/f16zz6x50xz3113nwtb9bvq00000gp/T/abs_74xa7iol6y/croot/pytoolconfig_1676315055960/work
-pytz==2023.3
+pytz @ file:///private/var/folders/sy/f16zz6x50xz3113nwtb9bvq00000gp/T/abs_ddzpsmm2_f/croot/pytz_1671697430473/work
 pyviz-comms @ file:///tmp/build/80754af9/pyviz_comms_1623747165329/work
 PyWavelets @ file:///private/var/folders/sy/f16zz6x50xz3113nwtb9bvq00000gp/T/abs_4d73vf63_v/croot/pywavelets_1670425181052/work
 PyYAML @ file:///private/var/folders/sy/f16zz6x50xz3113nwtb9bvq00000gp/T/abs_79xo15pf1i/croot/pyyaml_1670514753622/work
