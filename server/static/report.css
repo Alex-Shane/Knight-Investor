@@ -85,3 +85,33 @@ p a {
     font-size: 16px;
     line-height: 2
   }
+
+  .search_form {
+    width: 600px;
+    height: 55px;
+    display: flex;
+  }
+
+  .search_input {
+    flex: 1;
+    border: none;
+    outline: none;
+  }
+
+  .search_button {
+    background: #66FCF1;
+    padding: 10px 50 px;
+    border: none;
+    outline: none;
+    color: #0B0C10;
+    letter-spacing: 1px;
+    cursor: pointer;
+  }
+
+  tbody {
+    color: #C5C6C7;
+    font-size: 14px;
+    font: georgia; 
+    text-align: left;
+    line-height: 2;
+  }

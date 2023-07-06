@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %} 
+    Stock Searcher
+{% endblock %}
+
+{% block content %}
+    <h1>
+        <center>
+            Stock Searcher
+        </center>
+    </h1>
+
+    <div class = "container" style = "box-sizing: border-box;">
+        <form class = "search_form" action = "{{ url_for('search') }}" method="POST">
+            <input type = "text" class = "search_input" name="query" placeholder ='Enter stock ticker (ex. MSFT for Microsoft)'>
+            <button type = "submit" class = "search_button"> Search </button>
+        </form>
+        
+    </div>
+
+    <div style = "text-align: center;">
+        <p>
+            Note: If you get redirected back to this page after a search, you entered
+            an invalid ticker. Please try again.
+        </p>
+    </div>
+
+    
+{% endblock %}

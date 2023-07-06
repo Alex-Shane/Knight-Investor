@@ -28,6 +28,17 @@
             <form action="{{ url_for("report_page")}}" class = "home_report">
                 <input type="submit" value="Go To Reports!">
             </form>
+            <h4>
+                Curious About Individual Stocks?
+            </h4>
+            <p>
+                Explore the whole host of stocks on Yahoo Finance with our
+                <br><br>
+                Stock Searcher below.
+            </p>
+            <form action="{{ url_for("search_page")}}" class = "home_report">
+                <input type="submit" value="Search Now!">
+            </form>
         </div>
       </div>
 {% endblock %}

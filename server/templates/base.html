@@ -1,7 +1,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %} {% endblock %} - Knight-Investor</title>
+    <title>{% block title %} {% endblock %} - Knight Investor</title>
     <link rel="stylesheet" href="../static/report.css">
     <link rel="shortcut icon" type="image/x-icon" href="../static/Images/logo4.ico">
 </head>
@@ -13,6 +13,10 @@
 
         <a href="{{ url_for("report_page")}}">
             Create Report
+        </a>
+
+        <a href = "{{ url_for("search_page")}}"">
+            Stock Search
         </a>
 
         <a href="{{ url_for("about")}}">

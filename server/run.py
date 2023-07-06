@@ -1,7 +1,8 @@
-from flask import Flask, render_template, request, send_file  # Import flask
+from flask import Flask, render_template, request, send_file, redirect, url_for, flash  # Import flask
 import daily_report as dr
 import weekly_report as wr
 import monthly_report as mr
+import searcher as searcher 
 import os
 
 
@@ -43,6 +44,29 @@ def report():
 def download():
     global file_name
     return send_file(file_name, as_attachment = True)
+
+@app.route('/stock_search')
+def search_page():
+    return render_template('search.html')
+
+@app.route('/stock_search/', methods=['POST'])
+def search():
+    query = request.form['query']
+    if '/' in query:
+        return redirect(url_for('search_page'))
+    return redirect(url_for('search_result', ticker = query))
+
+@app.route('/stock_search/<ticker>')
+def search_result(ticker):
+    info = searcher.getInfo(ticker)
+    if info == None:
+        return redirect(url_for('search_page'))
+    else:
+        try:
+            name = info['longName']
+        except:
+            name = ticker
+        return render_template('search_output.html', info = info, name = name)
 
 @app.route('/about')
 def about():
