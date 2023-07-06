@@ -22,10 +22,19 @@
             numerous internal algorithms to generate our extensive reports. We hope you enjoy the product.
             Click below to start now!
         </p>
-    
-        <form action="{{ url_for("report_page")}}">
-            <input type="submit" value="Go To Reports!">
-        </form>
+
+        <a href="{{ url_for("report_page")}}">
+            <button>
+                Go to Reports!
+            </button>
+        </a>
+
+        <a href="{{ url_for("search_page")}}" style = "padding-left: 30px;">
+            <button>
+                Search Stocks!
+            </button>
+        </a>
+
     </div>
 
     <h1>
@@ -35,7 +44,19 @@
     </h1>
     <div class = "container">
         <p>
-            Knight Investor was created by <strong>Alex Shane</strong> (Johns Hopkins) and <strong>Harrison Altschul</strong> (Boston College)
+            Knight Investor was created by 
+            <strong>
+                <a href = "https://www.linkedin.com/in/alex-shane-b34337249/" target = "_blank" rel = "noreferrer noopener">
+                    Alex Shane
+                </a>
+            </strong> 
+             (Johns Hopkins) and
+            <strong>
+                <a href = "https://www.linkedin.com/in/harrison-altschul-992863262/" target = "_blank" rel = "noreferrer noopener">
+                    Harrison Altschul
+                </a>
+            </strong> 
+             (Boston College)
         </p>
     </div>
     
