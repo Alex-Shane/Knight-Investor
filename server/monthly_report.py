@@ -70,7 +70,7 @@ def makePDF(final_three, exchange):
     template_env = jinja2.Environment(loader=template_loader)
     template = template_env.get_template('./templates/monthly_report.html')
     output_text = template.render(context)
-    config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
+    config = pdfkit.configuration()
     file_name = helper.getFileName(exchange, 'month')
     pdfkit.from_string(output_text, file_name, configuration=config)
     return (context, file_name)
