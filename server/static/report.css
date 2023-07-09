@@ -81,6 +81,21 @@ p a {
     padding-left: 75px;
   }
 
+  @media screen and (max-width: 600px) {
+    form {
+      padding-top: 60px;
+      padding-bottom: 60px;
+    }
+    .stock-photo1 {
+      float: left;
+      padding-right: 125px;
+    }
+    .stock_photo2 {
+      float: right;
+      padding-left: 125px;
+    }
+  }
+
   .wait {
     text-align: center;
   }
