@@ -266,7 +266,7 @@ class Scraper:
         Returns:
             list: A list of Stock objects representing the NASDAQ 100 stocks.
         """
-        tickers = Scraper.getNASDAQTickers(industry)
+        tickers = Scraper.getNASDAQ100Tickers(industry)
         stocks = list()
         for ticker in tickers:
             print(ticker)
