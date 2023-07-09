@@ -25,6 +25,11 @@ h4 {
     font: georgia; 
 }
 
+nav {
+  overflow-y: scroll;
+  white-space: nowrap;
+}
+
 nav a {
     color: whitesmoke;
     font-size: 1em;
