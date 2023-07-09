@@ -18,11 +18,17 @@ def getInfo(ticker):
             ticker = ticker.upper()
         print(ticker)
         stock = yf.Ticker(str(ticker))
-        return stock.info
+        info = stock.info
+        info = formatValues(info)
+        return info
         
     except Exception as e:
         print(e)
         return None
 
-
-
+def formatValues(info):
+    for key in info:
+        value = info[key]
+        if type(value) == float or type(value) == int:
+            info[key] = ('{:,}'.format(value))
+    return info
