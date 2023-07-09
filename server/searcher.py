@@ -11,7 +11,7 @@ import yfinance as yf
 def getInfo(ticker):
 
     try:
-        if ('.HK' in ticker):
+        if ('.HK' not in ticker):
             #adjust for errors in user input
             ticker = ticker.replace('.', '-')
             ticker = ticker.replace(" ", "")

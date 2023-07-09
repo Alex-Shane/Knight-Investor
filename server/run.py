@@ -12,6 +12,7 @@ downloaded = False
 
 @app.route('/')  # When someone goes to / on the server, execute the following function
 def home():
+    delete_all_reports()
     return render_template('index.html')  # Return index.html from the static folder
 
 @app.route('/create_report')
@@ -80,5 +81,4 @@ def delete_all_reports():
             os.remove(file)
 
 if __name__ == '__main__':  # If the script that was run is this script (we have not been imported)
-    delete_all_reports()
-    app.run()  # Start the server
+    app.run(host="0.0.0.0", port = 5000)  # Start the server
