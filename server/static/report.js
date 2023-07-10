@@ -2,6 +2,9 @@ window.onload = function() {
     var period = document.getElementById("period")
     var exchange = document.getElementById("exchange")
     var industry = document.getElementById("industry")
+    document.getElementById('exchange').addEventListener('change', setIndustryOptions);
+    document.getElementById('exchange').addEventListener('touchend', setIndustryOptions);
+
 }
 
 function setIndustryOptions() {
