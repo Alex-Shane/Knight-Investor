@@ -24,6 +24,8 @@ def report():
     period = request.form['period']
     exchange = request.form['exchange']
     industry = request.form['industry']
+    if industry == 'None':
+        industry = None
     global file_name
     if period == 'month':
         result = mr.run(exchange, industry)
@@ -36,6 +38,7 @@ def report():
         file_name = result[1]
         return render_template('output_weekly.html', **context)
     else:
+        print(type(industry))
         result = dr.run(exchange, industry)
         context = result[0]
         file_name = result[1]
@@ -81,5 +84,5 @@ def delete_all_reports():
             os.remove(file)
 
 if __name__ == '__main__':  # If the script that was run is this script (we have not been imported)
-    app.run(host="0.0.0.0", port = 5000, debug = True)  # Start the server
-    #app.run(debug = True, port = 5000)
+    #app.run(host="0.0.0.0", port = 5000, debug = True)  # Start the server
+    app.run(debug = True, port = 5000)
