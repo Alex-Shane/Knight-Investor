@@ -1,7 +1,6 @@
 form {
     color: #C5C6C7;
     font-size: 24px;
-    font: georgia; 
     text-align: center;
     padding-top: 30px;
     padding-bottom: 30px;
@@ -9,20 +8,38 @@ form {
 
 h1 {
     color: #66FCF1;
-    font-size: 32px;
-    font: georgia; 
+    font-size: 32px; 
 }
 
 h3 {
     color: #66FCF1;
     font-size: 24px;
-    font: georgia; 
 }
 
 h4 {
     color: #66FCF1;
     font-size: 21px;
-    font: georgia; 
+}
+
+header {
+  background-color: #66FCF1;
+  margin: 0 auto;
+}
+
+nav ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+nav li {
+  display: inline-block;
+  margin-left: 70px;
+  padding-top: 10px;
+  height: 2em;
+  position: relative;
+  vertical-align: middle;
+  text-align: center;
 }
 
 nav {
@@ -31,19 +48,42 @@ nav {
 }
 
 nav a {
-    color: whitesmoke;
+    color: #444;
     font-size: 1em;
-    margin-left: 75px;
     text-decoration: none;
-    font: georgia;
+    text-transform: uppercase;
+    padding-bottom: 20px;
+    vertical-align: middle;
+    line-height: 2em;
 }
+
+nav a::before {
+  content: "";
+  display: block;
+  height: 5px;
+  width: 0%;
+  background-color: #444;
+  position: absolute;
+  top: 0;
+  transition: all ease-in-out 100ms;
+}
+
+nav a:hover::before {
+  width: 100%;
+}
+
+nav a:hover {
+  border-top: 3px solid black;
+  padding-top: 20px;
+}
+
 body {
        background-color: #0B0C10;
+       font-family: "Didot", serif;
 }
 p {
     color: #C5C6C7;
     font-size: 14px;
-    font: georgia; 
 }
 
 p a {
@@ -124,14 +164,14 @@ p a {
     border: none;
     outline: none;
     color: #0B0C10;
+    font-family: "Didot", serif;
     letter-spacing: 1px;
     cursor: pointer;
   }
 
   tbody {
     color: #C5C6C7;
-    font-size: 14px;
-    font: georgia; 
+    font-size: 14px; 
     text-align: left;
     line-height: 2;
   }

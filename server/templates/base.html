@@ -7,25 +7,32 @@
     <link rel="shortcut icon" type="image/x-icon" href="../static/Images/logo4.ico">
 </head>
 <body>
-    <nav>
-        <a href="{{ url_for("home")}}">
-            Home
-        </a>
-
-        <a href="{{ url_for("report_page")}}">
-            Create Report
-        </a>
-
-        <a href = "{{ url_for("search_page")}}"">
-            Stock Search
-        </a>
-
-        <a href="{{ url_for("about")}}">
-            About
-        </a>
-
-    </nav>
-    <hr>
+    <header>
+        <nav>
+            <ul>
+                <li>
+                    <a href="{{ url_for("home")}}">
+                        Home
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for("report_page")}}">
+                        Reports
+                    </a>
+                </li>
+                <li>
+                    <a href = "{{ url_for("search_page")}}"">
+                        Search
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for("about")}}">
+                        About
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </header>
     <div class="content">
         {% block content %} {% endblock %}
     </div>
