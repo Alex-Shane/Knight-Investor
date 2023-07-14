@@ -32,3 +32,4 @@ def formatValues(info):
         if type(value) == float or type(value) == int:
             info[key] = ('{:,}'.format(value))
     return info
+
