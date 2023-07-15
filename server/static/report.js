@@ -29,7 +29,10 @@ function setIndustryOptions() {
         "DOW": []
       }
     }
-    
+    // sort industries alphabetically
+    for (var ex in exchangeObject) {
+      exchangeObject[ex].sort()
+    }
     //empty Chapters dropdown
     industry.length = 1;
     //display correct values
