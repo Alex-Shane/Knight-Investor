@@ -84,5 +84,5 @@ def delete_all_reports():
             os.remove(file)
 
 if __name__ == '__main__':  # If the script that was run is this script (we have not been imported)
-    #app.run(host="0.0.0.0", port = 5000, debug = True)  # Start the server
+    #app.run(host="0.0.0.0", port = 5000)  # Start the server
     app.run(debug = True, port = 5000)
