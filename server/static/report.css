@@ -6,6 +6,10 @@ form {
     padding-bottom: 30px;
 }
 
+table {
+    border-spacing: 30px;
+}
+
 h1 {
     color: #66FCF1;
     font-size: 32px; 

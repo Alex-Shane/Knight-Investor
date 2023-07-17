@@ -12,7 +12,7 @@ downloaded = False
 
 @app.route('/')  # When someone goes to / on the server, execute the following function
 def home():
-    delete_all_reports()
+    #delete_all_reports()
     return render_template('index.html')  # Return index.html from the static folder
 
 @app.route('/create_report')
@@ -67,7 +67,7 @@ def search_result(ticker):
         return redirect(url_for('search_page'))
     else:
         try:
-            name = info['longName']
+            name = info['Long Name']
         except:
             name = ticker
         return render_template('search_output.html', info = info, name = name)

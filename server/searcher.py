@@ -23,6 +23,7 @@ def getInfo(ticker):
         new_info = {}
         for key in info:
             new_info[conversion[key]] = info[key]
+        new_info = formatCompanyOfficers(new_info)
         return new_info
         
     except Exception as e:
@@ -34,6 +35,14 @@ def formatValues(info):
         value = info[key]
         if type(value) == float or type(value) == int:
             info[key] = ('{:,}'.format(value))
+    return info
+
+def formatCompanyOfficers(info):
+    val = ""
+    for officer in info["Company Officers"]:
+        val += officer["name"] + " (" + officer["title"] + "), "
+        val += "\n"
+    info["Company Officers"] = val
     return info
 
 
