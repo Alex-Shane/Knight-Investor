@@ -20,20 +20,20 @@
           <br><br>
           Step 2: Chose stock exchange
           <br><br>
-          Step 3 (optional): Filter report by industry 
+          Step 3: Filter report by industry 
           <br><br>
           Step 4: Generate report and be patient while report is created
         </p>
         <form action="{{ url_for("report")}}" method="POST" name="report_options" id="report_options">
           <script src="../static/report.js"></script> 
-            Period: <select name="period" id="period">
+            Period: <select name="period" id="period" required>
               <option value="" selected> Please select a period </option>
               <option value="month"> Month </option>
               <option value="week"> Week </option>
               <option value="day"> Prev 24 Hours </option>
             </select>
             <br><br>
-            Stock Exchange: <select name="exchange" id="exchange">
+            Stock Exchange: <select name="exchange" id="exchange" required>
               <option value="" selected> Please select an exchange </option>
               <option value="NYSE"> New York Stock Exchange</option>
               <option value="HKSE"> Hong Kong Stock Exchange </option>
@@ -43,8 +43,8 @@
               <option value="DOW"> Dow Jones Industrial Average </option>
             </select>
             <br><br>
-            Industry (optional): <select name="industry" id="industry">
-              <option value="None" selected="selected"> None </option>
+            Industry: <select name="industry" id="industry" required>
+              <option value="" selected> None </option>
             </select>
             <br><br>
             <input type="submit" value="Generate Report">
