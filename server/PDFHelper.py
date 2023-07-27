@@ -99,9 +99,9 @@ class PDFHelper:
         else:
             context['market'] = 'Dow Jones'
             
-    def getFileName(self, exchange, duration):
+    def getFileName(self, exchange, industry ,duration):
         """
-        Create a unique filename based on the exchange and duration of the report.
+        Create a unique filename based on the exchange, industry, and duration of the report.
 
         Args:
             exchange (str): The name of the exchange from which the stocks of the report are taken 
@@ -112,17 +112,17 @@ class PDFHelper:
     """
         today = dt.today()
         if duration == 'day':
-            return (today.strftime("%b-%d-%Y") + "_" + exchange + "_stock_report.pdf")
+            return (today.strftime("%b-%d-%Y") + "_" + exchange + "_" + industry + "_stock_report.pdf")
         elif duration == 'week': 
             week_ago = today - timedelta(days=7)
-            return ("week_of_" + week_ago.strftime("%b-%d-%Y") + "_" + exchange + "_stock_report.pdf")
+            return ("week_of_" + week_ago.strftime("%b-%d-%Y") + "_" + exchange + "_" + industry + "_stock_report.pdf")
         else:
             month_ago = today - timedelta(days=30)
             if today.month == month_ago.month:
                 month_year = today.strftime("%B_%Y_")
             else:
                 month_year = month_ago.strftime("%B_%Y-") + today.strftime("%B_%Y_")
-            return (month_year + exchange + "_stock_report.pdf")
+            return (month_year + exchange + "_" + industry + "_stock_report.pdf")
     
     def getIndustry(self, stock):
         industry = stock.info['industry']

@@ -16,7 +16,7 @@ from Scraper import Scraper
 from PDFHelper import PDFHelper
 
     
-def makePDF(final_three, exchange):
+def makePDF(final_three, exchange, industry):
     """
     Generates a PDF file containing relevant information and current news about the highest ranked stocks for current month.
 
@@ -71,7 +71,7 @@ def makePDF(final_three, exchange):
     template = template_env.get_template('./templates/monthly_report.html')
     output_text = template.render(context)
     config = pdfkit.configuration()
-    file_name = helper.getFileName(exchange, 'month')
+    file_name = helper.getFileName(exchange, industry, 'month')
     pdfkit.from_string(output_text, file_name, configuration=config)
     return (context, file_name)
 
@@ -332,7 +332,7 @@ def run(exchange, industry):
         stocks = Scraper.scrapeSP500('month', industry)
     rankedStocks = rankStocks(stocks)
     best_stocks = getFinalStocks(rankedStocks)
-    return makePDF(best_stocks, exchange)
+    return makePDF(best_stocks, exchange, industry)
     
 
 

@@ -95,7 +95,7 @@ def findLosers(stocks):
         stocks.remove(loser)
     return losers
 
-def makePDF(winners, losers, exchange):
+def makePDF(winners, losers, exchange, industry):
     """
     Generates a PDF file containing relevant information and current news about the highest ranked stocks for current month.
 
@@ -116,7 +116,7 @@ def makePDF(winners, losers, exchange):
     template = template_env.get_template('./templates/weekly_report.html')
     output_text = template.render(context)
     config = pdfkit.configuration()
-    file_name = helper.getFileName(exchange, 'week')
+    file_name = helper.getFileName(exchange, industry, 'week')
     pdfkit.from_string(output_text, file_name, configuration=config)
     return (context, file_name)
     
@@ -218,7 +218,7 @@ def run(exchange, industry):
     ranked_stocks = rankStocks(stocks)
     winners = findWinners(ranked_stocks)
     losers = findLosers(ranked_stocks)
-    return makePDF(winners, losers, exchange)
+    return makePDF(winners, losers, exchange, industry)
 
 
 
