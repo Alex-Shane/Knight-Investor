@@ -24,8 +24,6 @@ def report():
     period = request.form['period']
     exchange = request.form['exchange']
     industry = request.form['industry']
-    if industry == 'None':
-        industry = None
     global file_name
     if period == 'month':
         result = mr.run(exchange, industry)

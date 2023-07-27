@@ -202,7 +202,7 @@ def configureLosers(context, losers):
     helper.handleDividend(loser3, context, 6)
     helper.handleRecommendation(loser3, context, 6)
 
-def run(exchange, industry = None):
+def run(exchange, industry):
     if exchange == 'NYSE':
         stocks = Scraper.scrapeNYSE('week', industry)
     elif exchange == 'NASDAQ100':

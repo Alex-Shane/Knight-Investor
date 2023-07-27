@@ -317,7 +317,7 @@ def scrape_industryPE(url):
 #url = 'https://eqvista.com/price-to-earnings-pe-ratios-by-industry/'
 #industry_PE = scrape_industryPE(url)
 
-def run(exchange, industry = None):
+def run(exchange, industry):
     if exchange == 'NYSE':
         stocks = Scraper.scrapeNYSE('month', industry)
     elif exchange == 'NASDAQ100':
