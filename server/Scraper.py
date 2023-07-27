@@ -377,5 +377,6 @@ class Scraper:
 
 #df = Scraper.setupHongKongTickers()
 #df.to_csv('./static/HKSE_stocks.csv', index = False)
+info = yf.Ticker('GFOR').info
     
 

@@ -7,44 +7,42 @@
 {% block content %}
 <h1>
     <center>
-        {{market}} Monthly Report
+        {{context['exchange']}} Monthly Report on {{industry}}
     </center>
 </h1>
 <p>*Please see end of the report if interested in what statistics were evaluated when ranking the stocks. All data taken from Yahoo Finance</p>
-<p>For reference, the <strong>{{exchange}}&nbsp;{{change}} </strong>by <strong>{{percent}}%</strong> over the past month</p>
-<h4><strong>Best Stock:&nbsp;</strong>{{s1}} with a {{d1}}% increase from last month</h4>
-<p>Quick facts about <strong>{{s1ticker}}:</strong></p>
-<p>Current Stock Price = ${{price1}}</p>
-<p>Market Cap = ${{mcap1}}</p>
-<p>Industry = {{i1}}</p>
-<p>Provides Dividend? {{a1}}, {{des1}}</p>
-<p>Yahoo Analyst Recommendation: {{rec1}}</p>
-<p>&nbsp;</p>
-<p>For further reading on <strong>{{s1ticker}}</strong>, please see below:</p>
-<p><a href="{{link1}}" target="_blank"><span>{{link1}}</span></a></p>
-<p>&nbsp;</p>
-<h4><strong>2nd Best Stock: </strong>{{s2}} with a {{d2}}% increase from last month</h4>
-<p>Quick facts about <strong>{{s2ticker}}:</strong></p>
-<p>Current Stock Price = ${{price2}}</p>
-<p>Market Cap = ${{mcap2}}</p>
-<p>Industry = {{i2}}</p>
-<p>Provides Dividend? {{a2}}, {{des2}}</p>
-<p>Yahoo Analyst Recommendation: {{rec2}}</p>
-<p>&nbsp;</p>
-<p>For further reading on <strong>{{s2ticker}}</strong>, please see below:</p>
-<p><a href="{{link2}}" target="_blank"><span>{{link2}}</span></a></p>
-<p>&nbsp;</p>
-<h4><strong>3rd Best Stock: </strong>{{s3}} with a {{d3}}% increase from last month</h4>
-<p>Quick facts about <strong>{{s3ticker}}:</strong></p>
-<p>Current Stock Price = ${{price3}}</p>
-<p>Market Cap = ${{mcap3}}</p>
-<p>Industry = {{i3}}</p>
-<p>Provides Dividend? {{a3}}, {{des3}}</p>
-<p>Yahoo Analyst Recommendation: {{rec3}}</p>
-<p>&nbsp;</p>
-<p>For further reading on <strong>{{s3ticker}}</strong>, please see below:</p>
-<p><a href="{{link3}}" target="_blank"><span>{{link3}}</span></a></p>
-<p>&nbsp;</p>
+<p>For reference, the <strong>{{context['exchange']}}&nbsp;{{context['change']}} </strong>by <strong>{{context['percent']}}%</strong> over the past month</p>
+{%for stock in stocks%}
+    {% set index = loop.index | string() %}
+    {%set name = "s" + index%}
+    {%set d = "d" + index%}
+    {%set ticker = "s" + index + "ticker"%}
+    {%set price = "price" + index%}
+    {%set mcap = "mcap" + index%}
+    {%set industry = "i" + index%}
+    {%set ans = "a" + index%}
+    {%set des = "des" + index%}
+    {%set rec = "rec" + index%}
+    {%set link = "link" + index%}
+    {% if loop.first %}
+        <h4><strong>Best Stock:&nbsp;</strong>{{context[name]}} with a {{context[d]}}% increase from last month</h4>
+    {% elif index == "2" %}
+        <h4><strong>2nd Best Stock: </strong>{{context[name]}} with a {{context[d]}}% increase from last month</h4>
+    {% else %}
+        <h4><strong>3rd Best Stock: </strong>{{context[name]}} with a {{context[d]}}% increase from last month</h4>
+    {% endif %}
+    <p>Quick facts about <strong>{{context[ticker]}}:</strong></p>
+    <p>Current Stock Price = ${{context[price]}}</p>
+    <p>Market Cap = ${{context[mcap]}}</p>
+    <p>Industry = {{context[industry]}}</p>
+    <p>Provides Dividend? {{context[ans]}}, {{context[des]}}</p>
+    <p>Yahoo Analyst Recommendation: {{context[rec]}}</p>
+    <p>&nbsp;</p>
+    <p>For further reading on <strong>{{ticker}}</strong>, please see below:</p>
+    <p><a href="{{context[link]}}" target="_blank"><span>{{context[link]}}</span></a></p>
+    <p>&nbsp;</p>
+{%endfor%}
+
 <p><span>Statistics considered in the ranking model (by order of importance):</span></p>
 <p><span>1) %increase in stock price over the previous month</span></p>
 <p><span>2) Previous 12 months' P/E ratio</span></p>

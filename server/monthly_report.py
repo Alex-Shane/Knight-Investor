@@ -16,7 +16,7 @@ from Scraper import Scraper
 from PDFHelper import PDFHelper
 
     
-def makePDF(final_three, exchange, industry):
+def makePDF(stocks, exchange, industry):
     """
     Generates a PDF file containing relevant information and current news about the highest ranked stocks for current month.
 
@@ -30,42 +30,44 @@ def makePDF(final_three, exchange, industry):
     helper.makeTitle(exchange, context)
     scraper = Scraper()
     scraper.getExchangeInfo(exchange, context, 'month')
-    context['s1'] = final_three[0].info['longName']
-    context['s1ticker'] = final_three[0].ticker
-    context['d1'] = f'{final_three[0].delta / final_three[0].open * 100:.2f}'
-    cur1 = round(final_three[0].info['currentPrice'], 2)
+    context['s1'] = stocks[0].info['longName']
+    context['s1ticker'] = stocks[0].ticker
+    context['d1'] = f'{stocks[0].delta / stocks[0].open * 100:.2f}'
+    cur1 = round(stocks[0].info['currentPrice'], 2)
     cur1 = ('{:,}'.format(cur1))
     context['price1'] = cur1
-    mcap1 = ('{:,}'.format(final_three[0].info['marketCap']))
+    mcap1 = ('{:,}'.format(stocks[0].info['marketCap']))
     context['mcap1'] = mcap1
-    context['i1'] = final_three[0].info['industry'] 
-    helper.handleDividend(final_three[0], context, 1)
-    helper.handleRecommendation(final_three[0], context, 1)
-    context['link1'] = f"https://finance.yahoo.com/quote/{final_three[0].ticker}/news?p={final_three[0].ticker}"
-    context['s2'] = final_three[1].info['longName']
-    context['s2ticker'] = final_three[1].ticker
-    context['d2'] = f'{final_three[1].delta / final_three[1].open * 100:.2f}'
-    cur2 = round(final_three[1].info['currentPrice'], 2)
-    cur2 = ('{:,}'.format(cur2))
-    context['price2'] = cur2
-    mcap2 = ('{:,}'.format(final_three[1].info['marketCap']))
-    context['mcap2'] = mcap2
-    context['i2'] = final_three[1].info['industry']
-    helper.handleDividend(final_three[1], context, 2)
-    helper.handleRecommendation(final_three[1], context, 2)
-    context['link2'] = f"https://finance.yahoo.com/quote/{final_three[1].ticker}/news?p={final_three[1].ticker}"
-    context['s3'] = final_three[2].info['longName']
-    context['s3ticker'] = final_three[2].ticker
-    context['d3'] = f'{final_three[2].delta / final_three[2].open * 100:.2f}'
-    cur3 = round(final_three[2].info['currentPrice'], 2)
-    cur3 = ('{:,}'.format(cur3))
-    context['price3'] = cur3
-    mcap3 = ('{:,}'.format(final_three[2].info['marketCap']))
-    context['mcap3'] = mcap3
-    context['i3'] = final_three[2].info['industry']
-    helper.handleDividend(final_three[2], context, 3)
-    helper.handleRecommendation(final_three[2], context, 3)
-    context['link3'] = f"https://finance.yahoo.com/quote/{final_three[2].ticker}/news?p={final_three[2].ticker}"
+    context['i1'] = stocks[0].info['industry'] 
+    helper.handleDividend(stocks[0], context, 1)
+    helper.handleRecommendation(stocks[0], context, 1)
+    context['link1'] = f"https://finance.yahoo.com/quote/{stocks[0].ticker}/news?p={stocks[0].ticker}"
+    if len(stocks) > 1:
+        context['s2'] = stocks[1].info['longName']
+        context['s2ticker'] = stocks[1].ticker
+        context['d2'] = f'{stocks[1].delta / stocks[1].open * 100:.2f}'
+        cur2 = round(stocks[1].info['currentPrice'], 2)
+        cur2 = ('{:,}'.format(cur2))
+        context['price2'] = cur2
+        mcap2 = ('{:,}'.format(stocks[1].info['marketCap']))
+        context['mcap2'] = mcap2
+        context['i2'] = stocks[1].info['industry']
+        helper.handleDividend(stocks[1], context, 2)
+        helper.handleRecommendation(stocks[1], context, 2)
+        context['link2'] = f"https://finance.yahoo.com/quote/{stocks[1].ticker}/news?p={stocks[1].ticker}"
+    if len(stocks) > 2:
+        context['s3'] = stocks[2].info['longName']
+        context['s3ticker'] = stocks[2].ticker
+        context['d3'] = f'{stocks[2].delta / stocks[2].open * 100:.2f}'
+        cur3 = round(stocks[2].info['currentPrice'], 2)
+        cur3 = ('{:,}'.format(cur3))
+        context['price3'] = cur3
+        mcap3 = ('{:,}'.format(stocks[2].info['marketCap']))
+        context['mcap3'] = mcap3
+        context['i3'] = stocks[2].info['industry']
+        helper.handleDividend(stocks[2], context, 3)
+        helper.handleRecommendation(stocks[2], context, 3)
+        context['link3'] = f"https://finance.yahoo.com/quote/{stocks[2].ticker}/news?p={stocks[2].ticker}"
     template_loader = jinja2.FileSystemLoader('./')
     template_env = jinja2.Environment(loader=template_loader)
     template = template_env.get_template('./templates/monthly_report.html')
@@ -73,7 +75,7 @@ def makePDF(final_three, exchange, industry):
     config = pdfkit.configuration()
     file_name = helper.getFileName(exchange, industry, 'month')
     pdfkit.from_string(output_text, file_name, configuration=config)
-    return (context, file_name)
+    return (context, file_name, stocks)
 
 
 def rankStocks(stocks):
@@ -127,6 +129,7 @@ def rankPercentIncrease(stocks):
     while(len(increase_values) != 0):
         highest_increase_stock = max(increase_values, key = increase_values.get)
         highest_increase_stock.increase_rating = len(increase_values)
+        highest_increase_stock.rank += 0.4*highest_increase_stock.increase_rating
         del increase_values[highest_increase_stock]
     return stocks
 
@@ -149,6 +152,7 @@ def rankTrailingEPS(stocks):
     while(len(eps_values) != 0): 
         highest_EPS_Stock = max(eps_values, key = eps_values.get)
         highest_EPS_Stock.trailing_eps_rating = len(eps_values)
+        highest_EPS_Stock.rank += 0.1*highest_EPS_Stock.trailing_eps_rating
         del eps_values[highest_EPS_Stock]
     return stocks
 
@@ -171,6 +175,7 @@ def rankForwardEPS(stocks):
     while(len(feps_values) != 0): 
         highest_fEPS_Stock = max(feps_values, key = feps_values.get)
         highest_fEPS_Stock.forward_eps_rating = len(feps_values)
+        highest_fEPS_Stock.rank += 0.025*highest_fEPS_Stock.forward_eps_rating
         del feps_values[highest_fEPS_Stock]
     return stocks
 
@@ -193,6 +198,7 @@ def rankTrailingPE(stocks):
     while(len(pe_values) != 0):
         best_pe_stock = min(pe_values, key = pe_values.get)
         best_pe_stock.trailing_pe_rating = len(pe_values)
+        best_pe_stock.rank += 0.2*best_pe_stock.trailing_pe_rating
         del pe_values[best_pe_stock]
     return stocks
 
@@ -215,6 +221,7 @@ def rankForwardPE(stocks):
     while (len(fpe_values) != 0):
         best_fpe_stock = min(fpe_values, key = fpe_values.get)
         best_fpe_stock.forward_pe_rating = len(fpe_values)
+        best_fpe_stock.rank += 0.025*best_fpe_stock.forward_pe_rating
         del fpe_values[best_fpe_stock]
     return stocks
 
@@ -237,6 +244,7 @@ def rankEVRev(stocks):
     while (len(evRev_values) != 0): 
         best_evRev_stock = min(evRev_values, key = evRev_values.get)
         best_evRev_stock.EVRev_rating = len(evRev_values)
+        best_evRev_stock.rank += 0.1*best_evRev_stock.EVRev_rating
         del evRev_values[best_evRev_stock]
     return stocks
 
@@ -259,6 +267,7 @@ def rankEBITDA(stocks):
     while (len(ebit_values) != 0): 
         best_ebit_stock = min(ebit_values, key = ebit_values.get)
         best_ebit_stock.Ebit_rating = len(ebit_values)
+        best_ebit_stock.rank += 0.15*best_ebit_stock.Ebit_rating
         del ebit_values[best_ebit_stock]
     return stocks
 
@@ -274,48 +283,16 @@ def getFinalStocks(stocks):
         list: A new list of stocks sorted in descending order of their rankings.
 
     """
-    stock_ranks = dict()
-    for stock in stocks:
-        stock.rank = 0.4*(stock.increase_rating) + 0.2*(stock.trailing_pe_rating) + 0.15*(stock.Ebit_rating) + 0.1*(stock.trailing_eps_rating) + 0.1*(stock.EVRev_rating) + 0.025*(stock.forward_eps_rating) + 0.025*(stock.forward_pe_rating)
-        stock_ranks[stock] = stock.rank
     best_stocks = list()
-    if len(stock_ranks) < 3:
-        size = len(stock_ranks)
-    else:
-        size = 3
-    for x in range (size):
-        best_stock = max(stock_ranks, key = stock_ranks.get)
-        best_stocks.append(best_stock)
-        del stock_ranks[best_stock]
+    for x in range(0, len(stocks)):
+        best = stocks[x]
+        if best.info['averageVolume'] == 0 or best.open == 0:
+            continue
+        else:
+            best_stocks.append(best)
+            if len(best_stocks) == 3:
+                break
     return best_stocks
-
-def scrape_industryPE(url):
-    # Send a GET request to the URL
-    response = requests.get(url)
-
-    # Parse the HTML content using BeautifulSoup
-    soup = BeautifulSoup(response.content, 'html.parser')
-
-    # Find the table on the page
-    table = soup.find('table')
-
-    # Extract the table headers
-    headers = [header.text.strip() for header in table.find_all('th')]
-
-    # Extract the table rows
-    rows = []
-    for row in table.find_all('tr'):
-        data = [cell.text.strip() for cell in row.find_all('td')]
-        if data:
-            rows.append(data)
-
-    # Create a Pandas DataFrame
-    df = pd.DataFrame(rows, columns=headers)
-
-    return df
-
-#url = 'https://eqvista.com/price-to-earnings-pe-ratios-by-industry/'
-#industry_PE = scrape_industryPE(url)
 
 def run(exchange, industry):
     if exchange == 'NYSE':
@@ -331,6 +308,7 @@ def run(exchange, industry):
     else:
         stocks = Scraper.scrapeSP500('month', industry)
     rankedStocks = rankStocks(stocks)
+    rankedStocks.sort(key = lambda k: k.rank, reverse = True)
     best_stocks = getFinalStocks(rankedStocks)
     return makePDF(best_stocks, exchange, industry)
     

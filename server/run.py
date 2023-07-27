@@ -29,18 +29,30 @@ def report():
         result = mr.run(exchange, industry)
         context = result[0]
         file_name = result[1]
-        return render_template('output_monthly.html', **context)
+        stocks = result[2]
+        return render_template('output_monthly.html', stocks = stocks, context = context, industry = industry)
     elif period == 'week':
         result = wr.run(exchange, industry)
         context = result[0]
         file_name = result[1]
-        return render_template('output_weekly.html', **context)
+        winners = result[2]
+        losers = result[3]
+        if losers == None:
+            num_losers = 0
+        else:
+            num_losers = len(losers)
+        return render_template('output_weekly.html', winners = winners, num_winners = len(winners), losers = losers, num_losers = num_losers, context = context, industry = industry)
     else:
-        print(type(industry))
         result = dr.run(exchange, industry)
         context = result[0]
         file_name = result[1]
-        return render_template('output_daily.html', **context)
+        winners = result[2]
+        losers = result[3]
+        if losers == None:
+            num_losers = 0
+        else:
+            num_losers = len(losers)
+        return render_template('output_daily.html', winners = winners, num_winners = len(winners), losers = losers, num_losers = num_losers, context = context, industry = industry)
 
 @app.route('/final_report/download', methods=['POST'])
 def download():
@@ -82,5 +94,5 @@ def delete_all_reports():
             os.remove(file)
 
 if __name__ == '__main__':  # If the script that was run is this script (we have not been imported)
-    app.run(host="0.0.0.0", port = 5000)  # Start the server
-    #app.run(debug = True, port = 5000)
+    #app.run(host="0.0.0.0", port = 5000)  # Start the server
+    app.run(debug = True, port = 5000)

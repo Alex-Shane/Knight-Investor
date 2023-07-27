@@ -7,56 +7,63 @@
 {% block content %}
 <h1>
     <center>
-        {{market}} Weekly Winners and Losers
+        {{context['exchange']}} Weekly Report on {{industry}}
     </center>
 </h1>
 <p>*Please note, all stock information taken from Yahoo Finance</p>
-<p>For reference, the <strong>{{exchange}} {{change}}</strong><strong>&nbsp;</strong>by <strong>{{percent}}%</strong> in the past week&nbsp;</p>
+<p>For reference, the <strong>{{context['exchange']}} {{context['change']}}</strong><strong>&nbsp;</strong>by <strong>{{context['percent']}}%</strong> in the past week&nbsp;</p>
 <h3><strong>Winners:</strong></h3>
-<p>1) <strong>{{s1}}</strong> increased by <strong>{{inc1}}%</strong> in the past week</p>
-<p>&nbsp; &nbsp; Quick facts about <strong>{{s1ticker}}</strong>:</p>
-<p>&nbsp; &nbsp; &nbsp; &nbsp;Current Stock Price = ${{price1}}</p>
-<p>&nbsp; &nbsp; &nbsp; &nbsp;Market Cap = ${{mcap1}}</p>
-<p>&nbsp; &nbsp; &nbsp; &nbsp;Industry = {{i1}}</p>
-<p>&nbsp; &nbsp; &nbsp; &nbsp;Provides Dividend? {{a1}}, {{des1}}</p>
-<p>&nbsp; &nbsp; &nbsp; &nbsp;Yahoo Analyst Recommendation: {{rec1}}</p>
-<p>2) <strong>{{s2}}</strong> increased by <strong>{{inc2}}%</strong> in the past week</p>
-<p>&nbsp; &nbsp; Quick facts about <strong>{{s2ticker}}</strong>:</p>
-<p>&nbsp; &nbsp; &nbsp; &nbsp;Current Stock Price = ${{price2}}</p>
-<p>&nbsp; &nbsp; &nbsp; &nbsp;Market Cap = ${{mcap2}}</p>
-<p>&nbsp; &nbsp; &nbsp; &nbsp;Industry = {{i2}}</p>
-<p>&nbsp; &nbsp; &nbsp; &nbsp;Provides Dividend? {{a2}}, {{des2}}</p>
-<p>&nbsp; &nbsp; &nbsp; &nbsp;Yahoo Analyst Recommendation: {{rec2}}</p>
-<p>3) <strong>{{s3}}</strong> increased by <strong>{{inc3}}%</strong> in the past week</p>
-<p>&nbsp; &nbsp; Quick facts about <strong>{{s3ticker}}</strong>:</p>
-<p>&nbsp; &nbsp; &nbsp; &nbsp;Current Stock Price = ${{price3}}</p>
-<p>&nbsp; &nbsp; &nbsp; &nbsp;Market Cap = ${{mcap3}}</p>
-<p>&nbsp; &nbsp; &nbsp; &nbsp;Industry = {{i3}}</p>
-<p>&nbsp; &nbsp; &nbsp; &nbsp;Provides Dividend? {{a3}}, {{des3}}</p>
-<p>&nbsp; &nbsp; &nbsp; &nbsp;Yahoo Analyst Recommendation: {{rec3}}</p>
-<h3>Losers:</h3>
-<p>1) <strong>{{s4}}</strong> decreased by <strong>{{inc4}}%</strong> in the past week</p>
-<p>&nbsp; &nbsp; Quick facts about <strong>{{s4ticker}}</strong>:</p>
-<p>&nbsp; &nbsp; &nbsp; &nbsp;Current Stock Price = ${{price4}}</p>
-<p>&nbsp; &nbsp; &nbsp; &nbsp;Market Cap = ${{mcap4}}</p>
-<p>&nbsp; &nbsp; &nbsp; &nbsp;Industry = {{i4}}</p>
-<p>&nbsp; &nbsp; &nbsp; &nbsp;Provides Dividend? {{a4}}, {{des4}}</p>
-<p>&nbsp; &nbsp; &nbsp; &nbsp;Yahoo Analyst Recommendation: {{rec4}}</p>
-<p>2) <strong>{{s5}}</strong> decreased by <strong>{{inc5}}%</strong> in the past week</p>
-<p>&nbsp; &nbsp; Quick facts about <strong>{{s5ticker}}</strong>:</p>
-<p>&nbsp; &nbsp; &nbsp; &nbsp;Current Stock Price = ${{price5}}</p>
-<p>&nbsp; &nbsp; &nbsp; &nbsp;Market Cap = ${{mcap5}}</p>
-<p>&nbsp; &nbsp; &nbsp; &nbsp;Industry = {{i5}}</p>
-<p>&nbsp; &nbsp; &nbsp; &nbsp;Provides Dividend? {{a5}}, {{des5}}</p>
-<p>&nbsp; &nbsp; &nbsp; &nbsp;Yahoo Analyst Recommendation: {{rec5}}</p>
-<p>3) <strong>{{s6}}</strong> decreased by <strong>{{inc6}}%</strong> in the past week</p>
-<p>&nbsp; &nbsp; Quick facts about <strong>{{s6ticker}}</strong>:</p>
-<p>&nbsp; &nbsp; &nbsp; &nbsp;Current Stock Price = ${{price6}}</p>
-<p>&nbsp; &nbsp; &nbsp; &nbsp;Market Cap = ${{mcap6}}</p>
-<p>&nbsp; &nbsp; &nbsp; &nbsp;Industry = {{i6}}</p>
-<p>&nbsp; &nbsp; &nbsp; &nbsp;Provides Dividend? {{a6}}, {{des6}}</p>
-<p>&nbsp; &nbsp; &nbsp; &nbsp;Yahoo Analyst Recommendation: {{rec6}}</p>
-<p>&nbsp;</p>
+{%for stock in winners%}
+    {% set index = loop.index | string() %}
+    {%set name = "s" + index%}
+    {%set inc = "inc" + index%}
+    {%set ticker = "s" + index + "ticker"%}
+    {%set price = "price" + index%}
+    {%set mcap = "mcap" + index%}
+    {%set industry = "i" + index%}
+    {%set ans = "a" + index%}
+    {%set des = "des" + index%}
+    {%set rec = "rec" + index%}
+    {%set link = "link" + index%}
+    <p> {{index}}) <strong>{{context[name]}}</strong> increased by <strong>{{context[inc]}}</strong> over the past week</p>
+    <p>&nbsp; &nbsp; Quick facts about <strong>{{context[ticker]}}</strong>:</p>
+    <p>&nbsp; &nbsp; &nbsp; &nbsp;Current Stock Price = ${{context[price]}}</p>
+    <p>&nbsp; &nbsp; &nbsp; &nbsp;Market Cap = ${{context[mcap]}}</p>
+    <p>&nbsp; &nbsp; &nbsp; &nbsp;Industry = {{context[industry]}}</p>
+    <p>&nbsp; &nbsp; &nbsp; &nbsp;Provides Dividend? {{context[ans]}}, {{context[des]}}</p>
+    <p>&nbsp; &nbsp; &nbsp; &nbsp;Yahoo Analyst Recommendation: {{context[rec]}}</p>
+    <p>For further reading on <strong>{{ticker}}</strong>, please see below:</p>
+    <p><a href="{{context[link]}}" target="_blank"><span>{{context[link]}}</span></a></p>
+    <p>&nbsp;</p>
+{%endfor%}
+{% if num_losers != 0 %}
+    <h3><strong>Losers:</strong></h3>
+    {% for stock in losers %}
+        {% set index = loop.index | string() %}
+        {% set adj_index = (loop.index + num_winners) | string() %}
+        {%set name = "s" + adj_index%}
+        {%set inc = "inc" + adj_index%}
+        {%set ticker = "s" + adj_index + "ticker"%}
+        {%set price = "price" + adj_index%}
+        {%set mcap = "mcap" + adj_index%}
+        {%set industry = "i" + adj_index%}
+        {%set ans = "a" + adj_index%}
+        {%set des = "des" + adj_index%}
+        {%set rec = "rec" + adj_index%}
+        {%set link = "link" + adj_index%}
+        <p> {{index}}) <strong>{{context[name]}}</strong> decreased by <strong>{{context[inc]}}</strong> over the past week</p>
+        <p>&nbsp; &nbsp; Quick facts about <strong>{{context[ticker]}}</strong>:</p>
+        <p>&nbsp; &nbsp; &nbsp; &nbsp;Current Stock Price = ${{context[price]}}</p>
+        <p>&nbsp; &nbsp; &nbsp; &nbsp;Market Cap = ${{context[mcap]}}</p>
+        <p>&nbsp; &nbsp; &nbsp; &nbsp;Industry = {{context[industry]}}</p>
+        <p>&nbsp; &nbsp; &nbsp; &nbsp;Provides Dividend? {{context[ans]}}, {{context[des]}}</p>
+        <p>&nbsp; &nbsp; &nbsp; &nbsp;Yahoo Analyst Recommendation: {{context[rec]}}</p>
+        <p>For further reading on <strong>{{ticker}}</strong>, please see below:</p>
+        <p><a href="{{context[link]}}" target="_blank"><span>{{context[link]}}</span></a></p>
+        <p>&nbsp;</p>
+    {% endfor %}
+{% endif %}
+
 
 <form action="{{ url_for("download")}}" method="POST">
     <input type="submit" value="Download Report">
