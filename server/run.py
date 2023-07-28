@@ -3,6 +3,7 @@ import daily_report as dr
 import weekly_report as wr
 import monthly_report as mr
 import searcher as searcher 
+import pdfkit
 import os
 
 
@@ -30,26 +31,37 @@ def report():
         context = result[0]
         file_name = result[1]
         stocks = result[2]
-        return render_template('output_monthly.html', stocks = stocks, context = context, industry = industry)
+        out = render_template('output_monthly.html', stocks = stocks, context = context, industry = industry, file_name = file_name)
+        # Build PDF from HTML 
+        pdf = pdfkit.from_string(out, file_name,options={"enable-local-file-access": ""})
+        return render_template('output_monthly.html', stocks = stocks, context = context, industry = industry, file_name = file_name)
     elif period == 'week':
         result = wr.run(exchange, industry)
         context = result[0]
         file_name = result[1]
         winners = result[2]
         losers = result[3]
-        return render_template('output_weekly.html', winners = winners, num_winners = len(winners), losers = losers, context = context, industry = industry)
+        out = render_template('output_weekly.html', winners = winners, num_winners = len(winners), losers = losers, context = context, industry = industry, file_name = file_name)
+        # Build PDF from HTML 
+        pdf = pdfkit.from_string(out, file_name,options={"enable-local-file-access": ""})
+        return render_template('output_weekly.html', winners = winners, num_winners = len(winners), losers = losers, context = context, industry = industry, file_name = file_name)
     else:
         result = dr.run(exchange, industry)
         context = result[0]
         file_name = result[1]
         winners = result[2]
         losers = result[3]
-        return render_template('output_daily.html', winners = winners, num_winners = len(winners), losers = losers, context = context, industry = industry)
+        out = render_template('output_daily.html', winners = winners, num_winners = len(winners), losers = losers, context = context, industry = industry, file_name = file_name)
+        # Build PDF from HTML 
+        pdf = pdfkit.from_string(out, file_name,options={"enable-local-file-access": ""})
+        return render_template('output_daily.html', winners = winners, num_winners = len(winners), losers = losers, context = context, industry = industry, file_name = file_name)
 
-@app.route('/final_report/download', methods=['POST'])
-def download():
-    global file_name
-    return send_file(file_name, as_attachment = True)
+
+@app.route('/final_report/download/<filename>', methods=['GET'])
+def download(filename):
+    #global file_name
+    # Download the PDF
+    return send_file(filename, as_attachment = True)
 
 @app.route('/stock_search')
 def search_page():
@@ -86,6 +98,6 @@ def delete_all_reports():
             os.remove(file)
 
 if __name__ == '__main__':  # If the script that was run is this script (we have not been imported)
-    app.run(host="0.0.0.0", port = 5000)  # Start the server
-    #delete_all_reports()
-    #app.run(debug = True, port = 5000)
+    #app.run(host="0.0.0.0", port = 5000)  # Start the server
+    delete_all_reports()
+    app.run(debug = True, port = 5000)

@@ -111,13 +111,7 @@ def makePDF(winners, losers, exchange, industry):
     configureWinners(context, winners)
     if losers != None:
         configureLosers(context, losers)
-    template_loader = jinja2.FileSystemLoader('./')
-    template_env = jinja2.Environment(loader=template_loader)
-    template = template_env.get_template('./templates/weekly_report.html')
-    output_text = template.render(context)
-    config = pdfkit.configuration()
     file_name = helper.getFileName(exchange, industry, 'week')
-    pdfkit.from_string(output_text, file_name, configuration=config)
     return (context, file_name, winners, losers)
     
 def configureWinners(context, winners):

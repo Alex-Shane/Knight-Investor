@@ -68,13 +68,7 @@ def makePDF(stocks, exchange, industry):
         helper.handleDividend(stocks[2], context, 3)
         helper.handleRecommendation(stocks[2], context, 3)
         context['link3'] = f"https://finance.yahoo.com/quote/{stocks[2].ticker}/news?p={stocks[2].ticker}"
-    template_loader = jinja2.FileSystemLoader('./')
-    template_env = jinja2.Environment(loader=template_loader)
-    template = template_env.get_template('./templates/monthly_report.html')
-    output_text = template.render(context)
-    config = pdfkit.configuration()
     file_name = helper.getFileName(exchange, industry, 'month')
-    pdfkit.from_string(output_text, file_name, configuration=config)
     return (context, file_name, stocks, None)
 
 

@@ -64,8 +64,10 @@
     7) <a href = "https://www.investopedia.com/terms/f/fowardlookingearnings.asp" target = "_blank"> Projected EPS</a>
 </p>
 
-<form action="{{ url_for("download")}}" method="POST">
-    <input type="submit" value="Download Report">
-</form>
+<a href="{{ url_for("download", filename = file_name)}}">
+    <button class = "buttons">
+        DOWNLOAD
+    </button>
+</a>
 
 {% endblock %}
