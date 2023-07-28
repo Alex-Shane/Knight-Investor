@@ -217,8 +217,6 @@ def run(exchange, industry):
         stocks = Scraper.scrapeNYSE('week', industry)
     elif exchange == 'NASDAQ100':
         stocks = Scraper.scrapeNASDAQ100('week', industry)
-    elif exchange == 'DOW':
-        stocks = Scraper.scrapeDOW('week', industry)
     elif exchange == 'NASDAQ':
         stocks = Scraper.scrapeNASDAQ('week', industry)
     elif exchange == 'HKSE':

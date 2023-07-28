@@ -112,9 +112,9 @@ def makePDF(winners, losers, exchange, industry):
     helper.makeTitle(exchange, context) 
     scraper = Scraper()
     scraper.getExchangeInfo(exchange, context, 'day')
-    configureWinners(context, winners)
+    configureWinners(context, winners, exchange)
     if losers != None:
-        configureLosers(context, losers)
+        configureLosers(context, losers, exchange)
     template_loader = jinja2.FileSystemLoader('./')
     template_env = jinja2.Environment(loader=template_loader)
     template = template_env.get_template('./templates/daily_report.html')
@@ -124,7 +124,7 @@ def makePDF(winners, losers, exchange, industry):
     pdfkit.from_string(output_text, file_name, configuration=config)
     return (context, file_name, winners, losers)
     
-def configureWinners(context, winners):
+def configureWinners(context, winners, exchange):
     """
     Configure the context dictionary with information from the winning stocks for the final report.
 
@@ -143,7 +143,7 @@ def configureWinners(context, winners):
     context['price1'] = ('{:,}'.format(round(winner1.info['currentPrice'], 2)))
     context['mcap1'] = ('{:,}'.format(winner1.info['marketCap']))
     helper = Helper()
-    context['i1'] = helper.getIndustry(winner1)
+    context['i1'] = helper.getIndustry(winner1, exchange)
     helper.handleDividend(winner1, context, 1)
     helper.handleRecommendation(winner1, context, 1)
     context['link1'] = f"https://finance.yahoo.com/quote/{winners[0].ticker}/news?p={winners[0].ticker}"
@@ -154,7 +154,7 @@ def configureWinners(context, winners):
         context['s2ticker'] = winner2.ticker
         context['price2'] = ('{:,}'.format(round(winner2.info['currentPrice'], 2)))
         context['mcap2'] = ('{:,}'.format(winner2.info['marketCap']))
-        context['i2'] = helper.getIndustry(winner2)
+        context['i2'] = helper.getIndustry(winner2, exchange)
         helper.handleDividend(winner2, context, 2)
         helper.handleRecommendation(winner2, context, 2)
         context['link2'] = f"https://finance.yahoo.com/quote/{winners[1].ticker}/news?p={winners[1].ticker}"
@@ -165,12 +165,12 @@ def configureWinners(context, winners):
         context['s3ticker'] = winner3.ticker
         context['price3'] = ('{:,}'.format(round(winner3.info['currentPrice'], 2)))
         context['mcap3'] = ('{:,}'.format(winner3.info['marketCap']))
-        context['i3'] = helper.getIndustry(winner3)
+        context['i3'] = helper.getIndustry(winner3, exchange)
         helper.handleDividend(winner3, context, 3)
         helper.handleRecommendation(winner3, context, 3)
         context['link3'] = f"https://finance.yahoo.com/quote/{winners[2].ticker}/news?p={winners[2].ticker}"
 
-def configureLosers(context, losers):
+def configureLosers(context, losers, exchange):
     """
     Configure the context dictionary with information from the losing stocks for the final report.
 
@@ -189,7 +189,7 @@ def configureLosers(context, losers):
     context['price4'] = ('{:,}'.format(round(loser1.info['currentPrice'], 2)))
     context['mcap4'] = ('{:,}'.format(loser1.info['marketCap']))
     helper = Helper()
-    context['i4'] = helper.getIndustry(loser1)
+    context['i4'] = helper.getIndustry(loser1, exchange)
     helper.handleDividend(loser1, context, 4)
     helper.handleRecommendation(loser1, context, 4)
     context['link4'] = f"https://finance.yahoo.com/quote/{losers[0].ticker}/news?p={losers[0].ticker}"
@@ -200,7 +200,7 @@ def configureLosers(context, losers):
         context['s5ticker'] = loser2.ticker
         context['price5'] = ('{:,}'.format(round(loser2.info['currentPrice'], 2)))
         context['mcap5'] = ('{:,}'.format(loser2.info['marketCap']))
-        context['i5'] = helper.getIndustry(loser2)
+        context['i5'] = helper.getIndustry(loser2, exchange)
         helper.handleDividend(loser2, context, 5)
         helper.handleRecommendation(loser2, context, 5)
         context['link5'] = f"https://finance.yahoo.com/quote/{losers[1].ticker}/news?p={losers[1].ticker}"
@@ -211,7 +211,7 @@ def configureLosers(context, losers):
         context['s6ticker'] = loser3.ticker
         context['price6'] = ('{:,}'.format(round(loser3.info['currentPrice'], 2)))
         context['mcap6'] = ('{:,}'.format(loser3.info['marketCap']))
-        context['i6'] = helper.getIndustry(loser3)
+        context['i6'] = helper.getIndustry(loser3, exchange)
         helper.handleDividend(loser3, context, 6)
         helper.handleRecommendation(loser3, context, 6)
         context['link6'] = f"https://finance.yahoo.com/quote/{losers[2].ticker}/news?p={losers[2].ticker}"
@@ -221,8 +221,6 @@ def run(exchange, industry):
         stocks = Scraper.scrapeNYSE('day', industry)
     elif exchange == 'NASDAQ100':
         stocks = Scraper.scrapeNASDAQ100('day', industry)
-    elif exchange == 'DOW':
-        stocks = Scraper.scrapeDOW('day', industry)
     elif exchange == 'NASDAQ':
         stocks = Scraper.scrapeNASDAQ('day', industry)
     elif exchange == 'HKSE':

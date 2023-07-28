@@ -81,7 +81,6 @@ def cleanNASDAQ():
     filtered_df.to_csv('./static/NASDAQ_stocks.csv', index = False)
 
 
-
 # =============================================================================
 # def makeCSV(exchange):
 #     """

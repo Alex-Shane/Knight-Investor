@@ -8,6 +8,7 @@ Created on Fri May 26 21:16:36 2023
 
 from datetime import date as dt
 from datetime import timedelta 
+import pandas as pd
 
 class PDFHelper:
         
@@ -124,8 +125,20 @@ class PDFHelper:
                 month_year = month_ago.strftime("%B_%Y-") + today.strftime("%B_%Y_")
             return (month_year + exchange + "_" + industry + "_stock_report.pdf")
     
-    def getIndustry(self, stock):
-        industry = stock.info['industry']
+    def getIndustry(self, stock, exchange):
+        if exchange == 'NYSE':
+            df = pd.read_csv('./static/nyse_stocks.csv')
+        elif exchange == 'NASDAQ100':
+            df = pd.read_csv('./static/NASDAQ_100_stocks.csv')
+        elif exchange == 'NASDAQ':
+            df = pd.read_csv('./static/NASDAQ_stocks.csv')
+        elif exchange == 'HKSE':
+            df = pd.read_csv('./static/HKSE_stocks.csv')
+        else:
+            df = pd.read_csv('./static/SP500_stocks.csv')
+        
+        df_indexed = df.set_index("Symbol")
+        industry = df_indexed.at[stock.ticker, "Industry"]
         if '—' in industry:
             industry = industry.replace('—', ': ')
         return industry
