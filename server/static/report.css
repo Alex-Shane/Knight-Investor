@@ -179,3 +179,16 @@ p a {
     text-align: left;
     line-height: 2;
   }
+
+  .buttons {
+      background-color: #66FCF1;
+      color: black;
+      padding: 14px 28px;
+      cursor: pointer;
+      text-align: center;
+      border-radius: 15%;
+      letter-spacing: 1px;
+      font-family: "Didot", serif;
+      border: none;
+      outline: none;
+  }

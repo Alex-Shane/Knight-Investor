@@ -25,8 +25,10 @@
                 our report generator. <br><br>
                 Try it out for yourself! <br><br>
             </p>
-            <form action="{{ url_for("report_page")}}" class = "home_report">
-                <input type="submit" value="Go To Reports!">
+            <form action="{{ url_for("report_page")}}">
+                <button type = "submit" class = "buttons">
+                    REPORTS
+                </button>
             </form>
             <h4>
                 Curious About Individual Stocks?
@@ -36,8 +38,10 @@
                 <br><br>
                 Stock Searcher below.
             </p>
-            <form action="{{ url_for("search_page")}}" class = "home_report">
-                <input type="submit" value="Search Now!">
+            <form action="{{ url_for("search_page")}}">
+                <button type = "submit" class = "buttons">
+                    SEARCH
+                </button>
             </form>
         </div>
       </div>
