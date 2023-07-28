@@ -113,7 +113,8 @@ def makePDF(winners, losers, exchange, industry):
     scraper = Scraper()
     scraper.getExchangeInfo(exchange, context, 'day')
     configureWinners(context, winners)
-    configureLosers(context, losers)
+    if losers != None:
+        configureLosers(context, losers)
     template_loader = jinja2.FileSystemLoader('./')
     template_env = jinja2.Environment(loader=template_loader)
     template = template_env.get_template('./templates/daily_report.html')
@@ -145,6 +146,7 @@ def configureWinners(context, winners):
     context['i1'] = helper.getIndustry(winner1)
     helper.handleDividend(winner1, context, 1)
     helper.handleRecommendation(winner1, context, 1)
+    context['link1'] = f"https://finance.yahoo.com/quote/{winners[0].ticker}/news?p={winners[0].ticker}"
     if len(winners) > 1:
         winner2 = winners[1]
         context['s2'] = winner2.info['longName']
@@ -155,6 +157,7 @@ def configureWinners(context, winners):
         context['i2'] = helper.getIndustry(winner2)
         helper.handleDividend(winner2, context, 2)
         helper.handleRecommendation(winner2, context, 2)
+        context['link2'] = f"https://finance.yahoo.com/quote/{winners[1].ticker}/news?p={winners[1].ticker}"
     if len(winners) > 2: 
         winner3 = winners[2]
         context['s3'] = winner3.info['longName']
@@ -165,6 +168,7 @@ def configureWinners(context, winners):
         context['i3'] = helper.getIndustry(winner3)
         helper.handleDividend(winner3, context, 3)
         helper.handleRecommendation(winner3, context, 3)
+        context['link3'] = f"https://finance.yahoo.com/quote/{winners[2].ticker}/news?p={winners[2].ticker}"
 
 def configureLosers(context, losers):
     """
@@ -188,6 +192,7 @@ def configureLosers(context, losers):
     context['i4'] = helper.getIndustry(loser1)
     helper.handleDividend(loser1, context, 4)
     helper.handleRecommendation(loser1, context, 4)
+    context['link4'] = f"https://finance.yahoo.com/quote/{losers[0].ticker}/news?p={losers[0].ticker}"
     if len(losers) > 1:
         loser2 = losers[1]
         context['s5'] = loser2.info['longName']
@@ -198,6 +203,7 @@ def configureLosers(context, losers):
         context['i5'] = helper.getIndustry(loser2)
         helper.handleDividend(loser2, context, 5)
         helper.handleRecommendation(loser2, context, 5)
+        context['link5'] = f"https://finance.yahoo.com/quote/{losers[1].ticker}/news?p={losers[1].ticker}"
     if len(losers) > 2:
         loser3 = losers[2]
         context['s6'] = loser3.info['longName']
@@ -208,6 +214,7 @@ def configureLosers(context, losers):
         context['i6'] = helper.getIndustry(loser3)
         helper.handleDividend(loser3, context, 6)
         helper.handleRecommendation(loser3, context, 6)
+        context['link6'] = f"https://finance.yahoo.com/quote/{losers[2].ticker}/news?p={losers[2].ticker}"
 
 def run(exchange, industry):
     if exchange == 'NYSE':

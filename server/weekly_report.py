@@ -109,7 +109,8 @@ def makePDF(winners, losers, exchange, industry):
     scraper = Scraper()
     scraper.getExchangeInfo(exchange, context, 'week')
     configureWinners(context, winners)
-    configureLosers(context, losers)
+    if losers != None:
+        configureLosers(context, losers)
     template_loader = jinja2.FileSystemLoader('./')
     template_env = jinja2.Environment(loader=template_loader)
     template = template_env.get_template('./templates/weekly_report.html')

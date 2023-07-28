@@ -38,19 +38,31 @@
     <p>Provides Dividend? {{context[ans]}}, {{context[des]}}</p>
     <p>Yahoo Analyst Recommendation: {{context[rec]}}</p>
     <p>&nbsp;</p>
-    <p>For further reading on <strong>{{ticker}}</strong>, please see below:</p>
+    <p>For further reading on <strong>{{context[ticker]}}</strong>, please see below:</p>
     <p><a href="{{context[link]}}" target="_blank"><span>{{context[link]}}</span></a></p>
     <p>&nbsp;</p>
 {%endfor%}
 
-<p><span>Statistics considered in the ranking model (by order of importance):</span></p>
-<p><span>1) %increase in stock price over the previous month</span></p>
-<p><span>2) Previous 12 months' P/E ratio</span></p>
-<p><span>3) Previous 12 months' EV/EBITDA ratio</span></p>
-<p><span>4) Previous 12 months' EPS</span></p>
-<p><span>5) Previous 12 months' EV/Revenue</span></p>
-<p><span>6) Projected P/E ratio</span></p>
-<p><span>7) Projected EPS</span></p>
+<p>Statistics considered in the ranking model (by order of importance):</p>
+<p>1) %increase in stock price over the previous month</p>
+<p>
+    2)<a href="https://www.investopedia.com/terms/t/trailingpe.asp#:~:text=The%20trailing%20price%2Dto%2Dearnings,time%20periods%20and%20among%20companies." target = "_blank"> Trailing P/E ratio</a>
+</p>
+<p>
+    3)<a href = "https://www.investopedia.com/ask/answers/072715/what-considered-healthy-evebitda.asp" target = "_blank"> Trailing EV/EBITDA ratio</a> 
+</p>
+<p>
+    4)<a href = "https://www.investopedia.com/terms/t/trailingeps.asp#:~:text=Trailing%20earnings%20per%20share%20(EPS)%20is%20a%20company's%20earnings%20generated,period%20or%20four%20earnings%20releases." target = "_blank"> Trailing EPS</a>
+</p>
+<p>
+    5)<a href = "https://www.investopedia.com/terms/e/ev-revenue-multiple.asp" target = "_blank"> Trailing EV/Revenue </a>
+</p>
+<p>
+    6) <a href = "https://www.investopedia.com/terms/f/forwardpe.asp" target = "_blank"> Projected P/E ratio</a>
+</p>
+<p>
+    7) <a href = "https://www.investopedia.com/terms/f/fowardlookingearnings.asp" target = "_blank"> Projected EPS</a>
+</p>
 
 <form action="{{ url_for("download")}}" method="POST">
     <input type="submit" value="Download Report">

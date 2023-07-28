@@ -32,15 +32,15 @@
     <p>&nbsp; &nbsp; &nbsp; &nbsp;Industry = {{context[industry]}}</p>
     <p>&nbsp; &nbsp; &nbsp; &nbsp;Provides Dividend? {{context[ans]}}, {{context[des]}}</p>
     <p>&nbsp; &nbsp; &nbsp; &nbsp;Yahoo Analyst Recommendation: {{context[rec]}}</p>
-    <p>For further reading on <strong>{{ticker}}</strong>, please see below:</p>
+    <p>For further reading on <strong>{{context[ticker]}}</strong>, please see below:</p>
     <p><a href="{{context[link]}}" target="_blank"><span>{{context[link]}}</span></a></p>
     <p>&nbsp;</p>
 {%endfor%}
-{% if num_losers != 0 %}
+{% if losers != None %}
     <h3><strong>Losers:</strong></h3>
     {% for stock in losers %}
         {% set index = loop.index | string() %}
-        {% set adj_index = (loop.index + num_winners) | string() %}
+        {% set adj_index = (loop.index + 3) | string() %}
         {%set name = "s" + adj_index%}
         {%set inc = "inc" + adj_index%}
         {%set ticker = "s" + adj_index + "ticker"%}
@@ -58,7 +58,7 @@
         <p>&nbsp; &nbsp; &nbsp; &nbsp;Industry = {{context[industry]}}</p>
         <p>&nbsp; &nbsp; &nbsp; &nbsp;Provides Dividend? {{context[ans]}}, {{context[des]}}</p>
         <p>&nbsp; &nbsp; &nbsp; &nbsp;Yahoo Analyst Recommendation: {{context[rec]}}</p>
-        <p>For further reading on <strong>{{ticker}}</strong>, please see below:</p>
+        <p>For further reading on <strong>{{context[ticker]}}</strong>, please see below:</p>
         <p><a href="{{context[link]}}" target="_blank"><span>{{context[link]}}</span></a></p>
         <p>&nbsp;</p>
     {% endfor %}

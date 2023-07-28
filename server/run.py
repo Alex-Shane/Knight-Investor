@@ -37,11 +37,7 @@ def report():
         file_name = result[1]
         winners = result[2]
         losers = result[3]
-        if losers == None:
-            num_losers = 0
-        else:
-            num_losers = len(losers)
-        return render_template('output_weekly.html', winners = winners, num_winners = len(winners), losers = losers, num_losers = num_losers, context = context, industry = industry)
+        return render_template('output_weekly.html', winners = winners, num_winners = len(winners), losers = losers, context = context, industry = industry)
     else:
         result = dr.run(exchange, industry)
         context = result[0]
@@ -95,4 +91,5 @@ def delete_all_reports():
 
 if __name__ == '__main__':  # If the script that was run is this script (we have not been imported)
     #app.run(host="0.0.0.0", port = 5000)  # Start the server
+    delete_all_reports()
     app.run(debug = True, port = 5000)
