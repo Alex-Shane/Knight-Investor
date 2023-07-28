@@ -75,7 +75,7 @@ def makePDF(stocks, exchange, industry):
     config = pdfkit.configuration()
     file_name = helper.getFileName(exchange, industry, 'month')
     pdfkit.from_string(output_text, file_name, configuration=config)
-    return (context, file_name, stocks)
+    return (context, file_name, stocks, None)
 
 
 def rankStocks(stocks):

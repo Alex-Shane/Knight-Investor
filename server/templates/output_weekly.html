@@ -25,7 +25,7 @@
     {%set des = "des" + index%}
     {%set rec = "rec" + index%}
     {%set link = "link" + index%}
-    <p> {{index}}) <strong>{{context[name]}}</strong> increased by <strong>{{context[inc]}}</strong> over the past week</p>
+    <p> {{index}}) <strong>{{context[name]}}</strong> increased by <strong>{{context[inc]}}%</strong> over the past week</p>
     <p>&nbsp; &nbsp; Quick facts about <strong>{{context[ticker]}}</strong>:</p>
     <p>&nbsp; &nbsp; &nbsp; &nbsp;Current Stock Price = ${{context[price]}}</p>
     <p>&nbsp; &nbsp; &nbsp; &nbsp;Market Cap = ${{context[mcap]}}</p>
@@ -51,7 +51,7 @@
         {%set des = "des" + adj_index%}
         {%set rec = "rec" + adj_index%}
         {%set link = "link" + adj_index%}
-        <p> {{index}}) <strong>{{context[name]}}</strong> decreased by <strong>{{context[inc]}}</strong> over the past week</p>
+        <p> {{index}}) <strong>{{context[name]}}</strong> decreased by <strong>{{context[inc]}}%</strong> over the past week</p>
         <p>&nbsp; &nbsp; Quick facts about <strong>{{context[ticker]}}</strong>:</p>
         <p>&nbsp; &nbsp; &nbsp; &nbsp;Current Stock Price = ${{context[price]}}</p>
         <p>&nbsp; &nbsp; &nbsp; &nbsp;Market Cap = ${{context[mcap]}}</p>

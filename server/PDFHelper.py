@@ -100,7 +100,7 @@ class PDFHelper:
         else:
             context['market'] = 'Dow Jones'
             
-    def getFileName(self, exchange, industry ,duration):
+    def getFileName(self, exchange, industry, duration):
         """
         Create a unique filename based on the exchange, industry, and duration of the report.
 

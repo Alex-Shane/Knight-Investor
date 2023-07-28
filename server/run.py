@@ -44,11 +44,7 @@ def report():
         file_name = result[1]
         winners = result[2]
         losers = result[3]
-        if losers == None:
-            num_losers = 0
-        else:
-            num_losers = len(losers)
-        return render_template('output_daily.html', winners = winners, num_winners = len(winners), losers = losers, num_losers = num_losers, context = context, industry = industry)
+        return render_template('output_daily.html', winners = winners, num_winners = len(winners), losers = losers, context = context, industry = industry)
 
 @app.route('/final_report/download', methods=['POST'])
 def download():
