@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, send_file, redirect, url_for, flash  # Import flask
+from bs4 import BeautifulSoup
 import daily_report as dr
 import weekly_report as wr
 import monthly_report as mr
@@ -32,8 +33,9 @@ def report():
         file_name = result[1]
         stocks = result[2]
         out = render_template('output_monthly.html', stocks = stocks, context = context, industry = industry, file_name = file_name)
+        mod_out = strip_unwanted_tags(out)
         # Build PDF from HTML 
-        pdf = pdfkit.from_string(out, file_name,options={"enable-local-file-access": ""})
+        pdf = pdfkit.from_string(mod_out, file_name,options={"enable-local-file-access": ""})
         return render_template('output_monthly.html', stocks = stocks, context = context, industry = industry, file_name = file_name)
     elif period == 'week':
         result = wr.run(exchange, industry)
@@ -42,8 +44,9 @@ def report():
         winners = result[2]
         losers = result[3]
         out = render_template('output_weekly.html', winners = winners, num_winners = len(winners), losers = losers, context = context, industry = industry, file_name = file_name)
+        mod_out = strip_unwanted_tags(out)
         # Build PDF from HTML 
-        pdf = pdfkit.from_string(out, file_name,options={"enable-local-file-access": ""})
+        pdf = pdfkit.from_string(mod_out, file_name,options={"enable-local-file-access": ""})
         return render_template('output_weekly.html', winners = winners, num_winners = len(winners), losers = losers, context = context, industry = industry, file_name = file_name)
     else:
         result = dr.run(exchange, industry)
@@ -52,8 +55,9 @@ def report():
         winners = result[2]
         losers = result[3]
         out = render_template('output_daily.html', winners = winners, num_winners = len(winners), losers = losers, context = context, industry = industry, file_name = file_name)
+        mod_out = strip_unwanted_tags(out)
         # Build PDF from HTML 
-        pdf = pdfkit.from_string(out, file_name,options={"enable-local-file-access": ""})
+        pdf = pdfkit.from_string(mod_out, file_name,options={"enable-local-file-access": ""})
         return render_template('output_daily.html', winners = winners, num_winners = len(winners), losers = losers, context = context, industry = industry, file_name = file_name)
 
 
@@ -97,7 +101,26 @@ def delete_all_reports():
         if file.endswith('.pdf'):
             os.remove(file)
 
+def strip_unwanted_tags(html_content):
+    # Parse the HTML content using BeautifulSoup
+    soup = BeautifulSoup(html_content, 'html.parser')
+
+    # Find and remove all <nav> tags
+    nav_tags = soup.find_all('nav')
+    for nav_tag in nav_tags:
+        nav_tag.decompose()  # Remove the <nav> tag from the HTML
+
+    # Find the last <a> tag and remove it along with its contents
+    last_a_tag = soup.find_all('a')[-1]
+    if last_a_tag:
+        last_a_tag.decompose()
+
+    # Get the modified HTML content without the unwanted tags
+    modified_html = str(soup)
+
+    return modified_html
+
 if __name__ == '__main__':  # If the script that was run is this script (we have not been imported)
-    #app.run(host="0.0.0.0", port = 5000)  # Start the server
-    delete_all_reports()
-    app.run(debug = True, port = 5000)
+    app.run(host="0.0.0.0", port = 5000)  # Start the server
+    #delete_all_reports()
+    #app.run(debug = True, port = 5000)
