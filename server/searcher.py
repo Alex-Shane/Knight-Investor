@@ -22,7 +22,10 @@ def getInfo(ticker):
         info = formatValues(stock.info)
         new_info = {}
         for key in info:
-            new_info[conversion[key]] = info[key]
+            if key in conversion:
+                new_info[conversion[key]] = info[key]
+            else:
+                new_info[key] = info[key]
         new_info = formatCompanyOfficers(new_info)
         return new_info
         

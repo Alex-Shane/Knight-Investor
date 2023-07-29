@@ -121,6 +121,6 @@ def strip_unwanted_tags(html_content):
     return modified_html
 
 if __name__ == '__main__':  # If the script that was run is this script (we have not been imported)
-    app.run(host="0.0.0.0", port = 5000)  # Start the server
+    #app.run(host="0.0.0.0", port = 5000)  # Start the server
     #delete_all_reports()
-    #app.run(debug = True, port = 5000)
+    app.run(debug = True, port = 5000)
