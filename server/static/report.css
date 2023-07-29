@@ -8,6 +8,27 @@ form {
 
 table {
     border-spacing: 30px;
+    width: 90%;
+    border-collapse: collapse;
+}
+
+table, tr, td {
+  border: 1px solid #66FCF1;
+  padding: 8px;
+}
+
+tbody {
+  color: #C5C6C7;
+  font-size: 14px; 
+  text-align: left;
+  line-height: 2;
+}
+
+.table-wrapper {
+  max-height: 600px; /* Adjust this value to your preferred fixed size */
+  overflow-y: scroll; /* Enable vertical scrollbar */
+  display: flex;
+  justify-content: center;
 }
 
 h1 {
@@ -171,13 +192,6 @@ p a {
     font-family: "Didot", serif;
     letter-spacing: 1px;
     cursor: pointer;
-  }
-
-  tbody {
-    color: #C5C6C7;
-    font-size: 14px; 
-    text-align: left;
-    line-height: 2;
   }
 
   .buttons {

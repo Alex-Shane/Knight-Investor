@@ -11,19 +11,25 @@
     </center>
 </h1>
 
-<p>
-  * All stock info taken directly from Yahoo Finance
-</p>
+<center>
+    <p>
+        * All stock info taken directly from Yahoo Finance
+    </p>
+</center>
 
-<table>
-    <tbody>
-    {% for key, value in info.items() %}
-     <tr>
-         <td> <strong> {{ key.capitalize() }} </strong> </td>
-         <td> {{ value }} </td>
-     </tr>
-    {% endfor %}
-    </tbody>
-  </table>
+
+<div class = "table-wrapper">
+    <table>
+        <tbody>
+        {% for key, value in info.items() %}
+         <tr>
+             <td> <strong> {{ key.capitalize() }} </strong> </td>
+             <td> {{ value }} </td>
+         </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+</div>
+
     
 {% endblock %}
