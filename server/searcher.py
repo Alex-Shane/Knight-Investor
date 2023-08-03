@@ -26,7 +26,8 @@ def getInfo(ticker):
                 new_info[conversion[key]] = info[key]
             else:
                 new_info[key] = info[key]
-        new_info = formatCompanyOfficers(new_info)
+        if 'Company Officers' in new_info:
+            new_info = formatCompanyOfficers(new_info)
         return new_info
         
     except Exception as e:
@@ -55,3 +56,5 @@ def makeWordDict(info):
         if len(val) > 1:
             info[key] = val
     print(info)
+    
+info = getInfo('TSLA')

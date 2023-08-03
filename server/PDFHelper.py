@@ -43,13 +43,16 @@ class PDFHelper:
 
         """
         string = f'rec{number}'
-        rec = stock.info['recommendationKey']
-        if rec == 'buy':
-            context[string] = "Buy this stock if not already in portfolio"
-        elif rec == 'hold':
-            context[string] = "Hold this stock if in portfolio"
-        else: 
-            context[string] = "Sell this stock"
+        try:
+            rec = stock.info['recommendationKey']
+            if rec == 'buy':
+                context[string] = "Buy this stock if not already in portfolio"
+            elif rec == 'hold':
+                context[string] = "Hold this stock if in portfolio"
+            else: 
+                context[string] = "Sell this stock"
+        except:
+            context[string] = "No reccomendation available"
 
     def configNews(self, news, context, num):
         """

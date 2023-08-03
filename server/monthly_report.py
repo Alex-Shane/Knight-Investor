@@ -33,8 +33,11 @@ def makePDF(stocks, exchange, industry):
     context['s1'] = stocks[0].info['longName']
     context['s1ticker'] = stocks[0].ticker
     context['d1'] = f'{stocks[0].delta / stocks[0].open * 100:.2f}'
-    cur1 = round(stocks[0].info['currentPrice'], 2)
-    cur1 = ('{:,}'.format(cur1))
+    try:
+        cur1 = round(stocks[0].info['currentPrice'], 2)
+        cur1 = ('{:,}'.format(cur1))
+    except:
+        cur1 = "Can't fetch current price"
     context['price1'] = cur1
     mcap1 = ('{:,}'.format(stocks[0].info['marketCap']))
     context['mcap1'] = mcap1
@@ -46,8 +49,11 @@ def makePDF(stocks, exchange, industry):
         context['s2'] = stocks[1].info['longName']
         context['s2ticker'] = stocks[1].ticker
         context['d2'] = f'{stocks[1].delta / stocks[1].open * 100:.2f}'
-        cur2 = round(stocks[1].info['currentPrice'], 2)
-        cur2 = ('{:,}'.format(cur2))
+        try:
+            cur2 = round(stocks[1].info['currentPrice'], 2)
+            cur2 = ('{:,}'.format(cur2))
+        except:
+            cur2 = "Can't fetch current price"
         context['price2'] = cur2
         mcap2 = ('{:,}'.format(stocks[1].info['marketCap']))
         context['mcap2'] = mcap2
@@ -59,8 +65,11 @@ def makePDF(stocks, exchange, industry):
         context['s3'] = stocks[2].info['longName']
         context['s3ticker'] = stocks[2].ticker
         context['d3'] = f'{stocks[2].delta / stocks[2].open * 100:.2f}'
-        cur3 = round(stocks[2].info['currentPrice'], 2)
-        cur3 = ('{:,}'.format(cur3))
+        try:
+            cur3 = round(stocks[2].info['currentPrice'], 2)
+            cur3 = ('{:,}'.format(cur3))
+        except:
+            cur3 = "Can't fetch current price"
         context['price3'] = cur3
         mcap3 = ('{:,}'.format(stocks[2].info['marketCap']))
         context['mcap3'] = mcap3

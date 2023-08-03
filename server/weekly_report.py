@@ -130,7 +130,10 @@ def configureWinners(context, winners, exchange):
     context['s1'] = winner1.info['longName']
     context['inc1'] = f'{winner1.delta / winner1.open * 100:.2f}'
     context['s1ticker'] = winner1.ticker
-    context['price1'] = ('{:,}'.format(round(winner1.info['currentPrice'], 2)))
+    try:
+        context['price1'] = ('{:,}'.format(round(winner1.info['currentPrice'], 2)))
+    except:
+        context['price1'] = "Can't fetch current price"
     context['mcap1'] = ('{:,}'.format(winner1.info['marketCap']))
     helper = Helper()
     context['i1'] = helper.getIndustry(winner1, exchange)
@@ -142,7 +145,10 @@ def configureWinners(context, winners, exchange):
         context['s2'] = winner2.info['longName']
         context['inc2'] = f'{winner2.delta / winner2.open * 100:.2f}'
         context['s2ticker'] = winner2.ticker
-        context['price2'] = ('{:,}'.format(round(winner2.info['currentPrice'], 2)))
+        try:
+            context['price2'] = ('{:,}'.format(round(winner2.info['currentPrice'], 2)))
+        except:
+            context['price2'] = "Can't fetch current price"
         context['mcap2'] = ('{:,}'.format(winner2.info['marketCap']))
         context['i2'] = helper.getIndustry(winner2, exchange)
         helper.handleDividend(winner2, context, 2)
@@ -153,7 +159,10 @@ def configureWinners(context, winners, exchange):
         context['s3'] = winner3.info['longName']
         context['inc3'] = f'{winner3.delta / winner3.open * 100:.2f}'
         context['s3ticker'] = winner3.ticker
-        context['price3'] = ('{:,}'.format(round(winner3.info['currentPrice'], 2)))
+        try:
+            context['price3'] = ('{:,}'.format(round(winner3.info['currentPrice'], 2)))
+        except:
+            context['price3'] = "Can't fetch current price"
         context['mcap3'] = ('{:,}'.format(winner3.info['marketCap']))
         context['i3'] = helper.getIndustry(winner3, exchange)
         helper.handleDividend(winner3, context, 3)
@@ -176,7 +185,10 @@ def configureLosers(context, losers, exchange):
     context['s4'] = loser1.info['longName']
     context['inc4'] = f'{loser1.delta / loser1.open * -100:.2f}'
     context['s4ticker'] = loser1.ticker
-    context['price4'] = ('{:,}'.format(round(loser1.info['currentPrice'], 2)))
+    try:
+        context['price4'] = ('{:,}'.format(round(loser1.info['currentPrice'], 2)))
+    except:
+        context['price4'] = "Can't fetch current price"
     context['mcap4'] = ('{:,}'.format(loser1.info['marketCap']))
     helper = Helper()
     context['i4'] = helper.getIndustry(loser1, exchange)
@@ -188,7 +200,10 @@ def configureLosers(context, losers, exchange):
         context['s5'] = loser2.info['longName']
         context['inc5'] = f'{loser2.delta / loser2.open * -100:.2f}'
         context['s5ticker'] = loser2.ticker
-        context['price5'] = ('{:,}'.format(round(loser2.info['currentPrice'], 2)))
+        try:
+            context['price5'] = ('{:,}'.format(round(loser2.info['currentPrice'], 2)))
+        except:
+            context['price5'] = "Can't fetch ccurent price"
         context['mcap5'] = ('{:,}'.format(loser2.info['marketCap']))
         context['i5'] = helper.getIndustry(loser2, exchange)
         helper.handleDividend(loser2, context, 5)
@@ -199,7 +214,10 @@ def configureLosers(context, losers, exchange):
         context['s6'] = loser3.info['longName']
         context['inc6'] = f'{loser3.delta / loser3.open * -100:.2f}'
         context['s6ticker'] = loser3.ticker
-        context['price6'] = ('{:,}'.format(round(loser3.info['currentPrice'], 2)))
+        try:
+            context['price6'] = ('{:,}'.format(round(loser3.info['currentPrice'], 2)))
+        except:
+            context['price6'] = "Can't fetch current price"
         context['mcap6'] = ('{:,}'.format(loser3.info['marketCap']))
         context['i6'] = helper.getIndustry(loser3, exchange)
         helper.handleDividend(loser3, context, 6)
