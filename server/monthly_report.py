@@ -38,7 +38,7 @@ def makePDF(stocks, exchange, industry):
     context['price1'] = cur1
     mcap1 = ('{:,}'.format(stocks[0].info['marketCap']))
     context['mcap1'] = mcap1
-    context['i1'] = stocks[0].info['industry'] 
+    context['i1'] = industry
     helper.handleDividend(stocks[0], context, 1)
     helper.handleRecommendation(stocks[0], context, 1)
     context['link1'] = f"https://finance.yahoo.com/quote/{stocks[0].ticker}/news?p={stocks[0].ticker}"
@@ -51,7 +51,7 @@ def makePDF(stocks, exchange, industry):
         context['price2'] = cur2
         mcap2 = ('{:,}'.format(stocks[1].info['marketCap']))
         context['mcap2'] = mcap2
-        context['i2'] = stocks[1].info['industry']
+        context['i2'] = industry
         helper.handleDividend(stocks[1], context, 2)
         helper.handleRecommendation(stocks[1], context, 2)
         context['link2'] = f"https://finance.yahoo.com/quote/{stocks[1].ticker}/news?p={stocks[1].ticker}"
@@ -64,7 +64,7 @@ def makePDF(stocks, exchange, industry):
         context['price3'] = cur3
         mcap3 = ('{:,}'.format(stocks[2].info['marketCap']))
         context['mcap3'] = mcap3
-        context['i3'] = stocks[2].info['industry']
+        context['i3'] = industry
         helper.handleDividend(stocks[2], context, 3)
         helper.handleRecommendation(stocks[2], context, 3)
         context['link3'] = f"https://finance.yahoo.com/quote/{stocks[2].ticker}/news?p={stocks[2].ticker}"
