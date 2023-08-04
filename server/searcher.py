@@ -56,5 +56,3 @@ def makeWordDict(info):
         if len(val) > 1:
             info[key] = val
     print(info)
-    
-info = getInfo('TSLA')
