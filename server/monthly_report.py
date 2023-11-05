@@ -286,6 +286,7 @@ def getFinalStocks(stocks):
         list: A new list of stocks sorted in descending order of their rankings.
 
     """
+    print(stocks)
     best_stocks = list()
     for x in range(0, len(stocks)):
         best = stocks[x]
@@ -315,7 +316,6 @@ def run(exchange, industry):
     best_stocks = getFinalStocks(rankedStocks)
     return makePDF(best_stocks, exchange, industry)
     
-
 
 
 

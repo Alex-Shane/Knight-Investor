@@ -222,6 +222,7 @@ class Scraper:
         """
         symbols = pd.read_csv('./static/nyse_stocks.csv')['Symbol'].tolist()
         symbols = Scraper.accountForIndustry(industry, 'NYSE', symbols)
+        print(symbols)
         stocks = list()
         for symbol in symbols: 
             print(symbol)
@@ -229,10 +230,11 @@ class Scraper:
             stock = Stock(ticker)
             if not report_type == 'day':
                 try:
+                    print('test')
                     stock.info = ticker.info
+                    stocks.append(stock)
                 except:
-                    continue
-            stocks.append(stock)
+                    stocks.append(stock)
         return stocks
     
     def accountForIndustry(industry, exchange, tickers):
@@ -375,8 +377,5 @@ class Scraper:
         return df
         #     df.to_csv(file_name, index = False)
 
-#df = Scraper.setupHongKongTickers()
-#df.to_csv('./static/HKSE_stocks.csv', index = False)
-info = yf.Ticker('GFOR').info
     
 
